@@ -1,0 +1,22 @@
+{
+   "_id" : "mVJDHsjHSJWHK",
+   "files" : [
+       {
+           "type" : "ModelOutput",
+           "filename" : "TestModelOutput.nc",
+           "mimetype" : "application/x-netcdf"
+       },
+       {   
+           "type" : "DataSet", 
+           "filename" : "TestDataSetFlux.nc",
+           "mimetype" : "application/x-netcdf",
+           "component" : "flux"   
+       },
+       {   
+           "type" : "DataSet", 
+           "filename" : "TestDataSetMet.nc",
+           "mimetype" : "application/x-netcdf",  
+           "component" : "met" 
+       }
+   ]
+}
