@@ -98,7 +98,7 @@ getObservedFluxDataFilePath = function(analysisType) {
 }
 getOutFileLabel = function(analysisType) {
 	if(analysisType=='ModelAnalysis'){
-    	outfilelabel=commandArgs()[6]
+    	outfilelabel='ModelAnalysis'
     }else if(analysisType=='ObsAnalysis'){
     	outfilelabel=commandArgs()[5]
     }else if(analysisType=='QCplotsSpreadsheet'){
@@ -134,7 +134,7 @@ getModLabel = function(analysisType) {
 }
 getOutType = function(analysisType) {
     if(analysisType=='ModelAnalysis'){
-    	outtype=commandArgs()[9]
+    	outtype='png'
     }else if(analysisType=='ObsAnalysis'){
     	outtype=commandArgs()[7]
     }else if(analysisType=='QCplotsSpreadsheet'){
@@ -151,7 +151,7 @@ getOutType = function(analysisType) {
 # Generate the outfile name from label and type
 ###
 getOutFileName = function(outtype,analysisType) {
-    paste(getOutFileLabel(analysisType), outtype, sep='.')
+    paste(uuid(), outtype, sep='.')
 }
 
 #####
@@ -196,12 +196,14 @@ setOutput = function(analysisType) {
 	}else if (outtype=='ps') {
 		postscript(file=outfilename, paper='special', width=11, height=8)
 	}else if (outtype == 'png') {
-		png(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
+		#png(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
+		png(file=outfilename)
 	}else if(outtype == 'jpg'){
 		jpeg(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
 	}else{
 		CheckError(paste('I1: Requested output format not recognised:',outtype))
 	}
+	return(outfilename);
 }
 # Copies current graphics device, if pdf, to png device.
 copyOutput = function(analysisType) {
@@ -229,4 +231,22 @@ stripFilename = function(fpath) {
 	fcharvec = as.character(fsplit[[1]])
 	fname = fcharvec[length(fcharvec)]
 	return(fname)
+}
+
+uuid = function(uppercase=FALSE) {
+
+  hex_digits <- c(as.character(0:9), letters[1:6])
+  hex_digits <- if (uppercase) toupper(hex_digits) else hex_digits
+
+  y_digits <- hex_digits[9:12]
+
+  paste(
+    paste0(sample(hex_digits, 8), collapse=''),
+    paste0(sample(hex_digits, 4), collapse=''),
+    paste0('4', sample(hex_digits, 3), collapse=''),
+    paste0(sample(y_digits,1),
+           sample(hex_digits, 3),
+           collapse=''),
+    paste0(sample(hex_digits, 12), collapse=''),
+    sep='-')
 }

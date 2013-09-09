@@ -27,17 +27,22 @@ print(paste("Flux: ",fluxFilename));
 obs = GetFluxnetVariable(varname,fluxFilename,units)
 model = GetModelOutput(varname,modelOutputFilename,units)
 CheckTiming(model$timing,obs$timing)
-#acdata=matrix(NA,length(model$data),2)
-#acdata[,1] = obs$data
-#acdata[,2] = model$data
+acdata=matrix(NA,length(model$data),2)
+acdata[,1] = obs$data
+acdata[,2] = model$data
 
-#AnnualCycle(getObsLabel(analysisType),acdata,varname,ytext,legendtext,
-#    obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
+analysisType = 'ModelAnalysis';
+outfile <- setOutput(analysisType);
+print(paste("Outfile ",outfile));
+
+AnnualCycle('NEE',acdata,varname,ytext,legendtext,
+    obs$timing$tstepsize,obs$timing$whole,'no');
 
 
-png(filename="averageWindow.png")
-cars <- c(1, 3, 6, 4, 9)
-plot(cars)
-dev.off()
-output = list(files=list(list(type="NEEAnnualCycle",filename="averageWindow.png",mimetype="image/png")))
+#png(filename="averageWindow.png")
+#cars <- c(1, 3, 6, 4, 9)
+#plot(cars)
+#dev.off()
+
+output = list(files=list(list(type="NEEAnnualCycle",filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png")))
 print(output[["files"]][[1]]$type)
