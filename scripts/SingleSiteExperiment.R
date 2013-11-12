@@ -47,12 +47,12 @@ for( i in 1:(length(variables)-1) ) {
     file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
     output[["files"]][[length(output[["files"]])+1]] <- file
     
-    #outfile <- setOutput(analysisType);
-    #print(paste("Outfile ",outfile));
-    #AveragingWindow(analysisType,analysisType,model$data,obs$data,varname,ytext,obs$timing$tstepsize);
-    #fileType = paste(varname,"AvWindow");
-    #file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    #output[["files"]][[length(output[["files"]])+1]] <- file
+    outfile <- setOutput(analysisType);
+    print(paste("Outfile ",outfile));
+    AveragingWindow(analysisType,analysisType,model$data,obs$data,varname,ytext,obs$timing$tstepsize);
+    fileType = paste(varname,"AvWindow");
+    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
+    output[["files"]][[length(output[["files"]])+1]] <- file
     
     outfile <- setOutput(analysisType);
     print(paste("Outfile ",outfile));
