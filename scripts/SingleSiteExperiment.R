@@ -143,7 +143,7 @@ for( i in 1:(length(variables)-1) ) {
 		Timeseries(analysisType,tsdata,varname,ytext,
 			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize)
 	}
-    fileType = paste(varname,"Taylor");
+    fileType = paste(varname,"Timseries");
     file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
     output[["files"]][[length(output[["files"]])+1]] <- file
 }
@@ -172,6 +172,7 @@ PALSScatter(analysisType,qleqh,rnetqg,
 	'Energy density','energy conservation',legendtext,
 	mod_qg$timing$tstepsize,mod_qg$timing$whole,ebal=TRUE,
 	analysisType)
+fileType = paste(varname,"Conserve");
 file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
 output[["files"]][[length(output[["files"]])+1]] <- file
 
