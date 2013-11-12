@@ -54,6 +54,7 @@ for( i in 1:(length(variables)-1) ) {
     file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
     output[["files"]][[length(output[["files"]])+1]] <- file
     
+    ytext=paste(varname," flux ",unitsName);
     outfile <- setOutput(analysisType);
     print(paste("Outfile ",outfile));
     dcdata=matrix(NA,length(obs$data),1)
@@ -130,6 +131,7 @@ for( i in 1:(length(variables)-1) ) {
 	tsdata[,1] = obs$data
 	plotcex = 1.0 # plot text magnification factor
 	winsize = 14
+	ytext=paste("Smoothed ",varname," flux ",unitsName)
 	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
 	if(obs$qcexists){
 		vqcdata = matrix(NA,length(obs$data),1)
