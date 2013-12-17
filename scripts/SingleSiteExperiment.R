@@ -9,9 +9,7 @@ for (i in 1:(length(files)-1)  ) {
         modelOutputFilename = file[['filename']];
     }
     else if( file[['type']] == "DataSet") {
-        if( file[['component']] == "flux" ) {
-            fluxFilename = file[['filename']];
-        }
+        fluxFilename = file[['filename']];
     }
 }
 
