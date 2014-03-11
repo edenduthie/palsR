@@ -6,10 +6,10 @@ files <- input[["files"]]
 for (i in 1:(length(files)-1)  ) {
     file <- files[[i]]
     if( file[['type']] == "ModelOutput" ) {
-        modelOutputFilename = file[['filename']];
+        modelOutputFilename = file[['path']];
     }
     else if( file[['type']] == "DataSet") {
-        fluxFilename = file[['filename']];
+        fluxFilename = file[['path']];
     }
 }
 

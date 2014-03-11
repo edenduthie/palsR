@@ -3,18 +3,18 @@
    "files" : [
        {
            "type" : "ModelOutput",
-           "filename" : "TestModelOutput.nc",
+           "path" : "TestModelOutput.nc",
            "mimetype" : "application/x-netcdf"
        },
        {   
            "type" : "DataSet", 
-           "filename" : "TestDataSetFlux.nc",
+           "path" : "TestDataSetFlux.nc",
            "mimetype" : "application/x-netcdf",
            "component" : "flux"   
        },
        {   
            "type" : "DataSet", 
-           "filename" : "TestDataSetMet.nc",
+           "path" : "TestDataSetMet.nc",
            "mimetype" : "application/x-netcdf",  
            "component" : "met" 
        }
