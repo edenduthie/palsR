@@ -159,17 +159,17 @@ getOutFileName = function(outtype,analysisType) {
 ###
 getResolution = function(analysisType){
 	if(analysisType=='ModelAnalysis'){
-    	iwidth=as.numeric(commandArgs()[10])
-    	iheight=as.numeric(commandArgs()[11])
+    	iwidth=900
+    	iheight=600
     }else if(analysisType=='ObsAnalysis'){
-    	iwidth=as.numeric(commandArgs()[8])
-    	iheight=as.numeric(commandArgs()[9])
+    	iwidth=900
+    	iheight=600
     }else if(analysisType=='QCplotsSpreadsheet'){
-    	iwidth=as.numeric(commandArgs()[8])
-    	iheight=as.numeric(commandArgs()[9])
+    	iwidth=900
+    	iheight=600
     }else if(analysisType=='BenchAnalysis'){
-    	iwidth=as.numeric(commandArgs()[11])
-    	iheight=as.numeric(commandArgs()[12])
+    	iwidth=900
+    	iheight=600
     }else{
     	CheckError('I2: Unknown analysis type requested in getResolution.')
     }
@@ -196,8 +196,7 @@ setOutput = function(analysisType) {
 	}else if (outtype=='ps') {
 		postscript(file=outfilename, paper='special', width=11, height=8)
 	}else if (outtype == 'png') {
-		#png(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
-		png(file=outfilename)
+		png(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
 	}else if(outtype == 'jpg'){
 		jpeg(file=outfilename, width=ires$width, height=ires$height, pointsize=fsize)
 	}else{
@@ -233,20 +232,22 @@ stripFilename = function(fpath) {
 	return(fname)
 }
 
-uuid = function(uppercase=FALSE) {
 
-  hex_digits <- c(as.character(0:9), letters[1:6])
-  hex_digits <- if (uppercase) toupper(hex_digits) else hex_digits
-
-  y_digits <- hex_digits[9:12]
-
-  paste(
-    paste0(sample(hex_digits, 8), collapse=''),
-    paste0(sample(hex_digits, 4), collapse=''),
-    paste0('4', sample(hex_digits, 3), collapse=''),
-    paste0(sample(y_digits,1),
-           sample(hex_digits, 3),
-           collapse=''),
-    paste0(sample(hex_digits, 12), collapse=''),
-    sep='-')
+uuid <- function(uppercase=FALSE) {
+	## Version 4 UUIDs have the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+	## where x is any hexadecimal digit and y is one of 8, 9, A, or B
+	## e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479
+ 
+	hex_digits <- c(as.character(0:9), letters[1:6])
+	hex_digits <- if (uppercase) toupper(hex_digits) else hex_digits
+	 
+	y_digits <- hex_digits[9:12]
+	 
+	paste(
+	  paste0(sample(hex_digits, 8, replace=TRUE), collapse=''),
+	  paste0(sample(hex_digits, 4, replace=TRUE), collapse=''),
+	  paste0('4', paste0(sample(hex_digits, 3, replace=TRUE), collapse=''), collapse=''),
+	  paste0(sample(y_digits,1), paste0(sample(hex_digits, 3, replace=TRUE), collapse=''), collapse=''),
+	  paste0(sample(hex_digits, 12, replace=TRUE), collapse=''),
+	  sep='-')
 }
