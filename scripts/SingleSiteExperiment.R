@@ -1,179 +1,98 @@
+# Master script for single site flux tower based experiments
+# Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
+
 library(pals)
+# library(parallel)
 
 print(input["_id"])
 files <- input[["files"]]
 
-for (i in 1:(length(files)-1)  ) {
+# Retrieve model output, forcing and evaluation data set and benchmark location and 
+# meta data from javascript input list: 
+ModelOutputs = list()
+ForcingDataSets = list()
+EvalDataSets = list()
+Benchmarks = list()
+MOctr = 0
+FDSctr = 0
+EDSctr = 0
+Bctr = 0
+for (i in 1:(length(files))  ) {
     file <- files[[i]]
     if( file[['type']] == "ModelOutput" ) {
-        modelOutputFilename = file[['path']];
-    }
-    else if( file[['type']] == "DataSet") {
-        fluxFilename = file[['path']];
+    	MOctr = MOctr + 1
+        ModelOutputs[[MOctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
+        	name=file[['name']])
+    }else if( (file[['type']] == "DataSet") && (file[['component']] == "met")) {
+    	FDSctr = FDSctr + 1
+        ForcingDataSets[[FDSctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
+        	component=file[['component']],name=file[['name']])
+    }else if( (file[['type']] == "DataSet") && (file[['component']] == "flux")) {
+    	EDSctr = EDSctr + 1
+        EvalDataSets[[EDSctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
+        	component=file[['component']],name=file[['name']])
+    }else if( file[['type']] == "Benchmark") {
+    	Bctr = Bctr + 1
+        Benchmarks[[Bctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
+        	name=file[['name']],number=file[['number']]) # user rank of benchmark
     }
 }
 
-print(paste("Model Output: ",modelOutputFilename));
-print(paste("Flux: ",fluxFilename));
+print(paste("Model Output file: ",ModelOutputs[[1]][['path']]));
+print(paste("Data Set file: ",EvalDataSets[[1]][['path']]));
 
-variables = list('NEE','Qg','Qh','Qle','Rnet','SWnet');
-unitList = list(NEEUnits,QgUnits,QhUnits,RnetUnits,SWnetUnits);
-unitNameList = list(NEEUnitsName,QgUnitsName,QhUnitsName,RnetUnitsName,SWnetUnitsName);
+# Nominate variables to analyse here (use ALMA standard names) - fetches
+# alternate names, units, units transformations etc:
+vars = GetVariableDetails(c('Qle','Qh','NEE','Rnet','Qg','SWnet'))
 
-output = list(files=list());
+# Analyses that can apply to any variable:
+genAnalysis = c('Timeseries','AnnualCycle','DiurnalCycle','PDF','Scatter','Taylor','AvWindow')
 
-for( i in 1:(length(variables)-1) ) {
+# Determine number of user-nominated benchmarks:
+nBench = NumberOfBenchmarks(Benchmarks,Bctr)
 
-    varname <- variables[[i]];
-    units <- unitList[[i]];
-    unitsName <- unitNameList[[i]][[1]];
-    ytext=paste("Average ",varname," flux ",unitsName);
-    xtext=paste(varname,unitsName);
-    legendtext=c('Observed','Modelled')
-    obs = GetFluxnetVariable(varname,fluxFilename,units)
-    model = GetModelOutput(varname,modelOutputFilename,units)
-    CheckTiming(model$timing,obs$timing)
-    acdata=matrix(NA,length(model$data),2)
-    acdata[,1] = obs$data
-    acdata[,2] = model$data
-    analysisType = 'ModelAnalysis';
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    AnnualCycle(varname,acdata,varname,ytext,legendtext, obs$timing$tstepsize,obs$timing$whole,'no');
-    fileType = paste(varname,"AnnualCycle");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    AveragingWindow(analysisType,analysisType,model$data,obs$data,varname,ytext,obs$timing$tstepsize);
-    fileType = paste(varname,"AvWindow");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    ytext=paste(varname," flux ",unitsName);
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    dcdata=matrix(NA,length(obs$data),1)
-	dcdata[,1] = obs$data
-    if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(analysisType,dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,analysisType,
-			vqcdata=vqcdata)
-	}else{
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(analysisType,dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,analysisType)
+# Set up analysis data and analysis list so we can use lapply or parlapply:
+AnalysisData = list()
+AnalysisList = list()
+
+# Load all variables from obs and model output
+analysis_number = 0
+for(v in 1:length(vars)){
+	obs = GetFluxnetVariable(vars[[v]],EvalDataSets[[1]])
+    model = GetModelOutput(vars[[v]],ModelOutputs)
+    bench = GetBenchmarks(vars[[v]],Benchmarks,nBench)
+	# Save model, obs, bench data for each variable:
+	AnalysisData[[v]] = list(obs=obs, model=model, bench = bench)
+	# Add those analyses that are equally applicable to any variable to analysis list:
+	for(a in 1:length(genAnalysis)){
+		analysis_number = (v-1)*length(genAnalysis) + a
+		AnalysisList[[analysis_number]] = list(vindex=v, type=genAnalysis[a])
 	}
-    fileType = paste(varname,"DiurnalCycle");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    # Create data matrix for function:
-	pdfdata=matrix(NA,length(model$data),2)
-	pdfdata[,1] = obs$data
-	pdfdata[,2] = model$data
-	nbins=500
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function:
-		PALSPdf(analysisType,pdfdata,varname,ytext,
-			legendtext,obs$timing,nbins,analysisType,vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function:
-		PALSPdf(analysisType,pdfdata,varname,ytext,
-			legendtext,obs$timing,nbins,analysisType)
-	}
-    fileType = paste(varname,"Pdf");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call plotting function with qc data:
-		PALSScatter(analysisType,model$data,obs$data,varname,varname,
-			legendtext,obs$timing$tstepsize,obs$timing$whole,
-			modlabel=analysisType,vqcdata=vqcdata)
-	}else{
-		# Call plotting function without qc data:
-		PALSScatter(analysisType,model$data,obs$data,varname,varname,
-			legendtext,obs$timing$tstepsize,obs$timing$whole,modlabel=analysisType)
-	}
-    fileType = paste(varname,"Scatter");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    TaylorDiagram(analysisType,model$data,obs$data,
-		varname,xtext,obs$timing$tstepsize,obs$timing$whole,analysisType)
-    fileType = paste(varname,"Taylor");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
-    
-    outfile <- setOutput(analysisType);
-    print(paste("Outfile ",outfile));
-    #Create data matrix for function:
-	tsdata=matrix(NA,length(obs$data),1)
-	tsdata[,1] = obs$data
-	plotcex = 1.0 # plot text magnification factor
-	winsize = 14
-	ytext=paste("Smoothed ",varname," flux ",unitsName)
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function with qc data:
-		Timeseries(analysisType,tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function without qc data:
-		Timeseries(analysisType,tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize)
-	}
-    fileType = paste(varname,"Timseries");
-    file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-    output[["files"]][[length(output[["files"]])+1]] <- file
 }
+# Add multiple variable analysis to analysis list:
+# analysis_number = analysis_number + 1
+# AnalysisList[[analysis_number]] = list(vindex=0, type='EvapFrac')
+# analysis_number = analysis_number + 1
+# AnalysisList[[analysis_number]] = list(vindex=0, type='Conserve')
 
-outfile <- setOutput(analysisType);
-print(paste("Outfile ",outfile));
-units=QleUnits
-legendtext = c('Rnet - Qg','Qle + Qh')
-# Load modelled latent heat data:
-varname=QleNames
-mod_qle = GetModelOutput(varname,modelOutputFilename,units)
-# Load modelled sensible heat data:
-varname=QhNames
-mod_qh = GetModelOutput(varname,modelOutputFilename,units)
-# Load modelled net radiation data:
-varname=RnetNames
-mod_rnet = GetModelOutput(varname,modelOutputFilename,units)
-# Load modelled ground heat flux data:
-varname=QgNames
-mod_qg = GetModelOutput(varname,modelOutputFilename,units)
-# Create data vectors for scatter function:
-qleqh = mod_qle$data + mod_qh$data
-rnetqg = mod_rnet$data - mod_qg$data
-# Call PALSScatter plotting function:
-PALSScatter(analysisType,qleqh,rnetqg,
-	'Energy density','energy conservation',legendtext,
-	mod_qg$timing$tstepsize,mod_qg$timing$whole,ebal=TRUE,
-	analysisType)
-fileType = paste(varname,"Conserve");
-file = list(type=fileType,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png");
-output[["files"]][[length(output[["files"]])+1]] <- file
+# Create cluster:
+#cl = makeCluster(getOption('cl.cores', (detectCores()-1)))
 
-print(output[["files"]][[1]]$type)
+# Process analyses using lapply:
+outinfo = lapply(AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
+#outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
+
+# stop cluster
+#stopCluster(cl)
+
+# Write outinfo to output list for javascript:
+output = list(files=outinfo);
+
+#check error propagation!
+
+for(i in 1: length(output[["files"]])){
+	print(output[["files"]][[i]]$type)
+	print(output[["files"]][[i]]$filename)
+	print(output[["files"]][[i]]$error)
+	print(output[["files"]][[i]]$bencherror)
+}

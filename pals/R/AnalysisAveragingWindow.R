@@ -4,11 +4,12 @@
 # and observed correlation and standard deviation for
 # a temporally averaged model output flux
 #
-# Gab Abramowitz CCRC, UNSW 2010 (palshelp at gmail dot com)
+# Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 AveragingWindow	= function(obslabel,modlabel,mod_data,obs_data,
 	varname,ytext,timestepsize){
 	library(boot) # load bootstrap library
+	errtext = 'ok'
 	windowstepsize=2 # resolution of graph
 	maxwindow = 30 # in days, the largest averaging window
 	# Plot layout:
@@ -102,17 +103,6 @@ AveragingWindow	= function(obslabel,modlabel,mod_data,obs_data,
 		0.8*(max(stdevi[1,],stdevi[2,])-min(stdevi[1,],stdevi[2,]))
 	legend(as.integer(3*maxwindow/4),ypos,c('Model','Obs'),lty=1,
 		col=c('blue','black'),lwd=3,bty="n")
+	result=list(errtext=errtext)
+	return(result)
 } # End function avwinflux
-
-ModelAveragingWindow = function(analysisType,varname,units,ytext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Call AveragingWindow plotting function:
-	AveragingWindow(getObsLabel(analysisType),getModLabel(analysisType),
-		model$data,obs$data,varname,ytext,obs$timing$tstepsize)
-}

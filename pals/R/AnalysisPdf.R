@@ -2,10 +2,11 @@
 #
 # Plots probability density functions
 #
-# Gab Abramowitz UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
 PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 	nbins=500,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
+	errtext = 'ok'
 	xcut = 1/100
 	ncurves = length(pdfdata[1,]) # Number of curves in final plot:
 	ntsteps = length(pdfdata[,1]) # Number of timesteps in data:
@@ -84,10 +85,10 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 				llwd[p+1] = 3
 			}
 		}
-		legend(xlow+(xhigh-xlow)*0.8,ymax,legend=ltext,lty=1,
+		legend(xlow+(xhigh-xlow)*0.75,ymax,legend=ltext,lty=1,
 			col=lcols,lwd=llwd,bty="n")
 	}else{
-		legend(xlow+(xhigh-xlow)*0.8,ymax,legend=legendtext[1:ncurves],lty=1,
+		legend(xlow+(xhigh-xlow)*0.75,ymax,legend=legendtext[1:ncurves],lty=1,
 			col=plotcolours[1:ncurves],lwd=3,bty="n")
 	}
 	if(modlabel=='no'){
@@ -95,110 +96,6 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 	}else{
 		title(paste(varname[1],' density:   Obs - ',obslabel,'   Model - ',modlabel,sep=''))
 	}
-}
-
-BenchPdf = function(analysisType,varname,units,xtext,legendtext){
-	nbins=500
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Load model data:
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Load benchmark names and paths:
-	UserBenchPaths = getUserBenchPaths()
-	UserBenchNames = getUserBenchNames()
-	nbench = length(UserBenchNames) # number of benchmarks
-	bench = matrix(NA,nbench,length(obs$data))
-	# Load benchmark data:
-	for(b in 1:nbench){
-		if(substr(UserBenchNames[b],1,5)=='B_Emp'){ 
-			# this is an empirical benchmark
-			bvarname = paste(varname[1],'_',
-				substr(UserBenchNames[b],6,nchar(UserBenchNames[b])),sep='')
-			tmp_flx = GetBenchmarkVariable(bvarname,UserBenchPaths[b])
-			# Check emp benchmark is based on same data set and version as obs:
-			if(b==1){
-				CheckVersionCompatibility(UserBenchPaths[b],
-					getObservedFluxDataFilePath(analysisType))
-			}
-		}else{
-			# this benchmark is a model simulation
-			tmp_flx = GetModelOutput(varname,UserBenchPaths[b],units)
-		}
-		# Check benchmark data timing is compatible with obs:
-		if(b==1){
-			CheckTiming(tmp_flx$timing,obs$timing)
-		}
-		# For now, if requested benchmark variable doesn't exist in benchmark
-		# file, stop script:
-		if(is.null(tmp_flx)){
-			CheckError(paste('B4: Could not find benchmark variable "',bvarname,
-				'" in benchmark netcdf file.',sep=''))	
-		}
-		bench[b,] = tmp_flx$data
-	}
-	# Create data matrix for function:
-	pdfdata=matrix(NA,length(model$data),(2+nbench))
-	pdfdata[,1] = obs$data
-	pdfdata[,2] = model$data
-	for(b in 1:nbench){
-		pdfdata[,(b+2)] = bench[b,]
-	}
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function:
-		PALSPdf(getObsLabel(analysisType),pdfdata,varname,xtext,
-			legendtext,obs$timing,nbins,getModLabel(analysisType),vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function:
-		PALSPdf(getObsLabel(analysisType),pdfdata,varname,xtext,
-			legendtext,obs$timing,nbins,getModLabel(analysisType))
-	}
-}
-
-ModelPdf = function(analysisType,varname,units,xtext,legendtext){
-	nbins=500
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Load model data:
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Create data matrix for function:
-	pdfdata=matrix(NA,length(model$data),2)
-	pdfdata[,1] = obs$data
-	pdfdata[,2] = model$data
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function:
-		PALSPdf(getObsLabel(analysisType),pdfdata,varname,xtext,
-			legendtext,obs$timing,nbins,getModLabel(analysisType),vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function:
-		PALSPdf(getObsLabel(analysisType),pdfdata,varname,xtext,
-			legendtext,obs$timing,nbins,getModLabel(analysisType))
-	}
-}
-
-ObsPdf = function(analysisType,varname,units,xtext,legendtext){
-	nbins=500
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Create data matrix for function:
-	tsdata=matrix(NA,length(obs$data),1)
-	tsdata[,1] = obs$data
-	# Call Timeseries plotting function:
-	PALSPdf(getObsLabel(analysisType),tsdata,varname,xtext,
-		legendtext,obs$timing,nbins)
+	result=list(errtext=errtext)
+	return(result)
 }

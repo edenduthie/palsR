@@ -5,13 +5,16 @@
 # For this to be successful, the dataset **MUST START AT JAN 1**
 # AND be a integer number of years in length.
 #
-# Gab Abramowitz CCRC, UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 	timestepsize,whole,modlabel='no'){
 	######
+	errtext = 'ok'
 	if(!whole){ # we need a whole number of years for this to run
-		CheckError('DS3: AnnualCycle analysis requires a whole number of years of data.')
+		errtext = 'DS3: AnnualCycle analysis requires a whole number of years of data.'
+		result = list(errtext=errtext)
+		return(result)
 	}
 	ncurves = length(acdata[1,]) # Number of curves in final plot:
 	ntsteps = length(acdata[,1]) # Number of timesteps in data:
@@ -49,7 +52,8 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 	yaxmin=min(data_monthly) # y axis minimum in plot
 	yaxmax=max(data_monthly)+0.18*(max(data_monthly)-yaxmin) # y axis maximum in plot
 	plot(xloc,data_monthly[,1],type="l",xaxt="n",xlab='Month',ylab=ytext,
-		lwd=3,col=plotcolours[1],ylim=c(yaxmin,yaxmax),cex.lab=1.2,cex.axis=1.3)
+		lwd=3,col=plotcolours[1],ylim=c(yaxmin,yaxmax),cex.lab=1.2,cex.axis=1.3,
+		mgp = c(2.5,0.8,0))
 	# Add other curves:
 	if(ncurves>1){
 		pscore = c()
@@ -75,89 +79,6 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		scoretext = paste('Score: ',scorestring,'\n','(NME)',sep='')
 		text(8,max(data_monthly)+0.1*(max(data_monthly)-yaxmin),scoretext,pos=4,offset=1)
 	}
-	return()
+	result=list(errtext=errtext)
+	return(result)
 } # End function AnnualCycle
-
-BenchAnnualCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Load benchmark names and paths:
-	UserBenchPaths = getUserBenchPaths()
-	UserBenchNames = getUserBenchNames()
-	nbench = length(UserBenchNames) # number of benchmarks
-	bench = matrix(NA,nbench,length(obs$data))
-	# Load benchmark data:
-	for(b in 1:nbench){
-		if(substr(UserBenchNames[b],1,5)=='B_Emp'){ 
-			# this is an empirical benchmark
-			bvarname = paste(varname[1],'_',
-				substr(UserBenchNames[b],6,nchar(UserBenchNames[b])),sep='')
-			tmp_flx = GetBenchmarkVariable(bvarname,UserBenchPaths[b])
-			# Check emp benchmark is based on same data set and version as obs:
-			if(b==1){
-				CheckVersionCompatibility(UserBenchPaths[b],
-					getObservedFluxDataFilePath(analysisType))
-			}
-		}else{
-			# this benchmark is a model simulation
-			tmp_flx = GetModelOutput(varname,UserBenchPaths[b],units)
-		}
-		# Check benchmark data timing is compatible with obs:
-		if(b==1){
-			CheckTiming(tmp_flx$timing,obs$timing)
-		}
-		# For now, if requested benchmark variable doesn't exist in benchmark
-		# file, stop script:
-		if(is.null(tmp_flx)){
-			CheckError(paste('B4: Could not find benchmark variable "',bvarname,
-				'" in benchmark netcdf file.',sep=''))	
-		}
-		bench[b,] = tmp_flx$data
-	}
-	# Create data matrix for function:
-	acdata=matrix(NA,length(model$data),(2+nbench))
-	acdata[,1] = obs$data
-	acdata[,2] = model$data
-	for(b in 1:nbench){
-		acdata[,(b+2)] = bench[b,]
-	}
-	# Call AnnualCycle plotting function:
-	AnnualCycle(getObsLabel(analysisType),acdata,varname,ytext,legendtext,
-		obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
-}
-
-ModelAnnualCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Create data matrix for function:
-	acdata=matrix(NA,length(model$data),2)
-	acdata[,1] = obs$data
-	acdata[,2] = model$data
-	# Call AnnualCycle plotting function:
-	AnnualCycle(getObsLabel(analysisType),acdata,varname,ytext,legendtext,
-		obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
-}
-
-ObsAnnualCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Create data matrix for function:
-	acdata=matrix(NA,length(obs$data),1)
-	acdata[,1] = obs$data
-	# Call annual cycle plotting function:
-	AnnualCycle(getObsLabel(analysisType),acdata,varname,
-		ytext,legendtext,obs$timing$tstepsize,obs$timing$whole)
-	# copyOutput(analysisType) # copy to png device if pdf requested
-}
