@@ -4,12 +4,15 @@
 # season, over an entire, integer-year single-site data set. 
 # Dataset **MUST START AT JAN 1**
 #
-# Gab Abramowitz CCRC, UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 	timestepsize,whole,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
+	errtext = 'ok'	
 	if(!whole){ # we need a whole number of years for this to run
-		CheckError('DS3: DiurnalCycle analysis requires a whole number of years of data.')
+		errtext = 'DS3: DiurnalCycle analysis requires a whole number of years of data.'
+		result = list(errtext=errtext)
+		return(result)
 	}
 	labels=c('DJF','MAM','JJA','SON') # for each season
 	stid=c(1,60,152,244,335) # seasonal divisions in a year
@@ -200,116 +203,6 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 			text((tstepinday/2),yaxmax-(yaxmax-yaxmin)*0.07,scoretext,pos=4)	
 		}
 	} # each plot / season
-	
+	result=list(errtext=errtext)
+	return(result)
 } # End function DiurnalCycle
-
-BenchDiurnalCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Load benchmark names and paths:
-	UserBenchPaths = getUserBenchPaths()
-	UserBenchNames = getUserBenchNames()
-	nbench = length(UserBenchNames) # number of benchmarks
-	bench = matrix(NA,nbench,length(obs$data))
-	# Load benchmark data:
-	for(b in 1:nbench){
-		if(substr(UserBenchNames[b],1,5)=='B_Emp'){ 
-			# this is an empirical benchmark
-			bvarname = paste(varname[1],'_',
-				substr(UserBenchNames[b],6,nchar(UserBenchNames[b])),sep='')
-			tmp_flx = GetBenchmarkVariable(bvarname,UserBenchPaths[b])
-			# Check emp benchmark is based on same data set and version as obs:
-			if(b==1){
-				CheckVersionCompatibility(UserBenchPaths[b],
-					getObservedFluxDataFilePath(analysisType))
-			}
-		}else{
-			# this benchmark is a model simulation
-			tmp_flx = GetModelOutput(varname,UserBenchPaths[b],units)
-		}
-		# Check benchmark data timing is compatible with obs:
-		if(b==1){
-			CheckTiming(tmp_flx$timing,obs$timing)
-		}
-		# For now, if requested benchmark variable doesn't exist in benchmark
-		# file, stop script:
-		if(is.null(tmp_flx)){
-			CheckError(paste('B4: Could not find benchmark variable "',bvarname,
-				'" in benchmark netcdf file.',sep=''))	
-		}
-		bench[b,] = tmp_flx$data
-	}
-	# Create data matrix for function:
-	dcdata=matrix(NA,length(model$data),(2+nbench))
-	dcdata[,1] = obs$data
-	dcdata[,2] = model$data
-	for(b in 1:nbench){
-		dcdata[,(b+2)] = bench[b,]
-	}
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType),
-			vqcdata=vqcdata)
-	}else{
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
-	}
-}
-
-ModelDiurnalCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Create data matrix for function:
-	dcdata=matrix(NA,length(model$data),2)
-	dcdata[,1] = obs$data
-	dcdata[,2] = model$data
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType),
-			vqcdata=vqcdata)
-	}else{
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
-	}
-}
-
-ObsDiurnalCycle = function(analysisType,varname,units,ytext,legendtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Create data matrix for function:
-	dcdata=matrix(NA,length(obs$data),1)
-	dcdata[,1] = obs$data
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole,vqcdata=vqcdata)
-	}else{
-		# Call diurnal cycle plotting function:
-		DiurnalCycle(getObsLabel(analysisType),dcdata,varname,ytext,legendtext,
-			obs$timing$tstepsize,obs$timing$whole)
-	}
-}

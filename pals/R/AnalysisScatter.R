@@ -2,11 +2,13 @@
 #
 # Plots a scatterplot of model vs obs
 #
-# Gab Abramowitz UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
 PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	xytext,timestepsize,whole,ebal=FALSE,modlabel='no',
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
+	#
+	errtext = 'ok'
 	ntsteps = length(x_data) # Number of timesteps in data
 	tstepinday=86400/timestepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
@@ -35,7 +37,7 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	xmax=max(x_mod)
 	xmin=min(x_mod)
 	# First plot scatter of per timestep values:
-	plot(x=x_mod,y=y_mod,main=paste('Per time step',vtext),
+	plot(x=x_mod,y=y_mod,main=bquote('Per time step' ~ .(vtext)),
 		col='darkblue',xlab=xtext,ylab=ytext,
 		type='p',pch='.',cex=3,ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
@@ -94,7 +96,7 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	ymin=min(yday,na.rm=TRUE)
 	xmax=max(xday,na.rm=TRUE)
 	xmin=min(xday,na.rm=TRUE)
-	plot(x=xday,y=yday,main=paste('Daily average',vtext),col='darkblue',
+	plot(x=xday,y=yday,main=bquote('Daily average' ~ .(vtext)),col='darkblue',
 		xlab=xtext,ylab=ytext,type='p',pch='.',cex=3,
 		ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
@@ -123,27 +125,6 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	}else if(vqcdata[1,1] != -1){
 		text(x=(max(xmax,ymax)-yrange*0.5),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
 	}
+	result=list(errtext=errtext)
+	return(result)
 } # End function PALSScatter
-
-ModelScatter = function(analysisType,varname,units,vtext,xytext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call plotting function with qc data:
-		PALSScatter(getObsLabel(analysisType),model$data,obs$data,varname,vtext,
-			xytext,obs$timing$tstepsize,obs$timing$whole,
-			modlabel=getModLabel(analysisType),vqcdata=vqcdata)
-	}else{
-		# Call plotting function without qc data:
-		PALSScatter(getObsLabel(analysisType),model$data,obs$data,varname,vtext,
-			xytext,obs$timing$tstepsize,obs$timing$whole,modlabel=getModLabel(analysisType))
-	}
-}

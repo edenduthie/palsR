@@ -2,12 +2,13 @@
 #
 # Plots simple or smoothed timeseries of a variable
 #
-# Gab Abramowitz UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
 Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 	plotcex,timing,smoothed=FALSE,winsize=1,modlabel='no',
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
 	#
+	errtext = 'ok'
 	ncurves = length(tsdata[1,]) # Number of curves in final plot:
 	ntsteps = length(tsdata[,1]) # Number of timesteps in data:
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
@@ -48,9 +49,11 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 		xmin = 1
 		xmax = length(data_smooth[,1])
 		xloc=c(1:xmax)
+		# Draw plot:
 		plot(xloc,data_smooth[,1],type="l",ylab=ytext,lwd=3,
 			col=plotcolours[1],ylim=c((ymin),(ymin + (ymax-ymin)*1.2)),
-			xaxt='n',cex.lab=plotcex,cex.axis=plotcex,xlab='')
+			xaxt='n',cex.lab=plotcex,cex.axis=plotcex,xlab='',mgp = c(2.5,1,0))
+		# Calculate NME scores:
 		if(ncurves>1){
 			smoothscore = c()
 			allscore = c()
@@ -68,8 +71,10 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 			xxlab[(2*l-1)]=paste('1 Jan',substr(as.character(timing$syear+l-1),3,4))
 			xxlab[(2*l)]=paste('1 Jun',substr(as.character(timing$syear+l-1),3,4))
 		}
-		legend(0,(ymin + (ymax-ymin)*1.24),legend=legendtext[1:ncurves],lty=1,
+		# place legend:
+		legend(xmin-(xmax-xmin)*0.03,(ymin + (ymax-ymin)*1.24),legend=legendtext[1:ncurves],lty=1,
 			col=plotcolours[1:ncurves],lwd=3,bty="n",cex=max((plotcex*0.75),1))
+		# Add title:
 		if(modlabel=='no'){
 			title(paste('Smoothed ',varname[1],': ',winsize,'-day running mean.   Obs - ',
 				obslabel,sep=''),cex.main=plotcex)
@@ -77,6 +82,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 			title(paste('Smoothed ',varname[1],': ',winsize,'-day running mean.   Obs - ',
 				obslabel,'   Model - ',modlabel,sep=''),cex.main=plotcex)
 		}
+		# Add Max/Min/Mean/SD numbers:
 		text(x=(xmin+(xmax-xmin)*0.25),y=c(ymin + (ymax-ymin)*1.19,ymin + (ymax-ymin)*1.14),
 			labels=c(paste('Min = (',yvalmin,')',sep=''),
 			paste('Max = (',yvalmax,')',sep='')),
@@ -84,6 +90,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 		text(x=(xmin+(xmax-xmin)*0.25),y=c(ymin + (ymax-ymin)*1.09,ymin + (ymax-ymin)*1.04),
 			labels=c(paste('Mean = (',datamean,')',sep=''),paste('SD = (',datasd,')',sep='')),
 			cex=max((plotcex*0.75),1),pos=4)
+		# Add NME scores to plot (if there is at least one model output):
 		if(ncurves>1){
 			sscorestring = paste(signif(smoothscore,digits=3),collapse=', ')
 			ascorestring = paste(signif(allscore,digits=3),collapse=', ')
@@ -174,124 +181,6 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 		}
 	}
 	axis(1,at=xxat,labels=xxlab,cex.axis=plotcex)
-}
-
-BenchTimeseries = function(analysisType,varname,units,ytext,legendtext){
-	plotcex = 1.0 # plot text magnification factor
-	winsize = 14
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Load benchmark names and paths:
-	UserBenchPaths = getUserBenchPaths()
-	UserBenchNames = getUserBenchNames()
-	nbench = length(UserBenchNames) # number of benchmarks
-	bench = matrix(NA,nbench,length(obs$data))
-	# Load benchmark data:
-	for(b in 1:nbench){
-		if(substr(UserBenchNames[b],1,5)=='B_Emp'){ 
-			# this is an empirical benchmark
-			bvarname = paste(varname[1],'_',
-				substr(UserBenchNames[b],6,nchar(UserBenchNames[b])),sep='')
-			tmp_flx = GetBenchmarkVariable(bvarname,UserBenchPaths[b])
-			# Check emp benchmark is based on same data set and version as obs:
-			if(b==1){
-				CheckVersionCompatibility(UserBenchPaths[b],
-					getObservedFluxDataFilePath(analysisType))
-			}
-		}else{
-			# this benchmark is a model simulation
-			tmp_flx = GetModelOutput(varname,UserBenchPaths[b],units)
-		}
-		# Check benchmark data timing is compatible with obs:
-		if(b==1){
-			CheckTiming(tmp_flx$timing,obs$timing)
-		}
-		# For now, if requested benchmark variable doesn't exist in benchmark
-		# file, stop script:
-		if(is.null(tmp_flx)){
-			CheckError(paste('B4: Could not find benchmark variable "',bvarname,
-				'" in benchmark netcdf file.',sep=''))	
-		}
-		bench[b,] = tmp_flx$data
-	}
-	# Create data matrix for function:
-	tsdata=matrix(NA,length(model$data),(2+nbench))
-	tsdata[,1] = obs$data
-	tsdata[,2] = model$data
-	for(b in 1:nbench){
-		tsdata[,(b+2)] = bench[b,]
-	}
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function with qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			modlabel=getModLabel(analysisType),vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function without qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			modlabel=getModLabel(analysisType))
-	}
-}
-
-ModelTimeseries = function(analysisType,varname,units,ytext,legendtext){
-	plotcex = 1.0 # plot text magnification factor
-	winsize = 14
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Create data matrix for function:
-	tsdata=matrix(NA,length(model$data),2)
-	tsdata[,1] = obs$data
-	tsdata[,2] = model$data
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function with qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			modlabel=getModLabel(analysisType),vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function without qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			modlabel=getModLabel(analysisType))
-	}
-}
-
-ObsTimeseries = function(analysisType,varname,units,ytext,legendtext){
-	plotcex = 1.0 # plot text magnification factor
-	winsize = 14
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	# Create data matrix for function:
-	tsdata=matrix(NA,length(obs$data),1)
-	tsdata[,1] = obs$data
-	# Check if obs QC/gap-filling data exists, and if so, send to plotting function:
-	if(obs$qcexists){
-		vqcdata = matrix(NA,length(obs$data),1)
-		vqcdata[,1] = obs$qc
-		# Call Timeseries plotting function with qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize,
-			vqcdata=vqcdata)
-	}else{
-		# Call Timeseries plotting function without qc data:
-		Timeseries(getObsLabel(analysisType),tsdata,varname,ytext,
-			legendtext,plotcex,obs$timing,smoothed=TRUE,winsize)
-	}
+	result = list(errtext = errtext)
+	return(result)
 }

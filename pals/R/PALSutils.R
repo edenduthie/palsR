@@ -1,9 +1,7 @@
-###############
-# 
-# Utility functions for running R scripts with commandline arguments
-# Gab Abramowitz & Stefan Gregory CCRC, UNSW 2010 (palshelp at gmail dot com)
+ # Utility functions for PALS R package
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-###############
+
 # Sending error to std err:
 CheckError = function(errtext,errcode='U1:'){
 	if(errtext != 'ok'){
@@ -15,123 +13,35 @@ CheckError = function(errtext,errcode='U1:'){
 	}
 }
 
-###
-# Check the usage of command line call.
-###
-checkUsage = function(analysisType) {
-	if(analysisType=='ModelAnalysis'){
-	    if (length(commandArgs()) != 11) {
-	    	cat(analysisType,':')
-   	    	errtext= "I1: PALSUtils.R usage error: r -f <ScriptName> <ModelOutputFilePath> <ObservedFluxDataFilePath> <OutFileLabel> <ObsDataLabel> <ModelDataLabel> <OutType> <PngWidth> <PngHeight>"
-   	    	CheckError(errtext)
-   	    }
-   	}else if(analysisType=='BenchAnalysis'){
-	    if (length(commandArgs()) != 12) {
-	    	cat(analysisType,':')
-   	    	errtext= "I1: PALSUtils.R usage error: r -f <ScriptName> <BenchmarkRdeclarationsFilePath> <ModelOutputFilePath> <ObservedFluxDataFilePath> <OutFileLabel> <ObsDataLabel> <ModelDataLabel> <OutType> <PngWidth> <PngHeight>"
-   	    	CheckError(errtext)
-   	    }
-	}else if(analysisType=='ObsAnalysis'){
-		if (length(commandArgs()) != 9) {
-			cat(analysisType,':')
-   	     	errtext= "I1: PALSUtil.R usage error: r -f <ScriptName> <ObservedFluxDataFilePath> <OutFileLabel> <ObsDataLabel> <OutType> <PngWidth> <PngHeight>"
-   	     	CheckError(errtext)
-    	}
-    }else if(analysisType=='ConvertSpreadsheetToNcdf'){
-		if ((length(commandArgs()) != 12) && (length(commandArgs()) != 4)) {
-			cat(analysisType,':')
-			# Old error message is:
-   	    	#errtext= "I1: PALSUtil.R usage error: r -f <ScriptName> <SpreadsheetPath> <MetNcdfPath> <FluxNcdfPath> <SiteLatitude> <SiteLongitude> <SiteElevation> <TowerMeasHeight> <Sitename> <SitenameVersion>"
-   	    	errtext= "I1: PALSUtil.R usage error: r -f ConvertSpreadsheetToNcdf.R <RdefinitionsPath>"
-   	    	CheckError(errtext)
-    	}
-    }else if(analysisType=='QCplotsSpreadsheet'){
-		if (length(commandArgs()) != 9) {
-			cat(analysisType,':')
-   	     	errtext= "I1: PALSUtil.R usage error: r -f <ScriptName> <MetNcdfPath> <FluxNcdfPath> <outFigurePath> <OutType> <PngWidth> <PngHeight>"
-   	     	CheckError(errtext)
-    	}
-    }else if(analysisType=='BenchmarkGeneration'){
-    	if (length(commandArgs()) != 4) {
-			cat(analysisType,':')
-   	     	errtext= "I1: PALSUtil.R usage error: r -f <ScriptName> <BenchRfilePath>"
-   	     	CheckError(errtext)
-    	}
-    }else{
-    	errtext= "I1: PALSUtil.R usage error: unknown application analysis type."
-    	CheckError(errtext)
-    }
-}	
-#
+NumberOfBenchmarks = function(bench,Bctr){
+	# Determines the number of user nominated benchmarks in a call to an 
+	# experiment script, as well as the number of files associated with each:
+	if(Bctr == 0){
+		nBench = 0
+		benchfiles = NA
+	}else{
+		nBench = 1
+		# Determine number of user nominated benchmarks:
+		for(b in 1:Bctr){
+			nBench = max(nBench, as.integer(bench[[Bctr]]$number))
+		}
+		# Store which files belong to which benchmark:
+		benchfiles = list()
+		bexists = c(0)
+		for(b in 1:Bctr){
+			benchnumber = as.integer(bench[[b]]$number)
+			if(any(bexists == benchnumber)){
+				benchfiles[[benchnumber]] = c(benchfiles[[benchnumber]] , b)
+			}else{
+				benchfiles[[benchnumber]] = c(b)
+				bexists = c(bexists,b)
+			}
+		}
+	}
+	result = list(number = nBench, benchfiles=benchfiles)
+	return(result)
+}
 
-###
-# Functions for collecting commandline arguments
-###
-getModelOutputFilePath = function(analysisType) {
-    if(analysisType=='ModelAnalysis'){
-    	commandArgs()[4]
-    }else if(analysisType=='BenchAnalysis'){
-    	commandArgs()[5]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getModelOutputFilePath.')
-    }
-}
-getUserBenchNames = function() {
-    source(commandArgs()[4])
-    return(UserBenchNames)
-}
-getUserBenchPaths = function() {
-    source(commandArgs()[4])
-    return(UserBenchPaths)
-}
-getObservedFluxDataFilePath = function(analysisType) {
-	if(analysisType=='ModelAnalysis'){
-    	obspath=commandArgs()[5]
-    }else if(analysisType=='ObsAnalysis'){
-    	obspath=commandArgs()[4]
-    }else if(analysisType=='BenchAnalysis'){
-    	obspath=commandArgs()[6]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getObservedFluxDataFilePath.')
-    }
-    return(obspath)
-}
-getOutFileLabel = function(analysisType) {
-	if(analysisType=='ModelAnalysis'){
-    	outfilelabel='ModelAnalysis'
-    }else if(analysisType=='ObsAnalysis'){
-    	outfilelabel=commandArgs()[5]
-    }else if(analysisType=='QCplotsSpreadsheet'){
-    	outfilelabel=commandArgs()[6]
-    }else if(analysisType=='BenchAnalysis'){
-    	outfilelabel=commandArgs()[7]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getOutFileLabel.')
-    }
-    return(outfilelabel)
-}
-getObsLabel = function(analysisType) {
-	if(analysisType=='ModelAnalysis'){
-    	obslabel=commandArgs()[7]
-    }else if(analysisType=='ObsAnalysis'){
-    	obslabel=commandArgs()[6]
-    }else if(analysisType=='BenchAnalysis'){
-    	obslabel=commandArgs()[8]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getObsLabel.')
-    }
-    return(obslabel)
-}
-getModLabel = function(analysisType) {
-	if(analysisType=='ModelAnalysis'){
-    	modlabel=commandArgs()[8]
-    }else if(analysisType=='BenchAnalysis'){
-    	modlabel=commandArgs()[9]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getModLabel.')
-    }
-    return(modlabel)
-}
 getOutType = function(analysisType) {
     if(analysisType=='ModelAnalysis'){
     	outtype='png'

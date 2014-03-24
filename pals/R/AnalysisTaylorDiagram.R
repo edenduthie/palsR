@@ -1,16 +1,18 @@
 # AnalysisTaylorDiagram.R
 #
-# Plots a Taylor diagram for a given modelled and 
-# observed variable.
+# Plots a Taylor diagram for a given modelled and observed variable.
 #
-# Gab Abramowitz UNSW 2010 palshelp@gmail.com
+# Gab Abramowitz UNSW 2014 palshelp@gmail.com
+#
 TaylorDiagram = function(ObsLabel,mod_data,obs_data,varname,xtext,
 	timestepsize,whole,modlabel){
 	library(plotrix) # load package with Taylor diagram
+	errtext = 'ok'
 	taylor.diagram(ref=obs_data,model=mod_data,xlab=xtext,pcex=2,
 		main=paste(varname[1],' Taylor diagram:  Obs - ',ObsLabel,
 		'  Mod - ',modlabel, sep=''),ref.sd=TRUE,show.gamma=TRUE,
-		cex.lab=1.4,cex.axis=1.5,cex.main=1.2,col='blue',sd.arcs=TRUE)
+		cex.lab=1.2,cex.axis=1.1,cex.main=1.2,col='blue',
+		sd.arcs=TRUE,mgp = c(2.7,1,0))
 	taylor.diagram(ref=obs_data,model=obs_data,pcex=2,add=TRUE,
 		ref.sd=TRUE,show.gamma=TRUE,col='blue',pch=1)
 	# Calculate daily values:
@@ -84,17 +86,6 @@ TaylorDiagram = function(ObsLabel,mod_data,obs_data,varname,xtext,
 		legend(lpos,1.3*lpos,col=c('blue','red'),pch=19,
 			legend=c('per timestep','daily averages'))
 	}
+	result=list(errtext=errtext)
+	return(result)
 } # End function TaylorDiagram
-
-ModelTaylorDiagram = function(analysisType,varname,units,xtext){
-	checkUsage(analysisType)
-	setOutput(analysisType)
-	# Load model and obs data:
-	obs = GetFluxnetVariable(varname,getObservedFluxDataFilePath(analysisType),units)
-	model = GetModelOutput(varname,getModelOutputFilePath(analysisType),units)
-	# Check compatibility between model and obs (same dataset):
-	CheckTiming(model$timing,obs$timing)
-	# Call TaylorDiagram plotting function:
-	TaylorDiagram(getObsLabel(analysisType),model$data,obs$data,
-		varname,xtext,obs$timing$tstepsize,obs$timing$whole,getModLabel(analysisType))
-}

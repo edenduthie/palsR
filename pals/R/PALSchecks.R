@@ -17,27 +17,35 @@ FindRangeViolation = function(varin,varrange){
 CheckTiming = function(timing1,timing2,benchmark_timing=FALSE){
 	# Simply checks whether model and obs (and maybe benchmark) 
 	# time step size and number of time steps are compatible.
+	errtext = 'ok'
+	err = FALSE
 	if(timing1$tstepsize != timing2$tstepsize){
 		if(benchmark_timing){
-			CheckError(paste('B2: Time step size differs between',
+			errtext = paste('B2: Time step size differs between',
 				'observed data set and benchmark time series:',
-				timing1$tstepsize, timing2$tstepsize))
+				timing1$tstepsize, timing2$tstepsize)
+			err=TRUE
 		}else{
-			CheckError(paste('M1: Time step size differs between',
+			errtext = paste('M1: Time step size differs between',
 				'observed data set and model output:',
-				timing1$tstepsize, timing2$tstepsize))
+				timing1$tstepsize, timing2$tstepsize)
+			err=TRUE
 		}
 	}else if(timing1$tsteps != timing2$tsteps){
 		if(benchmark_timing){
-			CheckError(paste('B2: Number of time steps differs between',
+			errtext = paste('B2: Number of time steps differs between',
 				'observed data set and benchmark time series:',
-				timing1$tsteps, timing2$tsteps))
+				timing1$tsteps, timing2$tsteps)
+			err=TRUE
 		}else{
-			CheckError(paste('M1: Number of time steps differs between',
+			errtext = paste('M1: Number of time steps differs between',
 				'observed data set and model output:',
-				timing1$tsteps, timing2$tsteps))
+				timing1$tsteps, timing2$tsteps)
+			err=TRUE
 		}
 	}
+	result = list(err=err,errtext=errtext)
+	return(result)
 }
 
 CheckVersionCompatibility = function(filepath1,filepath2){
