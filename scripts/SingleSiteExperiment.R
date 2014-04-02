@@ -23,11 +23,7 @@ for (i in 1:(length(files))  ) {
     	MOctr = MOctr + 1
         ModelOutputs[[MOctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
         	name=file[['name']])
-    }else if( (file[['type']] == "DataSet") && (file[['component']] == "met")) {
-    	FDSctr = FDSctr + 1
-        ForcingDataSets[[FDSctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
-        	component=file[['component']],name=file[['name']])
-    }else if( (file[['type']] == "DataSet") && (file[['component']] == "flux")) {
+    }else if( (file[['type']] == "DataSet")) {
     	EDSctr = EDSctr + 1
         EvalDataSets[[EDSctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
         	component=file[['component']],name=file[['name']])
