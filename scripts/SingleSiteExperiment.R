@@ -72,7 +72,7 @@ for(v in 1:length(vars)){
 # AnalysisList[[analysis_number]] = list(vindex=0, type='Conserve')
 
 # Create cluster:
-cl = makeCluster(getOption('cl.cores', (detectCores()-1)))
+cl = makeCluster(getOption('cl.cores', detectCores()))
 #cl = makeCluster(getOption('cl.cores', 4))
 
 # Process analyses using lapply:
