@@ -80,7 +80,7 @@ cl = makeCluster(getOption('cl.cores', detectCores()))
 outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
 
 # stop cluster
-#stopCluster(cl)
+stopCluster(cl)
 
 # Write outinfo to output list for javascript:
 output = list(files=outinfo);
