@@ -2,7 +2,7 @@
 # Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 
 library(pals)
-# library(parallel)
+library(parallel)
 
 print(input["_id"])
 files <- input[["files"]]
@@ -26,7 +26,7 @@ for (i in 1:(length(files))  ) {
     }else if( (file[['type']] == "DataSet")) {
     	EDSctr = EDSctr + 1
         EvalDataSets[[EDSctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
-        	component=file[['component']],name=file[['name']])
+        	name=file[['name']])
     }else if( file[['type']] == "Benchmark") {
     	Bctr = Bctr + 1
         Benchmarks[[Bctr]] = list(path=file[['path']],mimetype=file[['mimetype']],
@@ -72,11 +72,12 @@ for(v in 1:length(vars)){
 # AnalysisList[[analysis_number]] = list(vindex=0, type='Conserve')
 
 # Create cluster:
-#cl = makeCluster(getOption('cl.cores', (detectCores()-1)))
+cl = makeCluster(getOption('cl.cores', (detectCores()-1)))
+#cl = makeCluster(getOption('cl.cores', 4))
 
 # Process analyses using lapply:
-outinfo = lapply(AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
-#outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
+#outinfo = lapply(AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
+outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
 
 # stop cluster
 #stopCluster(cl)
