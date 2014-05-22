@@ -1,6 +1,6 @@
-# PALSconstants.R
+# Constants.R
 #
-# Gab Abramowitz, UNSW, 2010 (palshelp at gmail dot com)
+# Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 #
 zeroC = 273.15
 SprdMissingVal=-9999 # missing value in spreadsheet

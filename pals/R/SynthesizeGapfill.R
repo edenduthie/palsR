@@ -1,9 +1,52 @@
-# ConvertGapfill.R
+# SynthesizeGapfill.R
 #
-# Gap filling routines for Fluxnet formatted spreadhseets
+# Functions for synthesizing or gapfilling timeseries.
 #
-# Gab Abramowitz UNSW 2011 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
+SynthesizeLWdown=function(TairK,RH,technique){
+	if(technique=='Swinbank (1963)'){
+		# Synthesise LW down from air temperature only:
+		lwdown = 0.0000094*0.0000000567*TairK^6
+	}else if(technique=='Brutsaert (1975)'){
+		satvapres = 611.2*exp(17.67*((TairK-zeroC)/(TairK-29.65)))
+		vapres = pmax(5,RH)/100*satvapres
+		emiss = 0.642*(vapres/TairK)^(1/7)
+		lwdown = emiss*0.0000000567*TairK^4
+	}else if(technique=='Abramowitz (2012)'){
+		satvapres = 611.2*exp(17.67*((TairK-zeroC)/(TairK-29.65)))
+		vapres = pmax(5,RH)/100*satvapres
+		lwdown = 2.648*TairK + 0.0346*vapres - 474
+	}else{
+		CheckError('S4: Unknown requested LWdown synthesis technique.')
+	}
+	return(lwdown)
+}
+
+SynthesizePSurf=function(TairK,elevation){
+	# Synthesizes PSurf based on temperature and elevation
+	PSurf = 101325 * (TairK / (TairK + 0.0065*elevation))^(9.80665/287.04/0.0065)
+	return(PSurf)
+}
+
+gapfillLWdown = function(LWdownIN,TairK,RH,technique){
+	# Fills any gaps in LWdown time series using synthesis:
+	LWdownOUT = c() # initialise
+	LWflag = c() # initialise
+	for(t in 1:length(LWdownIN)){
+		if(LWdownIN[t]==SprdMissingVal){
+			LWdownOUT[t] = SynthesizeLWdown(TairK[t],RH[t],technique)
+			LWflag[t] = 0
+		}else{
+			LWdownOUT[t] = LWdownIN[t]
+			LWflag[t] = 1
+		}
+	}
+	return(list(data=LWdownOUT,flag=LWflag))
+}
+
+######################################################
+# Below are functions previously used for gapfilling Fluxnet formatted spreadhseets
 # Does linear gap filling between met data and flux:
 regressionfill = function(PALSt,varname,templateVersion,starttime,
 	regThreshold=4,winsize=8760){

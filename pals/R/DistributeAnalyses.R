@@ -1,4 +1,7 @@
-# Functions to distribute analyses, esp when multiple cores used
+# DistributeAnalyses.R
+#
+# Functions to distribute analyses across multiple cores
+#
 # Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 
 DistributeSingleSiteAnalyses = function(Analysis,data,vars){

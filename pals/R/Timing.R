@@ -2,24 +2,8 @@
 #
 # Functions that assess or convert timing variables.
 #
-# Gab Abramowitz UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-CheckSpreadsheetTiming = function(DataFromText) {
-	# Checks that uploaded spreadsheet data is compatible 
-	# with time step size in web form; that a whole number of 
-	# days are present; and whether there are an integer 
-	# number of years.
-	tstepinday=86400/DataFromText$timestepsize # time steps in a day
-	ndays = DataFromText$ntsteps/tstepinday # number of days in data set
-	if((ndays - round(ndays)) != 0){
-		CheckError(paste('S2: Spreadsheet does not appear to contain a',
-			'whole number of days of data. Please amend.'))
-	}
-	if((DataFromText$starttime$sday != 1) | (DataFromText$starttime$smonth != 1)){
-		CheckError(paste('S2: Spreadsheet data does not appear to begin',
-			'on 1st January. Please amend.'))
-	}
-}
 CreateTimeunits = function(starttime) {
 	# Determine data start date and time:
 	shour = floor(starttime$shod)
@@ -167,6 +151,41 @@ GetTimingNcfile = function(fid){
 		syear=syear,smonth=smonth,sdoy=sdoy,whole=intyear$whole)
 	return(timing)
 }
+
+CheckTiming = function(timing1,timing2,benchmark_timing=FALSE){
+	# Simply checks whether model and obs (and maybe benchmark) 
+	# time step size and number of time steps are compatible.
+	errtext = 'ok'
+	err = FALSE
+	if(timing1$tstepsize != timing2$tstepsize){
+		if(benchmark_timing){
+			errtext = paste('B2: Time step size differs between',
+				'observed data set and benchmark time series:',
+				timing1$tstepsize, timing2$tstepsize)
+			err=TRUE
+		}else{
+			errtext = paste('M1: Time step size differs between',
+				'observed data set and model output:',
+				timing1$tstepsize, timing2$tstepsize)
+			err=TRUE
+		}
+	}else if(timing1$tsteps != timing2$tsteps){
+		if(benchmark_timing){
+			errtext = paste('B2: Number of time steps differs between',
+				'observed data set and benchmark time series:',
+				timing1$tsteps, timing2$tsteps)
+			err=TRUE
+		}else{
+			errtext = paste('M1: Number of time steps differs between',
+				'observed data set and model output:',
+				timing1$tsteps, timing2$tsteps)
+			err=TRUE
+		}
+	}
+	result = list(err=err,errtext=errtext)
+	return(result)
+}
+
 getMonthDays = function(leap=FALSE) {
 	# The days on which each month begins:
 	month_start=c()

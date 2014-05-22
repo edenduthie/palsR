@@ -1,4 +1,7 @@
- # Utility functions for PALS R package
+# UtilityFuntions.R
+#
+# Utility functions for PALS R package
+#
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
 
@@ -10,6 +13,39 @@ CheckError = function(errtext,errcode='U1:'){
 		alltext = paste(errtext,calltext)
 		# If error, write to std error
 		cat(alltext,' ^ \n',file=stderr()); stop(alltext,call. = FALSE)
+	}
+}
+
+FindRangeViolation = function(varin,varrange){
+	offendingValue=0 # init
+	for(i in 1:length(varin)){
+		if(varin[i]<varrange[1] | varin[i]>varrange[2]){
+			offendingValue = varin[i]
+			return(offendingValue)
+		}
+	}
+	return(offendingValue) 
+}
+
+CheckVersionCompatibility = function(filepath1,filepath2){
+	# Given tow netcdf files produced by PALS, checks that
+	# they're produced using the same dataset name and version.
+	fid1=open.ncdf(filepath1,readunlim=FALSE) # open file 1
+	fid2=open.ncdf(filepath2,readunlim=FALSE) # open file 2
+	# Get PALS data set name and version for both files:
+	DsetName1 = att.get.ncdf(fid1,varid=0,attname='PALS_dataset_name')
+	DsetName2 = att.get.ncdf(fid2,varid=0,attname='PALS_dataset_name')
+	DsetVer1 = att.get.ncdf(fid1,varid=0,attname='PALS_dataset_version')
+	DsetVer2 = att.get.ncdf(fid2,varid=0,attname='PALS_dataset_version')
+	if(tolower(DsetName1$value) != tolower(DsetName2$value)){
+		#CheckError(paste('B3: Data set name in observed data',
+		#	'file and benchmark file is different:',
+		#	DsetName1$value,DsetName2$value))
+	}
+	if(tolower(DsetVer1$value) != tolower(DsetVer2$value)){
+		#CheckError(paste('B3: Data set version in observed data',
+		#	'file and benchmark file is different:',
+		#	DsetVer1$value,DsetVer2$value))
 	}
 }
 
@@ -43,18 +79,9 @@ NumberOfBenchmarks = function(bench,Bctr){
 }
 
 getOutType = function(analysisType) {
-    if(analysisType=='ModelAnalysis'){
-    	outtype='png'
-    }else if(analysisType=='ObsAnalysis'){
-    	outtype=commandArgs()[7]
-    }else if(analysisType=='QCplotsSpreadsheet'){
-    	outtype=commandArgs()[7]
-    }else if(analysisType=='BenchAnalysis'){
-    	outtype=commandArgs()[10]
-    }else{
-    	CheckError('I2: Unknown analysis type requested in getOutType.')
-    }
-    return(outtype)
+   # remain as a separate function in case we use pdf requests in future
+   outtype='png'
+   return(outtype)
 }
 
 ###
@@ -114,24 +141,7 @@ setOutput = function(analysisType) {
 	}
 	return(outfilename);
 }
-# Copies current graphics device, if pdf, to png device.
-copyOutput = function(analysisType) {
-	outtype = getOutType(analysisType)
-	if(outtype == 'pdf'){
-		#library(Cairo)
-		# Create png outfilename:
-		outfilename = getOutFileName('png',analysisType)
-		ires = getResolution(analysisType) # find resolution
-		#fsize = ceiling(ires$width / 1500 * 24) # set font size
-		#Cairo(width=ires$width, height=ires$height,file=outfilename,
-		#	type='png',pointsize=fsize)
-		#png(file=outfilename,width=ires$width, height=ires$height,pointsize=fsize,type="quartz")
-		#dev.set(dev.prev()) # back to pdf device
-		#dev.copy()
-		dev2bitmap(file=outfilename,units='px',width=ires$width, height=ires$height,
-			pointsize=fsize)
-	} # otherwise do nothing
-}
+
 
 ##########
 # Strips path from filename: 
