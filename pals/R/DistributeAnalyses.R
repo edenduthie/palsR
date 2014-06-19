@@ -4,6 +4,88 @@
 #
 # Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 
+DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
+	
+	# These will be metrics passed 
+	metrics = list(nme = 0, rmse=0, correlation=1, bias = 0)
+	
+	# Create outfilename:
+	outfile = setOutput('ModelAnalysis')
+	
+	# For now, assumes analysis will be for a single variable.
+	# The name of this variable
+	varname = vars[[Analysis$vindex]][['Name']][1]
+	# Units expression:
+	unitstxt = vars[[Analysis$vindex]][['UnitsText']]
+	# Longer variable name for plots:
+	longvarname = vars[[Analysis$vindex]][['PlotName']]
+	# File name for graphics file:
+	filestring = paste(getwd(),outfile,sep = "/")
+	# Analysis identifier for javascript:
+	outfiletype = paste(varname,tolower(Analysis$type))
+		
+	# Check for obs or model aren't missing variable data:
+		errcheck = CanAnalysisProceed(obs$err,obs$errtext,model$err,model$errtext)
+		# Don't proceed and report error if there's an issue:		
+		if( ! errcheck$proceed){
+			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+				error=errcheck$errtext,bencherror=bench$errtext)
+			return(result)
+		}		
+		# Check model, obs timing consistency
+		tcheck = CheckTiming(model$timing,obs$timing)	
+		# Don't proceed and report error if there's an issue:	
+		if(tcheck$err){
+			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+				error=tcheck$errtext,bencherror=bench$errtext)
+			return(result)
+		}
+		
+		# Test benchmark timing compatibility, and remove benchmark if necessary:
+		if(bench$exist){
+			for(b in 1: bench$howmany){
+				tcheck = CheckTiming(bench[[bench$index[b]]]$timing,obs$timing)
+				if(tcheck$err){
+					# Report error with benchmark
+					bench$errtext = paste(bench$errtext,tcheck$errtext)
+					# Remove benchmark from benchmark list:
+					bench$howmany = bench$howmany - 1
+					if(bench$howmany == 0){
+						# If that was the only benchmark, note there no longer any:
+						bench$exist = FALSE
+					}else{
+						# Change index of appropriate benchmarks:
+						oldlength = length(bench$index)
+						if(b==1){
+							bench$index = bench$index[2:oldlength]
+						}else if(b==oldlength){	
+							bench$index = bench$index[1:(oldlength-1)]
+						}else{
+							bench$index = 
+								c(bench$index[1:(b-1)],bench$index[(b+1):oldlength])
+						}
+					}	
+					
+				}
+			}
+		}
+		
+		
+		# Call analysis function:	
+		if(Analysis$type == 'Mean'){
+			bencherrtext = bench$errtext
+			areturn = SpatialAusMean(obs,model,bench,varname,unitstxt,longvarname,metrics)				
+		}
+		
+	}
+	print(outfiletype)
+	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
+		metrics = metrics,
+		analysistype=Analysis$type, variablename=varname,
+		error=areturn$errtext,bencherror=bencherrtext)
+	return(result)
+}
+
 DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 	
 	# These will be metrics passed 

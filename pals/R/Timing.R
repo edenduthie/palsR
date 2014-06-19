@@ -4,67 +4,6 @@
 #
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-CreateTimeunits = function(starttime) {
-	# Determine data start date and time:
-	shour = floor(starttime$shod)
-	smin = floor((starttime$shod - shour)*60)
-	ssec = floor(((starttime$shod - shour)*60 - smin)*60)
-	start_hod = paste(Create2Uchar(shour),':',Create2Uchar(smin),':',Create2Uchar(ssec),sep='')
-	timeunits=paste('seconds since ',as.character(starttime$syear),'-',
-		Create2Uchar(starttime$smonth),'-',Create2Uchar(starttime$sday),' ',
-		start_hod,sep='')
-	return(timeunits)
-}
-Yeardays = function(startyear,ndays) {
-	# Returns: an integer vector of possible number of days in a 
-	# dataset containing a whole number of years; whet
-	if(ndays<365){
-		CheckError(paste('S2: Dataset appears to have less than 1 year of data. Days:',
-			ndays,'Startyear:',startyear))
-	}
-	daysperyear = c()
-	ctr=1 # initialise
-	year = startyear # initialise
-	days=ndays # initialise
-	lpyrs = 0
-	# Incrementally remove year of days from total number of days:
-	repeat {
-		ctr = ctr + 1
-		if(is.leap(year)){	
-			days = days - 366
-			daysperyear[ctr] = 366
-			lpyrs = lpyrs + 1
-		}else{
-			days = days - 365
-			daysperyear[ctr] = 365
-		}
-		year = year + 1
-		if(days<365){
-			if(days>0 && days!=(365-lpyrs)){ # ie. after removing whole years, days are left over
-				daysperyear[ctr+1] = days
-				whole=FALSE
-			}else if(days==(365-lpyrs)){ # i.e. non leap year data set
-				daysperyear[ctr+1] = days
-				whole=TRUE
-			}else{ # =0
-				whole=TRUE
-			}
-			break
-		}
-	}
-	# Create return list:
-	yeardays = list(daysperyear=daysperyear,whole=whole)
-	return(yeardays)
-}
-is.leap = function(year){
-	if((((year %% 4)==0) & ((year %% 100)!=0)) || 
-		(((year %% 4)==0) & ((year %% 400)==0))){
-		leap=TRUE	
-	}else{
-		leap=FALSE
-	}
-	return(leap)
-}
 GetTimingNcfile = function(fid){
 	# This function gets the time step size, number of timesteps
 	# and start date and time details from a netcdf file.
@@ -184,6 +123,67 @@ CheckTiming = function(timing1,timing2,benchmark_timing=FALSE){
 	}
 	result = list(err=err,errtext=errtext)
 	return(result)
+}
+CreateTimeunits = function(starttime) {
+	# Determine data start date and time:
+	shour = floor(starttime$shod)
+	smin = floor((starttime$shod - shour)*60)
+	ssec = floor(((starttime$shod - shour)*60 - smin)*60)
+	start_hod = paste(Create2Uchar(shour),':',Create2Uchar(smin),':',Create2Uchar(ssec),sep='')
+	timeunits=paste('seconds since ',as.character(starttime$syear),'-',
+		Create2Uchar(starttime$smonth),'-',Create2Uchar(starttime$sday),' ',
+		start_hod,sep='')
+	return(timeunits)
+}
+Yeardays = function(startyear,ndays) {
+	# Returns: an integer vector of possible number of days in a 
+	# dataset containing a whole number of years; whet
+	if(ndays<365){
+		CheckError(paste('S2: Dataset appears to have less than 1 year of data. Days:',
+			ndays,'Startyear:',startyear))
+	}
+	daysperyear = c()
+	ctr=1 # initialise
+	year = startyear # initialise
+	days=ndays # initialise
+	lpyrs = 0
+	# Incrementally remove year of days from total number of days:
+	repeat {
+		ctr = ctr + 1
+		if(is.leap(year)){	
+			days = days - 366
+			daysperyear[ctr] = 366
+			lpyrs = lpyrs + 1
+		}else{
+			days = days - 365
+			daysperyear[ctr] = 365
+		}
+		year = year + 1
+		if(days<365){
+			if(days>0 && days!=(365-lpyrs)){ # ie. after removing whole years, days are left over
+				daysperyear[ctr+1] = days
+				whole=FALSE
+			}else if(days==(365-lpyrs)){ # i.e. non leap year data set
+				daysperyear[ctr+1] = days
+				whole=TRUE
+			}else{ # =0
+				whole=TRUE
+			}
+			break
+		}
+	}
+	# Create return list:
+	yeardays = list(daysperyear=daysperyear,whole=whole)
+	return(yeardays)
+}
+is.leap = function(year){
+	if((((year %% 4)==0) & ((year %% 100)!=0)) || 
+		(((year %% 4)==0) & ((year %% 400)==0))){
+		leap=TRUE	
+	}else{
+		leap=FALSE
+	}
+	return(leap)
 }
 
 getMonthDays = function(leap=FALSE) {

@@ -1,0 +1,543 @@
+{
+ "files": [
+ {
+ "type": "Qle timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c4fc66bc-7ccd-4a1f-b988-3d11480d49cd.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Timeseries",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qle annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9bf70578-053f-413a-8e0d-f4114eace6c4.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AnnualCycle",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qle diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6db2c5b3-b8e2-4520-bc43-32d48e94f953.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qle pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/34f313fc-e0ce-49a4-a7e9-7053ab395e10.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "PDF",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qle scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/429212dd-a0e9-4465-a83a-518b77745c31.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Scatter",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qle taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/75b764a6-4455-472f-8e13-5062f697d1af.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Taylor",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qle avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/913cf4dc-9079-42b5-bb63-4262794cda8c.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AvWindow",
+"variablename": "Qle",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qh timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/32dee178-5ca0-475d-866c-fc1b17d87322.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Timeseries",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qh annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/430834a1-3c70-435c-8bee-68479e24ee3e.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AnnualCycle",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qh diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a103c15a-dd9b-4f99-8b89-ee21dc348b11.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qh pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/69362d4a-bdd2-4399-8b59-89240e187d6d.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "PDF",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Qh scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/616abc75-0634-476a-bd8c-98760c4575ec.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Scatter",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qh taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e361cae6-b62c-4bca-b6b0-c9c87f06b627.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Taylor",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qh avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c6291c12-932d-4520-86da-61ad41d60185.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AvWindow",
+"variablename": "Qh",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "NEE timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/44c680cb-e66f-4a8b-9d84-283e1c56a6d2.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Timeseries",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "NEE annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3c88a661-c4b5-426e-bc97-e6ba45e1d4cf.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AnnualCycle",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "NEE diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/cad6cb19-f43a-4e59-9485-e3990cd3bc24.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "NEE pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c6d778ca-0e78-4d61-b9ab-1ac42fe0f11a.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "PDF",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "NEE scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/f7aa55d7-953b-44c9-af34-036e8cedc128.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Scatter",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "NEE taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e2e41fd5-0480-4660-a892-8c1e21bf604b.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Taylor",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "NEE avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/ff67008f-c9ce-418b-bff2-73ac37f23b57.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AvWindow",
+"variablename": "NEE",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Rnet timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3bd123cf-78fc-4b0f-8cfa-2e600fd37717.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Timeseries",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Rnet annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/041d80fa-d441-46ff-a293-0b81a61e3d80.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AnnualCycle",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Rnet diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/660cf056-cbf5-481d-a3ba-e34d33648e7a.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Rnet pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/cd1b23c8-f1ce-48ab-9b4c-0f5fcce2a1f4.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "PDF",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": " " 
+},
+{
+ "type": "Rnet scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/12d2e8e0-4bab-43a4-a706-0666a3e5be98.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Scatter",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Rnet taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/23c36736-c54b-4aff-9d16-246d8def6e42.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Taylor",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Rnet avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/24a641a0-b471-4589-812d-5e5d2cd41d74.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AvWindow",
+"variablename": "Rnet",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qg timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3d0b421f-2677-437f-9aa2-0163f3089c03.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Timeseries",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "Qg annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/156b3141-1e35-4034-b405-fc7f4743ccca.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AnnualCycle",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "Qg diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7f0a7ac1-427d-4f60-960a-2ea7792e34f5.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "Qg pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9b1182c3-c940-407f-bc3b-2ac343556989.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "PDF",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "Qg scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d4cc7fff-bcff-4856-a7ff-85d552598094.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Scatter",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qg taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/37e4fcc0-47b8-450a-a1b0-0cec77953dc3.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "Taylor",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "Qg avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/62a6526f-1d0a-4937-a78b-9a9c3ab159dc.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "AvWindow",
+"variablename": "Qg",
+"error": "ok",
+"bencherror": "B4: Benchmark analysis not available for this analysis type" 
+},
+{
+ "type": "SWnet timeseries",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0ed8039e-3d30-4ac2-bda0-ced6e04b71b8.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet annualcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0ea56d35-baab-4b5d-ae15-7ff052517741.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0fe45ad9-bd76-442a-beea-7e3294d1fac9.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet pdf",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/fee8c805-2e67-42ba-9794-7bdfdf9e158a.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet scatter",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/62bad784-8887-44c2-b0c3-d3b4673b00c4.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet taylor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9917dd5e-7be9-42d2-b37a-18e73429d035.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet avwindow",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/408815e0-4539-4f60-8d06-a9de3f28a33c.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": "  B1: Benchmark 2 : B1: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+} 
+] 
+}

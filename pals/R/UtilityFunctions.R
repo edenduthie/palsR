@@ -5,7 +5,7 @@
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
 
-# Sending error to std err:
+# Function for crashing semi-gracefully:
 CheckError = function(errtext,errcode='U1:'){
 	if(errtext != 'ok'){
 		# Additionally report command line call
@@ -77,23 +77,16 @@ NumberOfBenchmarks = function(bench,Bctr){
 	result = list(number = nBench, benchfiles=benchfiles)
 	return(result)
 }
-
-getOutType = function(analysisType) {
-   # remain as a separate function in case we use pdf requests in future
-   outtype='png'
-   return(outtype)
+#
+# Strips path from filename: 
+stripFilename = function(fpath) {
+	fsplit = strsplit(fpath,'/')
+	fcharvec = as.character(fsplit[[1]])
+	fname = fcharvec[length(fcharvec)]
+	return(fname)
 }
-
-###
-# Generate the outfile name from label and type
-###
-getOutFileName = function(outtype,analysisType) {
-    paste(uuid(), outtype, sep='.')
-}
-
-#####
-# Get resolution of rasterised output file (if any)
-###
+#
+# Set raster output graphics file resolution:
 getResolution = function(analysisType){
 	if(analysisType=='ModelAnalysis'){
     	iwidth=900
@@ -113,11 +106,8 @@ getResolution = function(analysisType){
     ires = list(width=iwidth,height=iheight)
     return(ires)
 }
-
-###
-# Sets the output, with optional 'size' argument
-# in case of rasterized files.
-###
+#
+# Set output file type:
 setOutput = function(analysisType) {
 	outtype = getOutType(analysisType)
 	outfilename = getOutFileName(outtype,analysisType)
@@ -141,19 +131,21 @@ setOutput = function(analysisType) {
 	}
 	return(outfilename);
 }
-
-
-##########
-# Strips path from filename: 
-stripFilename = function(fpath) {
-	fsplit = strsplit(fpath,'/')
-	fcharvec = as.character(fsplit[[1]])
-	fname = fcharvec[length(fcharvec)]
-	return(fname)
+#
+# Set output file type:
+getOutType = function(analysisType) {
+   # remain as a separate function in case we use pdf requests in future
+   outtype='png'
+   return(outtype)
 }
-
-
-uuid <- function(uppercase=FALSE) {
+#
+# Create unique output filename:
+getOutFileName = function(outtype,analysisType) {
+    paste(uuid(), outtype, sep='.')
+}
+#
+# UUID generator:
+uuid = function(uppercase=FALSE) {
 	## Version 4 UUIDs have the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
 	## where x is any hexadecimal digit and y is one of 8, 9, A, or B
 	## e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479
