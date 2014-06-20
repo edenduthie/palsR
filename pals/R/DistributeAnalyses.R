@@ -25,59 +25,59 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	outfiletype = paste(varname,tolower(Analysis$type))
 		
 	# Check for obs or model aren't missing variable data:
-		errcheck = CanAnalysisProceed(obs$err,obs$errtext,model$err,model$errtext)
-		# Don't proceed and report error if there's an issue:		
-		if( ! errcheck$proceed){
-			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-				error=errcheck$errtext,bencherror=bench$errtext)
-			return(result)
-		}		
-		# Check model, obs timing consistency
-		tcheck = CheckTiming(model$timing,obs$timing)	
-		# Don't proceed and report error if there's an issue:	
-		if(tcheck$err){
-			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-				error=tcheck$errtext,bencherror=bench$errtext)
-			return(result)
-		}
-		
-		# Test benchmark timing compatibility, and remove benchmark if necessary:
-		if(bench$exist){
-			for(b in 1: bench$howmany){
-				tcheck = CheckTiming(bench[[bench$index[b]]]$timing,obs$timing)
-				if(tcheck$err){
-					# Report error with benchmark
-					bench$errtext = paste(bench$errtext,tcheck$errtext)
-					# Remove benchmark from benchmark list:
-					bench$howmany = bench$howmany - 1
-					if(bench$howmany == 0){
-						# If that was the only benchmark, note there no longer any:
-						bench$exist = FALSE
+	errcheck = CanAnalysisProceed(obs$err,obs$errtext,model$err,model$errtext)
+	# Don't proceed and report error if there's an issue:		
+	if( ! errcheck$proceed){
+		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+			error=errcheck$errtext,bencherror=bench$errtext)
+		return(result)
+	}		
+	# Check model, obs timing consistency
+	tcheck = CheckTiming(model$timing,obs$timing)	
+	# Don't proceed and report error if there's an issue:	
+	if(tcheck$err){
+		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+			error=tcheck$errtext,bencherror=bench$errtext)
+		return(result)
+	}
+	
+	# Test benchmark timing compatibility, and remove benchmark if necessary:
+	if(bench$exist){
+		for(b in 1: bench$howmany){
+			tcheck = CheckTiming(bench[[bench$index[b]]]$timing,obs$timing)
+			if(tcheck$err){
+				# Report error with benchmark
+				bench$errtext = paste(bench$errtext,tcheck$errtext)
+				# Remove benchmark from benchmark list:
+				bench$howmany = bench$howmany - 1
+				if(bench$howmany == 0){
+					# If that was the only benchmark, note there no longer any:
+					bench$exist = FALSE
+				}else{
+					# Change index of appropriate benchmarks:
+					oldlength = length(bench$index)
+					if(b==1){
+						bench$index = bench$index[2:oldlength]
+					}else if(b==oldlength){	
+						bench$index = bench$index[1:(oldlength-1)]
 					}else{
-						# Change index of appropriate benchmarks:
-						oldlength = length(bench$index)
-						if(b==1){
-							bench$index = bench$index[2:oldlength]
-						}else if(b==oldlength){	
-							bench$index = bench$index[1:(oldlength-1)]
-						}else{
-							bench$index = 
-								c(bench$index[1:(b-1)],bench$index[(b+1):oldlength])
-						}
-					}	
-					
-				}
+						bench$index = 
+							c(bench$index[1:(b-1)],bench$index[(b+1):oldlength])
+					}
+				}	
+				
 			}
 		}
-		
-		
-		# Call analysis function:	
-		if(Analysis$type == 'Mean'){
-			bencherrtext = bench$errtext
-			areturn = SpatialAusMean(obs,model,bench,varname,unitstxt,longvarname,metrics)				
-		}
-		
 	}
+	
+	
+	# Call analysis function:	
+	if(Analysis$type == 'Mean'){
+		bencherrtext = bench$errtext
+		areturn = SpatialAusMean(obs,model,bench,varname,unitstxt,longvarname,metrics)				
+	}
+		
+	
 	print(outfiletype)
 	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 		metrics = metrics,

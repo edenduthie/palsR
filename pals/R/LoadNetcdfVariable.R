@@ -8,7 +8,7 @@
 GetFluxnetVariable = function(variable,filedetails,flagonly=FALSE){
 	# 'variable' - list from GetVariableDetails
 	# 'filedetails' - list containing path, mimetype, component etc
-	library(ncdf) # load netcdf library	
+	library(ncdf4) # load netcdf library	
 	exists_var = FALSE
 	exists_qc = FALSE
 	qc=NA # initialise
@@ -21,12 +21,12 @@ GetFluxnetVariable = function(variable,filedetails,flagonly=FALSE){
 		return(obs)
 	}
 	# Open observed data file:
-	fid=open.ncdf(filedetails[['path']],readunlim=FALSE)
+	fid=nc_open(filedetails[['path']],write=FALSE,readunlim=FALSE)
 	# Check required variable exists:
 	vexists = NcvarExists(fid,variable[['Name']][1])
 	# If not, return with error:
 	if(! vexists$var){
-		dsetname = att.get.ncdf(fid,varid=0,attname='PALS_dataset_name')
+		dsetname = ncatt_get(fid,varid=0,attname='PALS_dataset_name')
 		if(dsetname$hasatt){
 			errtext = paste('DS2: Variable ',variable[['Name']][1],
 				' does not exist in data set ',filedetails[['name']],sep='')
@@ -41,24 +41,24 @@ GetFluxnetVariable = function(variable,filedetails,flagonly=FALSE){
 	}
 	# Read QC data if it exists:
 	if(vexists$qc){
-		qc=get.var.ncdf(fid,paste(variable[['Name']][1],'_qc',sep=''))
+		qc=ncvar_get(fid,paste(variable[['Name']][1],'_qc',sep=''))
 	}
 	if(! flagonly){ # if this function call is actually about fetching data:
 		timing = GetTimingNcfile(fid)
-		data=get.var.ncdf(fid,variable[['Name']][1])   # read observed variable data
+		data=ncvar_get(fid,variable[['Name']][1])   # read observed variable data
 		obs=list(data=data,timing=timing,qc=qc,qcexists=vexists$qc,name=filedetails$name,
 			err=FALSE,errtext=errtext)
 	}else{
 		obs=list(qcexists=vexists$qc,qc=qc,name=filedetails$name,
 			err=FALSE,errtext=errtext)
 	}
-	close.ncdf(fid) # close netcdf file	
+	nc_close(fid) # close netcdf file	
 	return(obs)
 }
 
 # This function reads netcdf model output.
 GetModelOutput = function(variable,filelist){
-	library(ncdf) # load netcdf library
+	library(ncdf4) # load netcdf library
 	errtext='ok'	
 	# only single file MOs at the moment:
 	if(length(filelist) != 1){
@@ -74,7 +74,7 @@ GetModelOutput = function(variable,filelist){
 		return(model)	
 	}
 	# Open model output file
-	mfid=open.ncdf(filelist[[1]][['path']],readunlim=FALSE)
+	mfid=nc_open(filelist[[1]][['path']],write=FALSE,readunlim=FALSE)
 	# Check alternative names to make sure variable exits:
 	exists = AnyNcvarExists(mfid,variable[['Name']])
 	# If not, return error:
@@ -96,17 +96,17 @@ GetModelOutput = function(variable,filelist){
 	# Get model data:	
 	# Check for special cases first:
 	if(mfid$var[[exists$index]]$name=='FCEV'){ # lat heat in CLM has 3 components
-		data1=get.var.ncdf(mfid,'FCEV') # read canopy evap
-		data2=get.var.ncdf(mfid,'FCTR') # read canopy transp
-		data3=get.var.ncdf(mfid,'FGEV') # read ground evap
+		data1=ncvar_get(mfid,'FCEV') # read canopy evap
+		data2=ncvar_get(mfid,'FCTR') # read canopy transp
+		data3=ncvar_get(mfid,'FGEV') # read ground evap
 		vdata = data1 + data2 + data3
 		rm(data1,data2,data3)
 	}else{ # otherwise just fetch variable data:
-		vdata=get.var.ncdf(mfid,(variable[['Name']][exists$index])) # read model output data	
+		vdata=ncvar_get(mfid,(variable[['Name']][exists$index])) # read model output data	
 	}
 	# Apply any units changes:
 	vdata = vdata*units$multiplier + units$addition
-	close.ncdf(mfid) # close netcdf file
+	nc_close(mfid) # close netcdf file
 	model=list(data=vdata,timing = modeltiming,name=filelist[[1]]$name,
 		err=FALSE,errtext=errtext)
 	return(model)
@@ -198,7 +198,7 @@ CheckNcvarUnits = function(fid,vname,variable,file){
 	# they correspond to any standard version of units text:
 	# Get units for variable
 	errtext='ok'
-	mvunits=att.get.ncdf(fid,vname,'units')
+	mvunits=ncatt_get(fid,vname,'units')
 	if(! mvunits$hasatt){
 		errtext = paste('Variable',vname,'in file',
 			file,'does not have a units attribute.')

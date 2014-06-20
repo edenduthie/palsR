@@ -16,15 +16,15 @@ GetTimingNcfile = function(fid){
 		if(substr(fid$var[[v]]$name,1,6)=='t_ave_'){ # i.e. ORCHIDEE file
 			exists = TRUE
 			# Read 'time' variable:
-			time12=get.var.ncdf(fid,fid$var[[v]]$name,start=1,count=2) 
+			time12=ncvar_get(fid,fid$var[[v]]$name,start=1,count=2) 
 			tsize=time12[2]-time12[1]
 		}else if(substr(fid$var[[v]]$name,1,5)=='mscur'){ # i.e. CLM file
 			exists = TRUE
 			# Read 'time' variable:
-			time12=get.var.ncdf(fid,fid$var[[v]]$name,start=1,count=2) 
+			time12=ncvar_get(fid,fid$var[[v]]$name,start=1,count=2) 
 			tsize=time12[2]-time12[1]
 			# Read date variable:
-			date1=as.character(get.var.ncdf(fid,'mcdate',start=1,count=1))
+			date1=as.character(ncvar_get(fid,'mcdate',start=1,count=1))
 			syear = as.numeric(substr(date1,1,4))
 			smonth = as.numeric(substr(date1,5,6))
 			sdoy = as.numeric(substr(date1,7,8))
@@ -40,21 +40,21 @@ GetTimingNcfile = function(fid){
 					if(fid$var[[v]]$name=='time'){
 						exists = TRUE # i.e. found time dimension variable
 						# Get time units:
-						timeunits = att.get.ncdf(fid,'time','units')
+						timeunits = ncatt_get(fid,'time','units')
 						break
 					}
 				}
 				if(!exists){ # read all non-dimvars and had no luck
 					exists = TRUE # i.e. found time dimension variable
 					# Assume dim variable
-					timeunits = att.get.ncdf(fid,'time','units')
+					timeunits = ncatt_get(fid,'time','units')
 				}
 				break	
 			}
 		}
 		if(exists){
 			if(substr(timeunits$value,1,4)=='seco'){ # time units are seconds
-				time12=get.var.ncdf(fid,'time',start=1,count=2) 
+				time12=ncvar_get(fid,'time',start=1,count=2) 
 				tsize=time12[2]-time12[1] # set time step size
 				if( !(tsize>=300 && tsize<=3600) ){
 					CheckError(paste('T1: Unable to ascertain time step size in',

@@ -89,8 +89,8 @@ stripFilename = function(fpath) {
 # Set raster output graphics file resolution:
 getResolution = function(analysisType){
 	if(analysisType=='ModelAnalysis'){
-    	iwidth=900
-    	iheight=600
+    	iwidth=1100
+    	iheight=800
     }else if(analysisType=='ObsAnalysis'){
     	iwidth=900
     	iheight=600
