@@ -74,7 +74,7 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	# Call analysis function:	
 	if(Analysis$type == 'Mean'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAusMean(obs,model,bench,varname,unitstxt,longvarname,metrics)				
+		areturn = SpatialAusMean(model,obs,bench,varname,unitstxt,longvarname,metrics)				
 	}
 		
 	

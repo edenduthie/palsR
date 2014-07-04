@@ -209,19 +209,36 @@ CheckTiming = function(timing1,timing2,benchmark_timing=FALSE){
 	# time step size and number of time steps are compatible.
 	errtext = 'ok'
 	err = FALSE
-	if(timing1$tstepsize != timing2$tstepsize){
+	# First check intervals are the same:
+	if(timing1$interval != timing2$interval){
 		if(benchmark_timing){
-			errtext = paste('B2: Time step size differs between',
+			errtext = paste('B2: Time interval differs between',
 				'observed data set and benchmark time series:',
-				timing1$tstepsize, timing2$tstepsize)
+				timing1$interval, timing2$interval)
 			err=TRUE
 		}else{
-			errtext = paste('M1: Time step size differs between',
+			errtext = paste('M1: Time interval differs between',
 				'observed data set and model output:',
-				timing1$tstepsize, timing2$tstepsize)
+				timing1$interval, timing2$interval)
 			err=TRUE
 		}
-	}else if(timing1$tsteps != timing2$tsteps){
+	}
+	if(timing1$interval=='timestep'){
+		if(timing1$tstepsize != timing2$tstepsize){
+			if(benchmark_timing){
+				errtext = paste('B2: Time step size differs between',
+					'observed data set and benchmark time series:',
+					timing1$tstepsize, timing2$tstepsize)
+				err=TRUE
+			}else{
+				errtext = paste('M1: Time step size differs between',
+					'observed data set and model output:',
+					timing1$tstepsize, timing2$tstepsize)
+				err=TRUE
+			}
+		}
+	}
+	if(timing1$tsteps != timing2$tsteps){
 		if(benchmark_timing){
 			errtext = paste('B2: Number of time steps differs between',
 				'observed data set and benchmark time series:',

@@ -52,20 +52,22 @@ AnalysisList = list()
 OutInfo = list()
 
 # Create cluster:
-cl = makeCluster(getOption('cl.cores', detectCores()))
-#cl = makeCluster(getOption('cl.cores', 4))
+#cl = makeCluster(getOption('cl.cores', detectCores()))
+#cl = makeCluster(getOption('cl.cores', 2))
 
 # Load all variables from obs and model output
 for(v in 1:length(vars)){
-	obs = GetFluxnetVariable(vars[[v]],EvalDataSets[[1]])
-    model = GetModelOutput(vars[[v]],ModelOutputs)
+	obs = GetGLEAM_Aus(vars[[v]],EvalDataSets,force_interval='monthly')
+    model = GetModelOutput(vars[[v]],ModelOutputs)    	
     bench = GetBenchmarks(vars[[v]],Benchmarks,nBench)
 	# Add those analyses that are equally applicable to any variable to analysis list:
 	for(a in 1:length(genAnalysis)){
 		AnalysisList[[a]] = list(vindex=v, type=genAnalysis[a])
 	}
-	OutInfo[[v]] = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
+	OutInfo[[v]] = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
 		obs=obs,model=model,bench=bench)
+#	OutInfo[[v]] = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
+#		obs=obs,model=model,bench=bench)
 }
 # Add multiple variable analysis to analysis list:
 # analysis_number = analysis_number + 1
@@ -74,7 +76,7 @@ for(v in 1:length(vars)){
 # AnalysisList[[analysis_number]] = list(vindex=0, type='Conserve')
 
 # stop cluster
-stopCluster(cl)
+#stopCluster(cl)
 
 # Write outinfo to output list for javascript:
 output = list(files=outinfo);

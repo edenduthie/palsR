@@ -6,14 +6,14 @@
 #
 
 Yeardays = function(startyear,ndays) {
-	# Returns: an integer vector of possible number of days in a 
-	# dataset containing a whole number of years; whet
+	# Returns: an integer vector of possible number of days in each year of a 
+	# dataset, and whether it contains a whole number of years
 	if(ndays<365){
 		whole=FALSE
 		daysperyear = ndays
 	}
 	daysperyear = c()
-	ctr=1 # initialise
+	ctr=0 # initialise
 	year = startyear # initialise
 	days=ndays # initialise
 	lpyrs = 0
@@ -155,3 +155,30 @@ DayNight = function(SWdown,threshold = 5){
 	}
 	return(daynotnight)
 }
+
+DailyToMonthly = function(dailydata,startyear,ndays){
+	# Converts daily to monthly data
+	# assumes data begins at the start of the year
+	# assumes whole number of years
+	# assumes time dim is 3rd dim
+	yds = Yeardays(startyear,ndays)
+	nyears = length(yds$daysperyear)
+	monthlydata = array(NA,dim=c(length(dailydata[,1,1]),length(dailydata[1,,1]), (nyears*12) ))
+	
+	ydaysum = 0
+	ymonthsum = 0
+	for(y in 1:nyears){
+		days = getMonthDays(is.leap(startyear+y-1))
+		for(m in 1:12){
+			monthlydata[,,(ymonthsum+m)] = aperm( 
+				apply(dailydata[,,(ydaysum+days$start[m]):(ydaysum+days$start[m+1]-1)],1,rowSums)
+				) / (days$start[m+1] - days$start[m])
+		}
+		ydaysum = ydaysum + yds$yeardays[y]
+		ymonthsum = ymonthsum + 12
+	}
+	return(monthlydata)
+}
+
+
+
