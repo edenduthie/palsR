@@ -86,7 +86,21 @@ GetVariableDetails = function(request_names){
 	variable_list = list()
 	for(v in 1:length(request_names)){
 		var_details = list()
-		if(request_names[v] == 'SWdown'){
+		if(request_names[v] == 'lat'){
+			var_details[['Name']] = c('y','lat','latitude','Lat','Latitude')
+			var_details[['UnitsName']] = c('degrees_north')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = ''
+			var_details[['PlotName']] = 'Latitude'
+		}else if(request_names[v] == 'lon'){
+			var_details[['Name']] = c('x','lon','longitude','Lon','Longitude')
+			var_details[['UnitsName']] = c('degrees_east')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = ''
+			var_details[['PlotName']] = 'Longitude'
+		}else if(request_names[v] == 'SWdown'){
 			var_details[['Name']] = c('SWdown')
 			var_details[['UnitsName']] = c('W/m2','W/m^2','Wm^{-2}','wm2','watt/m^2')
 			var_details[['Multiplier']] = c(1,1,1,1,1)

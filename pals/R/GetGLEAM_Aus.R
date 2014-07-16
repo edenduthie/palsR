@@ -56,7 +56,7 @@ GetGLEAM_Aus = function(variable,filelist,force_interval='no',dsetversion='defau
 			ET[,,dayctr:(dayctr + daysvector[f] - 1)] = ncvar_get(fid, 'EVAP' ) # read model output data
 		}else if(interval == 'monthly'){
 			tmp = ncvar_get(fid, 'EVAP' ) # read model output data
-			ET[,, ((nyears-1)*12+1) : ((nyears-1)*12+12)] = DailyToMonthly(tmp,year[fileorder[f]],daysvector[f])
+			ET[,, ((f-1)*12+1) : ((f-1)*12+12)] = DailyToMonthly(tmp,year[fileorder[f]],daysvector[f])
 		}	
 		# Increment counter:
 		dayctr = dayctr + daysvector[f]

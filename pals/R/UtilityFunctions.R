@@ -5,6 +5,94 @@
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
 
+ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
+	# Returns a colour range for gridded plots
+	library(colorRamps)
+	
+	# Full / most range:
+	red2blue = colorRampPalette(c('red','orange','yellow','green','blue'))
+	yellow2purpleCool = colorRampPalette(c('yellow','green3','blue','magenta'))
+	yellow2purpleWarm = colorRampPalette(c('yellow','red','magenta'))
+	purple2yellowWarm = colorRampPalette(c('magenta','red','yellow'))
+	iceblue2green = colorRampPalette(c('slategray1','midnightblue','blue','green3','green'))
+	green2iceblue = colorRampPalette(c('green','green3','blue','midnightblue','slategray1'))
+	
+	# Half range:
+	green2darkblue = colorRampPalette(c('green','green4','blue','midnightblue'))
+	darkblue2green = colorRampPalette(c('midnightblue','blue','green4','green'))
+	darkred2yellow = colorRampPalette(c('red4','red','orange','yellow'))
+	yellow2darkred = colorRampPalette(c('yellow','orange','red','red4'))
+	
+	# Small range:
+	yellow2red = colorRampPalette(c('yellow','red'))
+	red2yellow = colorRampPalette(c('red','yellow'))
+	green2blue = colorRampPalette(c('green','blue'))
+	blue2green = colorRampPalette(c('blue','green'))
+	
+	green2purple = colorRampPalette(c('green','blue','magenta'))
+	
+	
+	
+	coolvars = c('Qle','Evap')
+	warmvars = c('Tair','Qh','Rnet','SWdown','SWnet')
+	colourres = 36 # approximately how many colours in a plot (will control size of white space if diff plot)
+	
+	# If no difference threshold has been specified, use 5%:
+	if(is.null(diffthreshold)){
+		diffthreshold = (range[2] - range[1]) / 20
+	}
+	
+	# Assess cases where colours for a difference plot are requested first:
+	if(plottype=='difference'){
+		# i.e. the plot will contain a zero that we want coloured white
+		# First check that we really do need a difference plot:
+		if(range[1] > (-1*diffthreshold)){
+			# Just use a positive scale
+			plottype = 'positive'
+		}else if(range[2]<diffthreshold){
+			# Just use a negative scale
+			plottype = 'negative'
+		}
+		# Find fraction of range below 0
+		lowfrac = abs(range[1]) / (abs(range[1]) + range[2])
+		lownum = floor(lowfrac * colourres)
+		# Find fraction of range above 0
+		highfrac = range[2] / (abs(range[1]) + range[2])
+		highnum = floor(highfrac * colourres)
+		# Decide colour range:
+		if(any(warmvars == variablename)){ # For variables warm colours when positive
+			if(lowfrac/highfrac > 2){ # most fo the range is below 0
+				colours = c(iceblue2green(lownum),'#FFFFFF','#FFFFFF',yellow2red(highnum))
+			}else if(lowfrac/highfrac < 1/2){ # most of the range is above 0
+				colours = c(blue2green(lownum),'#FFFFFF','#FFFFFF',yellow2purpleWarm(highnum))
+			}else{
+				colours = c(darkblue2green(lownum),'#FFFFFF','#FFFFFF',yellow2darkred(highnum))
+			}
+		}else if(any(coolvars == variablename)){ # For variables cool colours when positive
+			if(lowfrac/highfrac > 2){ # most fo the range is below 0
+				colours = c(purple2yellowWarm(lownum),'#FFFFFF','#FFFFFF',green2blue(highnum))
+			}else if(lowfrac/highfrac < 1/2){ # most of the range is above 0
+				colours = c(red2yellow(lownum),'#FFFFFF','#FFFFFF',green2iceblue(highnum))
+			}else{
+				colours = c(darkred2yellow(lownum),'#FFFFFF','#FFFFFF',green2darkblue(highnum))
+			}
+		}
+	}
+	
+	# Now assess cases where just a positive or negative scale is required:
+	if((plottype=='positive') && (any(coolvars == variablename))){
+		colours = yellow2purpleCool(colourres)
+	}else if((plottype=='positive') && (any(warmvars == variablename))){
+		colours = yellow2purpleWarm(colourres)
+	}else if((plottype=='negative') && (any(coolvars == variablename))){
+		colours = purple2yellowWarm(colourres)
+	}else if((plottype=='negative') && (any(warmvars == variablename))){
+		colours = iceblue2green(colourres)
+	}
+	
+	return(colours)
+}
+
 # Function for crashing semi-gracefully:
 CheckError = function(errtext,errcode='U1:'){
 	if(errtext != 'ok'){
@@ -51,7 +139,9 @@ CheckVersionCompatibility = function(filepath1,filepath2){
 
 NumberOfBenchmarks = function(bench,Bctr){
 	# Determines the number of user nominated benchmarks in a call to an 
-	# experiment script, as well as the number of files associated with each:
+	# experiment script, as well as the number of files associated with each.
+	# Bctr - total number of benchmark files
+	# bench - contains data for each file
 	if(Bctr == 0){
 		nBench = 0
 		benchfiles = NA
@@ -70,7 +160,7 @@ NumberOfBenchmarks = function(bench,Bctr){
 				benchfiles[[benchnumber]] = c(benchfiles[[benchnumber]] , b)
 			}else{
 				benchfiles[[benchnumber]] = c(b)
-				bexists = c(bexists,b)
+				bexists = c(bexists,benchnumber)
 			}
 		}
 	}
@@ -88,7 +178,7 @@ stripFilename = function(fpath) {
 #
 # Set raster output graphics file resolution:
 getResolution = function(analysisType){
-	if(analysisType=='ModelAnalysis'){
+	if(analysisType=='default'){
     	iwidth=1100
     	iheight=800
     }else if(analysisType=='ObsAnalysis'){
@@ -109,14 +199,14 @@ getResolution = function(analysisType){
 #
 # Set output file type:
 setOutput = function(analysisType) {
-	outtype = getOutType(analysisType)
-	outfilename = getOutFileName(outtype,analysisType)
-	ires = getResolution(analysisType)
-	if(analysisType=='QCplotsSpreadsheet'){
-		fsize = 24	
-	}else{
+	outtype = 'png'
+	outfilename = paste(uuid(), outtype, sep='.')
+	ires = getResolution('default')
+#	if(analysisType=='QCplotsSpreadsheet'){
+#		fsize = 24	
+#	}else{
 		fsize = ceiling(ires$width / 1500 * 24) # set font size
-	}
+#	}
 	# Set output file type, if not to screen:
 	if (outtype == 'pdf' ) {
 		pdf(file=outfilename, paper='a4r', width=11, height=8)
@@ -131,19 +221,7 @@ setOutput = function(analysisType) {
 	}
 	return(outfilename);
 }
-#
-# Set output file type:
-getOutType = function(analysisType) {
-   # remain as a separate function in case we use pdf requests in future
-   outtype='png'
-   return(outtype)
-}
-#
-# Create unique output filename:
-getOutFileName = function(outtype,analysisType) {
-    paste(uuid(), outtype, sep='.')
-}
-#
+
 # UUID generator:
 uuid = function(uppercase=FALSE) {
 	## Version 4 UUIDs have the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx

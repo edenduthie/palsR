@@ -6,6 +6,10 @@
 GetModelOutput = function(variable,filelist){
 	library(ncdf4) # load netcdf library
 	errtext='ok'
+	
+	mfid=list() # initialise
+	modeltiming = list() # initialise
+	
 	for(f in 1:length(filelist)){ # For each file of this MO:
 		# Check file exists:
 		if(!file.exists(filelist[[f]][['path']])){
@@ -14,57 +18,193 @@ GetModelOutput = function(variable,filelist){
 			return(model)	
 		}
 		# Open model output file
-		mfid=nc_open(filelist[[f]][['path']],write=FALSE,readunlim=FALSE)
-		# Check variable exists:
-		exists = AnyNcvarExists(mfid,variable[['Name']])
+		mfid[[f]]=nc_open(filelist[[f]][['path']],write=FALSE,readunlim=FALSE)
+		# Check that requested variable exists:
+		exists = AnyNcvarExists(mfid[[f]],variable[['Name']])
 		if( ! exists$var){
 			errtext = paste('M3: Requested variable',variable[['Name']][1],
-				'does not appear to exist in Model Ouput:',
-				filelist[[f]][['name']])
+				'does not appear to exist in Model Ouput:', filelist[[f]][['name']])
 			model=list(errtext=errtext,err=TRUE)
 			return(model)
 		}
-		# Check and units are known:
-		units = CheckNcvarUnits(mfid,variable[['Name']][exists$index],variable,filelist[[f]][['path']])
+		# Check variable units are known:
+		units = CheckNcvarUnits(mfid[[f]],variable[['Name']][exists$index],variable,filelist[[f]][['path']])
 		# If units issue, return error:
 		if(units$err){
 			model=list(errtext=units$errtext,err=TRUE)
 			return(model)
 		}
-		# Get timing details for each:
-		modeltiming = GetTimingNcfile(mfid)
+		# Get timing details for each file:
+		modeltiming[[f]] = GetTimingNcfile(mfid[[f]])
+		
 		# If timing issue, return error:
-		if(modeltiming$err){
-			model=list(errtext=modeltiming$errtext,err=TRUE)
+		if(modeltiming[[f]]$err){
+			model=list(errtext=modeltiming[[f]]$errtext,err=TRUE)
 			return(model)
 		}
 	}
-	if(length(filelist) != 1){
-		errtext = paste('M5: Cannot yet deal with Model Outputs in multiple files. MO:',
-			filelist[[1]][['name']])
-		model=list(errtext=errtext,err=TRUE)
-		return(model)	
-	}else{
-		# Get model data:	
-		# Check for special cases first:
-		if(mfid$var[[exists$index]]$name=='FCEV'){ # lat heat in CLM has 3 components
-			data1=ncvar_get(mfid,'FCEV') # read canopy evap
-			data2=ncvar_get(mfid,'FCTR') # read canopy transp
-			data3=ncvar_get(mfid,'FGEV') # read ground evap
-			vdata = data1 + data2 + data3
-			rm(data1,data2,data3)
-		}else{ # otherwise just fetch variable data:
-			vdata=ncvar_get(mfid,(variable[['Name']][exists$index])) # read model output data	
+	
+	# Now try to understand how file data needs to be assembled:
+	allintervals = c()
+	alltsteps = c()
+	allyear = c()
+	for(f in 1:length(filelist)){
+		allintervals[f] = modeltiming[[f]]$interval
+		alltsteps[f] = modeltiming[[f]]$tsteps
+		allyear[f] = modeltiming[[f]]$syear
+	}
+	if((all(allintervals == 'monthly')) && (all(alltsteps == 12))){		
+		# i.e. all are monthly data in year length files
+		nyears = length(filelist)
+		ntsteps = 12 * nyears # total number of time steps
+		# Get lat / lon from file
+		latlon = GetLatLon(mfid[[1]])
+		if(latlon$err){	
+			model = list(err=TRUE,errtext=latlon$errtext)
+			return(model)
 		}
-		nc_close(mfid) # close netcdf file
+		# Check that MO files don't repeat years:
+		if(length(unique(allyear)) != length(allyear)){ # i.e. a repeated year has been removed
+			errtext='Model output has two files with the same starting year.'
+			model = list(err=TRUE,errtext=errtext)
+			return(model)
+		}
+		
+		# Allocate space for data:
+		vdata = array(NA,dim=c(latlon$lonlen,latlon$latlen,ntsteps) )
+		# Define the order to read files:
+		fileorder = order(allyear)
+		
+		# Check there are no gaps in years:
+		if(nyears>1){
+			descending_years = rev(allyear[fileorder])
+			gap_bw_files = descending_years[1:(nyears-1)] - descending_years[2:nyears]
+			if(any(gap_bw_files != 1)){
+				errtext='Model output is missing some years.'
+				model = list(err=TRUE,errtext=errtext)
+				return(model)
+			}
+		}
+		
+		# Get data:
+		for(f in 1:length(filelist)){ # For each file sent by js
+			vdata[,,((f-1)*12+1) : ((f-1)*12+12)] = ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index])
+		}
+		# Create model timing list to reflect aggregated data:
+		modeltimingall = list(tstepsize=modeltiming[[1]]$tstepsize,tsteps=ntsteps,
+			syear=modeltiming[[1]]$syear,smonth=modeltiming[[1]]$smonth,sdoy=modeltiming[[1]]$sdoy,
+			interval=modeltiming[[1]]$interval)
+	}else if((all(allintervals == 'timestep')) && (all(alltsteps == alltsteps[1]))){
+		# i.e. all are per time step data with the same number of time steps in each file
+		ntsteps = alltsteps[1] * length(filelist) # total number of time steps
+		tsteps1 = alltsteps[1]
+		# Get lat / lon from file
+		latlon = GetLatLon(mfid[[1]])
+		if(latlon$err){	
+			model = list(err=TRUE,errtext=latlon$errtext)
+			return(model)
+		}
+		# Allocate space for data:
+		vdata = array(NA,dim=c(latlon$lonlen,latlon$latlen,ntsteps) )
+		# Define the order to read files:
+		fileorder = order(allyear)
+		# Get data:
+		if(mfid[[1]]$var[[exists$index]]$name=='FCEV'){ # lat heat in CLM has 3 components
+			for(f in 1:length(filelist)){ # For each file sent by js
+				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = 
+					ncvar_get(mfid[[ fileorder[f] ]],'FCEV')
+				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = 
+					vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] +
+					ncvar_get(mfid[[ fileorder[f] ]],'FCTR')
+				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = 
+					vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] + 
+					ncvar_get(mfid[[ fileorder[f] ]],'FGEV')
+			}
+		}else{
+			for(f in 1:length(filelist)){ # For each file sent by js
+				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = 
+					ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index])
+			}
+		}
+		# Create model timing list to reflect aggregated data:
+		modeltimingall = list(tstepsize=modeltiming[[1]]$tstepsize,tsteps=ntsteps,
+			syear=modeltiming[[1]]$syear,smonth=modeltiming[[1]]$smonth,sdoy=modeltiming[[1]]$sdoy,
+			interval=modeltiming[[1]]$interval)
+	}
+	
+	# Close all files for this model output:
+	for(f in 1:length(filelist)){
+		nc_close(mfid[[f]])	
 	}
 	
 	# Apply any units changes:
 	vdata = vdata*units$multiplier + units$addition
 	# Create list to return from function:	
-	model=list(data=vdata,timing = modeltiming,name=filelist[[1]]$name,
+	model=list(data=vdata,timing = modeltimingall,name=filelist[[1]]$name,
 		err=FALSE,errtext=errtext)
 	return(model)
+}
+
+GetLatLon = function(mfid){
+	# Gets the latitude and longitide dimensions from a model output netcdf file
+	errtext='ok'
+	# Fetch accepted names for latitude:
+	lat_det = GetVariableDetails('lat')
+	# Check an acceptable latitude variable exists:
+	exists_lat = AnyNcvarExists(mfid,lat_det[[1]][['Name']])
+	if(! exists_lat$var){
+		errtext = paste('Could not find latitude variable in',stripFilename(mfid$filename))
+		latlon = list(err=TRUE,errtext=errtext)
+		return(latlon)
+	}
+	# Now fetch latitude information:
+	if(exists_lat$dimvar){
+		# either as a dimension variable, if that was the found acceptable name:
+		lat = mfid$dim[[exists_lat$dimnum]]$vals
+		latlen = mfid$dim[[exists_lat$dimnum]]$len
+	}else{
+		# or as a normal variable:
+		# but first make sure we're just dealing with a 1D defined latitude;
+		# this will need to be changed when different grid types are acceptable:
+		if(mfid$var[[exists_lat$varnum]]$ndims != 1){
+			errtext = 'PALS cannot yet cope with lat being more than 1D'	
+			latlon = list(err=TRUE,errtext=errtext)
+			return(latlon)
+		}
+		lat = ncvar_get(mfid,lat_det[[1]][['Name']][exists_lat$index])
+		latlen = length(lat)
+	}
+	
+	# Repeat the process for longitude:
+	# Fetch accepted names for longitude:
+	lon_det = GetVariableDetails('lon')
+	# Check an acceptable longitude variable exists:
+	exists_lon = AnyNcvarExists(mfid,lon_det[[1]][['Name']])
+	if(! exists_lon$var){
+		errtext = paste('Could not find longitude variable in',stripFilename(mfid$filename))
+		latlon = list(err=TRUE,errtext=errtext)
+		return(latlon)
+	}
+	# Now fetch longitude information:
+	if(exists_lon$dimvar){
+		# either as a dimension variable, if that was the found acceptable name:
+		lon = mfid$dim[[exists_lon$dimnum]]$vals
+		lonlen = mfid$dim[[exists_lon$dimnum]]$len
+	}else{
+		# or as a normal variable:
+		# but first make sure we're just dealing with a 1D defined longitude;
+		# this will need to be changed when different grid types are acceptable:
+		if(mfid$var[[exists_lon$varnum]]$ndims != 1){
+			errtext = 'PALS cannot yet cope with lon being more than 1D'	
+			latlon = list(err=TRUE,errtext=errtext)
+			return(latlon)
+		}
+		lon = ncvar_get(mfid,lon_det[[1]][['Name']][exists_lon$index])
+		lonlen = length(lon)
+	}
+	# Return result:
+	latlon = list(err=FALSE,errtext=errtext,lat=lat,lon=lon,latlen=latlen,lonlen=lonlen)
+	return(latlon)
 }
 
 GetBenchmarks = function(variable,filelist,nBench){
@@ -117,16 +257,33 @@ NcvarExists = function(fid,varname){
 	# checks whether quality control couterpart variable exists:
 	exists_var = FALSE
 	exists_qc = FALSE
+	varnum = NULL
+	dimnum = NULL
+	dimvar = FALSE
 	for (v in 1:fid$nvars){ # Search through all variables in netcdf file
 		if(fid$var[[v]]$name==varname){
 			exists_var=TRUE
+			varnum = v
 			if(exists_var & exists_qc) {break}
 		}else if(fid$var[[v]]$name==paste(varname,'_qc',sep='')){
 			exists_qc=TRUE
 			if(exists_var & exists_qc) {break}	
 		}
 	}
-	ncvexists = list(var=exists_var,qc=exists_qc)
+	# If not found as a variable, it may be a dimension variable:
+	if(! exists_var){
+		for(d in 1:length(fid$dim)){
+			# If a dimension name & dimension variable
+			if(fid$dim[[d]]$name == varname){
+				if(fid$dim[[d]]$dimvarid$id != -1){# i.e. dim var exists
+					exists_var=TRUE
+					dimvar = TRUE
+					dimnum = d
+				}
+			}
+		}
+	}
+	ncvexists = list(var=exists_var,qc=exists_qc,dimvar=dimvar,dimnum=dimnum,varnum=varnum)
 	return(ncvexists)	
 }
 
@@ -144,7 +301,8 @@ AnyNcvarExists = function(fid,varnames){
 			break
 		}	
 	}
-	ncvexists = list(var=exists_var,qc=exists_qc,index=vindex)
+	ncvexists = list(var=exists_var,qc=exists_qc,index=vindex,dimvar=exists$dimvar,
+		dimnum=exists$dimnum,varnum=exists$varnum)
 	return(ncvexists)	
 }
 

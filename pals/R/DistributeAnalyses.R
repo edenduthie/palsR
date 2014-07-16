@@ -5,12 +5,13 @@
 # Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 
 DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
+	# Each call to this function will generate a single plot and its statistics
 	
 	# These will be metrics passed 
 	metrics = list(nme = 0, rmse=0, correlation=1, bias = 0)
 	
 	# Create outfilename:
-	outfile = setOutput('ModelAnalysis')
+	outfile = setOutput('default')
 	
 	# For now, assumes analysis will be for a single variable.
 	# The name of this variable
@@ -31,9 +32,10 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
 			error=errcheck$errtext,bencherror=bench$errtext)
 		return(result)
-	}		
+	}	
+	
 	# Check model, obs timing consistency
-	tcheck = CheckTiming(model$timing,obs$timing)	
+	tcheck = CheckTiming(obs$timing,model$timing)	
 	# Don't proceed and report error if there's an issue:	
 	if(tcheck$err){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
@@ -43,8 +45,12 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	
 	# Test benchmark timing compatibility, and remove benchmark if necessary:
 	if(bench$exist){
+		# We'll need to use bench$index inside the for loop and also want to 
+		# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
+		new_benchindex = bench$index
 		for(b in 1: bench$howmany){
-			tcheck = CheckTiming(bench[[bench$index[b]]]$timing,obs$timing)
+			# Check benchmark and obs timing are compatible:
+			tcheck = CheckTiming(obs$timing,bench[[bench$index[b]]]$timing,benchmark_timing=TRUE)
 			if(tcheck$err){
 				# Report error with benchmark
 				bench$errtext = paste(bench$errtext,tcheck$errtext)
@@ -55,28 +61,29 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 					bench$exist = FALSE
 				}else{
 					# Change index of appropriate benchmarks:
-					oldlength = length(bench$index)
+					oldlength = length(new_benchindex)
 					if(b==1){
-						bench$index = bench$index[2:oldlength]
+						new_benchindex = new_benchindex[2:oldlength]
 					}else if(b==oldlength){	
-						bench$index = bench$index[1:(oldlength-1)]
+						new_benchindex = new_benchindex[1:(oldlength-1)]
 					}else{
-						bench$index = 
-							c(bench$index[1:(b-1)],bench$index[(b+1):oldlength])
+						new_benchindex = 
+							c(new_benchindex[1:(b-1)],new_benchindex[(b+1):oldlength])
 					}
-				}	
-				
+				}
 			}
 		}
+		# Overwrite bench$index with values that account for any benchmarks that failed:
+		bench$index = new_benchindex
 	}
 	
+	cat('Remaining benchmarks:',bench$howmany,' \n')
 	
 	# Call analysis function:	
 	if(Analysis$type == 'Mean'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAusMean(model,obs,bench,varname,unitstxt,longvarname,metrics)				
+		areturn = SpatialAusMeanDiff(model,obs,bench,varname,unitstxt,longvarname,metrics)				
 	}
-		
 	
 	print(outfiletype)
 	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",

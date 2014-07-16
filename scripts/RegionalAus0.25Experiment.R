@@ -33,9 +33,15 @@ for (i in 1:(length(files))  ) {
         	name=file[['name']],number=file[['number']]) # user rank of benchmark
     }
 }
-
-print(paste("Model Output file: ",ModelOutputs[[1]][['path']]));
-print(paste("Data Set file: ",EvalDataSets[[1]][['path']]));
+for(f in 1:MOctr){
+	print(paste("Model Output file: ",ModelOutputs[[f]][['path']]));
+}
+for(f in 1:EDSctr){
+	print(paste("Data Set file: ",EvalDataSets[[f]][['path']]));
+}
+for(f in 1:Bctr){
+	print(paste("Bench file: ",Benchmarks[[f]][['path']]));
+}
 
 # Nominate variables to analyse here (use ALMA standard names) - fetches
 # alternate names, units, units transformations etc:
@@ -46,6 +52,8 @@ genAnalysis = c('Mean') #,'TempCorr','PDFall','PDF2D','RMSE','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)
+
+cat('\nUser number of benchmarks:',nBench$number,'\n')
 
 # Set up analysis data and analysis list so we can use lapply or parlapply:
 AnalysisList = list()
@@ -58,17 +66,19 @@ OutInfo = list()
 # Load all variables from obs and model output
 for(v in 1:length(vars)){
 	obs = GetGLEAM_Aus(vars[[v]],EvalDataSets,force_interval='monthly')
-    model = GetModelOutput(vars[[v]],ModelOutputs)    	
+    model = GetModelOutput(vars[[v]],ModelOutputs)  
     bench = GetBenchmarks(vars[[v]],Benchmarks,nBench)
+    
 	# Add those analyses that are equally applicable to any variable to analysis list:
 	for(a in 1:length(genAnalysis)){
-		AnalysisList[[a]] = list(vindex=v, type=genAnalysis[a])
+		AnalysisList[[((v-1)*length(genAnalysis) + a)]] = list(vindex=v, type=genAnalysis[a])
 	}
-	OutInfo[[v]] = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
-		obs=obs,model=model,bench=bench)
-#	OutInfo[[v]] = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
-#		obs=obs,model=model,bench=bench)
 }
+	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
+		obs=obs,model=model,bench=bench)
+#	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
+#		obs=obs,model=model,bench=bench)
+
 # Add multiple variable analysis to analysis list:
 # analysis_number = analysis_number + 1
 # AnalysisList[[analysis_number]] = list(vindex=0, type='EvapFrac')
@@ -79,7 +89,7 @@ for(v in 1:length(vars)){
 #stopCluster(cl)
 
 # Write outinfo to output list for javascript:
-output = list(files=outinfo);
+output = list(files=OutInfo);
 
 #check error propagation!
 

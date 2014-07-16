@@ -7,9 +7,21 @@
            "mimetype" : "application/x-netcdf",
 	   "name" : "CABLEtestAus"
        },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2002.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
        {   
            "type" : "DataSet", 
            "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2001.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2002.nc",
            "mimetype" : "application/x-netcdf",
 	       "name" : "GLEAM_Mark"
        },
@@ -18,7 +30,42 @@
            "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1985.nc",
            "mimetype" : "application/x-netcdf",
            "number" : "1",
-	       "name" : "BenchWrongYear"
+	       "name" : "BenchWY1"
+       },
+       {
+	   "type" : "Benchmark", 
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1986.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "1",
+	       "name" : "BenchWY1"
+       },
+       {
+	   "type" : "Benchmark", 
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1989.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "2",
+	       "name" : "BenchWY2"
+       },
+       {
+	   "type" : "Benchmark", 
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1990.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "2",
+	       "name" : "BenchWY2"
+       },
+       {
+	   "type" : "Benchmark", 
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1997.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "3",
+	       "name" : "BenchWY3"
+       },
+	   {
+	   "type" : "Benchmark", 
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1998.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "3",
+	       "name" : "BenchWY3"
        }
    ]
 }
