@@ -4,7 +4,7 @@
 library(pals)
 library(parallel)
 
-print(input["_id"])
+print(paste('ID:',input["_id"]))
 files <- input[["files"]]
 
 # Retrieve model output, forcing and evaluation data set and benchmark location and 
@@ -48,7 +48,7 @@ for(f in 1:Bctr){
 vars = GetVariableDetails(c('Qle'))
 
 # Analyses that can apply to any variable:
-genAnalysis = c('Mean') #,'TempCorr','PDFall','PDF2D','RMSE','Taylor')
+genAnalysis = c('Mean','SD','RMSE','Cor') #,'TempCorr','PDFall','PDF2D','RMSE','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)

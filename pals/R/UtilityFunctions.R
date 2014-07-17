@@ -11,7 +11,7 @@ ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
 	
 	# Full / most range:
 	red2blue = colorRampPalette(c('red','orange','yellow','green','blue'))
-	yellow2purpleCool = colorRampPalette(c('yellow','green3','blue','magenta'))
+	yellow2purpleCool = colorRampPalette(c('yellow','green3','blue','darkorchid4'))
 	yellow2purpleWarm = colorRampPalette(c('yellow','red','magenta'))
 	purple2yellowWarm = colorRampPalette(c('magenta','red','yellow'))
 	iceblue2green = colorRampPalette(c('slategray1','midnightblue','blue','green3','green'))
@@ -28,10 +28,6 @@ ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
 	red2yellow = colorRampPalette(c('red','yellow'))
 	green2blue = colorRampPalette(c('green','blue'))
 	blue2green = colorRampPalette(c('blue','green'))
-	
-	green2purple = colorRampPalette(c('green','blue','magenta'))
-	
-	
 	
 	coolvars = c('Qle','Evap')
 	warmvars = c('Tair','Qh','Rnet','SWdown','SWnet')

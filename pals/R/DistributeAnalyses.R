@@ -82,9 +82,17 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	# Call analysis function:	
 	if(Analysis$type == 'Mean'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAusMeanDiff(model,obs,bench,varname,unitstxt,longvarname,metrics)				
+		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)				
+	}else if(Analysis$type == 'SD'){
+		bencherrtext = bench$errtext
+		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)
+	}else if(Analysis$type == 'RMSE'){
+		bencherrtext = bench$errtext
+		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)		
+	}else if(Analysis$type == 'Cor'){
+		bencherrtext = bench$errtext
+		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)	
 	}
-	
 	print(outfiletype)
 	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 		metrics = metrics,
