@@ -10,11 +10,11 @@ SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plott
 	npanels = bench$howmany + 3
 	# Plot layout:
 	if(npanels <= 4){
-		par(mfcol=c(2,2) ,mar=c(3,3,3,0.5),oma=c(0,0,0,1),mgp=c(1.8,0.5,0),ps=14,tcl=-0.4)
+		par(mfcol=c(2,2) ,mar=c(3,3,3,0.5),oma=c(0,0,0,1),mgp=c(1.8,0.5,0),ps=15,tcl=-0.4)
 		density_location = DensityLocationAus(4)
 		textloc='bottomright'
 	}else{
-		par(mfcol=c(2,3) ,mar=c(3,3,3,0.5),oma=c(1,0,0.5,1),mgp=c(1.8,0.5,0),ps=18,tcl=-0.4)
+		par(mfcol=c(2,3) ,mar=c(3,3,3,0.5),oma=c(1,0,0.5,1),mgp=c(1.8,0.5,0),ps=18,tcl=-0.2)
 		density_location = list()
 		density_location = DensityLocationAus(6)
 		textloc='topleft'
@@ -104,7 +104,7 @@ SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plott
 	diffcols = ChooseColours(diffrange,varname,'difference')
 	
 	# First plot: model	mean
-	title = paste(model$name,' ',longvarname,' ',plottype,unitstxt,sep='')
+	title = paste(model$name,' ',longvarname,' ',plottype,sep='')
 	errtext = PlotAus(obs$lon,obs$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
 	# Second plot: obs mean
@@ -182,7 +182,7 @@ SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metri
 		density_location = DensityLocationAus(2)
 		textloc='bottomright'
 	}else if(npanels >= 3){
-		par(mfcol=c(2,2) ,mar=c(3,3,3,0.5),oma=c(0,0,0,1),mgp=c(1.8,0.5,0),ps=14,tcl=-0.4)
+		par(mfcol=c(2,2) ,mar=c(3,3,3,0.5),oma=c(0,0,0,1),mgp=c(1.8,0.5,0),ps=15,tcl=-0.4)
 		density_location = DensityLocationAus(4)
 		textloc='bottomright'
 	}
@@ -190,10 +190,15 @@ SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metri
 		# Calculate time means:
 		modelt = TimeRMSE(obs$data, model$data)
 		modelRMSE = sqrt(mean((model$data - obs$data)^2,na.rm=TRUE))
+		supressunits = FALSE
 	}else if(plottype=='TimeCor'){
 		modelt = TimeCor(obs$data, model$data)
 		modelAvTimeCor = mean(modelt,na.rm=TRUE)
 		modelTimeSpaceCor = cor(as.vector(obs$data),as.vector(model$data))
+		supressunits = TRUE
+	}else{
+		result = list(errtext = paste('Unknown plot type \'',plottype,'\' requested in function SpatialAusRelative.',sep=''),err=TRUE)
+		return(result)
 	}
 	zrange = c(min(modelt,na.rm=TRUE),max(modelt,na.rm=TRUE))
 	if(plottype=='TimeRMSE'){
@@ -275,23 +280,23 @@ SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metri
 	# First plot: model
 	title = paste(model$name,' ',longvarname,' ',plottype,sep='')
 	errtext = PlotAus(obs$lon,obs$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
-		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
+		varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 	# Plot benchmarks that exist:
 	if(bench$exist){
 		# Second plot: bench1
 		title = paste(bench[[ bench$index[1] ]]$name,' ',longvarname,' ',plottype,sep='')
 		errtext = PlotAus(obs$lon,obs$lat,bench1t,mean(bench1t,na.rm=T),
-			sd(bench1t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc)
+			sd(bench1t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 		if(bench$howmany >= 2){
 			# Third plot: bench2
 			title = paste(bench[[ bench$index[2] ]]$name,' ',longvarname,' ',plottype,sep='')
 			errtext = PlotAus(obs$lon,obs$lat,bench2t,mean(bench2t,na.rm=T),
-				sd(bench2t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc)
+				sd(bench2t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 			if(bench$howmany == 3){	
 				# Fourth plot: bench3
 				title = paste(bench[[ bench$index[3] ]]$name,' ',longvarname,' ',plottype,sep='')
 				errtext = PlotAus(obs$lon,obs$lat,bench3t,mean(bench3t,na.rm=T),
-					sd(bench3t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc)
+					sd(bench3t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 			}
 		}	
 	}
@@ -356,26 +361,31 @@ TimeCor = function(obs3d,model3d){
 	 return(twodcor)
 }
 
-PlotAus = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zrange,zcols,title,textloc='default'){
+PlotAus = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits=FALSE){
 	# Generates a gridded heatmap style plot for Australia with map, based on input lat/lon.
 	library(maps)
 	library(mapdata)
 	library(fields) # for image.plot
 	errtext = 'ok'
 	# Decide location of plot for text placement:
-	if((textloc=='default') | (textloc=='bottomright')){
-		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.13) )
-		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.07) )
+	if(textloc=='bottomright'){
+		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.19) )
+		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.13) )
+		textloc3 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.07) )
 	}else if(textloc=='topleft'){
-		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.93) )
-		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.87) )
+		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.94) )
+		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.88) )
+		textloc3 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.82) )
 	}
 	# Plot:	
-	image.plot(lon,lat,data,xlab='Longitude',ylab='Latitude',col=zcols,zlim=zrange)
+	image.plot(lon,lat,data,xlab='Longitude',ylab='Latitude',col=zcols,zlim=zrange,legend.mar=5.5)
 	map('worldHires',add=TRUE,wrap=TRUE,xlim=c(min(lon),max(lon)),ylim=c(min(lat),max(lat))) # Add map
 	title(title) 
-	text(x=textloc1[1],y=textloc1[2],labels=paste('Mean:',signif(meanval,3)))
-	text(x=textloc2[1],y=textloc2[2],labels=paste('SD:',signif(sdval,2)))
+	if(!supressunits){
+		text(x=textloc1[1],y=textloc1[2],labels=unitstxt)
+	}
+	text(x=textloc2[1],y=textloc2[2],labels=paste('Mean:',signif(meanval,3)))
+	text(x=textloc3[1],y=textloc3[2],labels=paste('SD:',signif(sdval,2)))
 	return(errtext)
 }
 

@@ -50,7 +50,7 @@ if(Bctr !=0){
 vars = GetVariableDetails(c('Qle'))
 
 # Analyses that can apply to any variable:
-genAnalysis = c('TimeMean') #,'TimeSD','TimeRMSE','TimeCor') #'PDFall','PDF2D','Taylor')
+genAnalysis = c('TimeMean','TimeSD','TimeRMSE','TimeCor') #'PDFall','PDF2D','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)
