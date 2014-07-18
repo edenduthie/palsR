@@ -11,8 +11,9 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 	timestepsize,whole,modlabel='no'){
 	######
 	errtext = 'ok'
+	metrics = list()
 	if(!whole){ # we need a whole number of years for this to run
-		errtext = 'DS3: AnnualCycle analysis requires a whole number of years of data.'
+		errtext = 'AnnualCycle analysis requires a whole number of years of data.'
 		result = list(errtext=errtext)
 		return(result)
 	}
@@ -78,7 +79,18 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		scorestring = paste(signif(pscore,digits=3),collapse=', ')
 		scoretext = paste('Score: ',scorestring,'\n','(NME)',sep='')
 		text(8,max(data_monthly)+0.1*(max(data_monthly)-yaxmin),scoretext,pos=4,offset=1)
+		if(ncurves==2){ # model only
+			metrics[[1]] = list(name='NME',model_value=pscore[1])	
+		}else if(ncurves==3){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],bench_value=list(bench1=pscore[2]))	
+		}else if(ncurves==4){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],
+				bench_value=list(bench1=pscore[2],bench2=pscore[3]))
+		}else if(ncurves==5){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],
+				bench_value=list(bench1=pscore[2],bench2=pscore[3],bench3=pscore[4]))
+		}
 	}
-	result=list(errtext=errtext)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 } # End function AnnualCycle

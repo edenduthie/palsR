@@ -9,12 +9,13 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
 	#
 	errtext = 'ok'
+	metrics = list()
 	ntsteps = length(x_data) # Number of timesteps in data
 	tstepinday=86400/timestepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
 	# Plot layout:
 	par(mfcol=c(1,2),mar=c(4,4,3,0.5),oma=c(0,0,0,1),
-		mgp=c(2.5,0.7,0),ps=12,tcl=-0.4)
+		mgp=c(2.5,0.7,0),ps=14,tcl=-0.4)
 	if(modlabel=='no'){
 		xtext = paste(xytext[1],':',obslabel)
 		ytext = paste(xytext[2],':',obslabel)
@@ -55,6 +56,9 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	if((vqcdata[1,1] != -1) & (!ebal)){
 		text(x=(max(xmax,ymax)-yrange*0.5),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
 	}
+	metrics[[1]] = list(name='Grad',model_value=sline$coefficients[2])	
+	metrics[[2]] = list(name='Int',model_value=sline$coefficients[1])
+	
 	# If this an energy balance plot, add cumulative total:
 	if(ebal){
 		allebal = mean(x_data-y_data)
@@ -100,7 +104,7 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 		xlab=xtext,ylab=ytext,type='p',pch='.',cex=3,
 		ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
-	sline = lm(yday~xday)
+	sline = lm(yday~xday,na.action=na.omit)
 	# Add 1:1 line:
 	abline(a=0,b=1,col='black',lwd=1)
 	# Add regresion line to plot
@@ -125,6 +129,10 @@ PALSScatter = function(obslabel,y_data,x_data,varname,vtext,
 	}else if(vqcdata[1,1] != -1){
 		text(x=(max(xmax,ymax)-yrange*0.5),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
 	}
-	result=list(errtext=errtext)
+	# Record metrics:
+	metrics[[3]] = list(name='DailyGrad',model_value=sline$coefficients[2])	
+	metrics[[4]] = list(name='DailyInt',model_value=sline$coefficients[1])	
+
+	result=list(err=TRUE,errtext=errtext, metrics=metrics)
 	return(result)
 } # End function PALSScatter

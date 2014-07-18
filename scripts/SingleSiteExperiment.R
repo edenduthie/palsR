@@ -88,8 +88,10 @@ output = list(files=outinfo);
 #check error propagation!
 
 for(i in 1: length(output[["files"]])){
-	print(output[["files"]][[i]]$type)
-	print(output[["files"]][[i]]$filename)
-	print(output[["files"]][[i]]$error)
-	print(output[["files"]][[i]]$bencherror)
+	cat('Output ',i,': \n')
+	cat('  type:',output[["files"]][[i]]$type,'\n')
+	cat('  filename:',output[["files"]][[i]]$filename,'\n')
+	cat('  bench error:',output[["files"]][[i]]$bencherror,'\n')
+#	cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
+#		output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
 }

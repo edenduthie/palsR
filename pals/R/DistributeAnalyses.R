@@ -161,13 +161,18 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		
 		# Test benchmark timing compatibility:
 		if(data[[Analysis$vindex]]$bench$exist){
+			# We'll need to use bench$index inside the for loop and also want to 
+			# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
+			new_benchindex = data[[Analysis$vindex]]$bench$index
 			for(b in 1: (data[[Analysis$vindex]]$bench$howmany)){
-				tcheck = CheckTiming(data[[Analysis$vindex]]$bench[[data[[Analysis$vindex]]$bench$index[b]]]$timing,
+				tcheck = CheckTiming(data[[Analysis$vindex]]$bench[[ data[[Analysis$vindex]]$bench$index[b] ]]$timing,
 					data[[Analysis$vindex]]$obs$timing)
 				if(tcheck$err){
 					# Report error with benchmark
 					data[[Analysis$vindex]]$bench$errtext = 
-						paste(data[[Analysis$vindex]]$bench$errtext,tcheck$errtext)
+						paste(data[[Analysis$vindex]]$bench$errtext,'Benchmark',
+						data[[Analysis$vindex]]$bench$index[b],':',tcheck$errtext)
+					data[[Analysis$vindex]]$bench[[data[[Analysis$vindex]]$bench$index[b]]]$errtext = tcheck$errtext
 					# Remove benchmark from benchmark list:
 					data[[Analysis$vindex]]$bench$howmany = data[[Analysis$vindex]]$bench$howmany - 1
 					if(data[[Analysis$vindex]]$bench$howmany == 0){
@@ -175,20 +180,21 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 						data[[Analysis$vindex]]$bench$exist = FALSE
 					}else{
 						# Change index of appropriate benchmarks:
-						oldlength = length(data[[Analysis$vindex]]$bench$index)
+						oldlength = length(new_benchindex)
 						if(b==1){
-							data[[Analysis$vindex]]$bench$index = data[[Analysis$vindex]]$bench$index[2:oldlength]
+							new_benchindex = new_benchindex[2:oldlength]
 						}else if(b==oldlength){	
-							data[[Analysis$vindex]]$bench$index = data[[Analysis$vindex]]$bench$index[1:(oldlength-1)]
+							new_benchindex = new_benchindex[1:(oldlength-1)]
 						}else{
-							data[[Analysis$vindex]]$bench$index = 
-								c(data[[Analysis$vindex]]$bench$index[1:(b-1)],
-								data[[Analysis$vindex]]$bench$index[(b+1):oldlength])
+							new_benchindex = 
+								c(new_benchindex[1:(b-1)],new_benchindex[(b+1):oldlength])
 						}
 					}	
 					
 				}
 			}
+			# Overwrite bench$index with values that account for any benchmarks that failed:
+			data[[Analysis$vindex]]$bench$index = new_benchindex
 		}
 		
 		# Create data matrix to send to analysis function:
@@ -249,7 +255,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 				data[[Analysis$vindex]]$obs$timing,nbins,moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'Scatter'){
 			# Not a benhcmark plot for the moment:
-			bencherrtext = 'B4: Benchmark analysis not available for this analysis type'
+			bencherrtext = 'Benchmark analysis not available for this analysis type'
 			vtext = bquote(.(tolower(longvarname)) ~ ' (' ~.(unitstxt) ~ ')')
 			xytext = c('Observed','Modelled')
 			areturn = PALSScatter(obsname,data[[Analysis$vindex]]$model$data,
@@ -259,7 +265,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 				modlabel=moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'Taylor'){
 			# Not a benhcmark plot for the moment:
-			bencherrtext = 'B4: Benchmark analysis not available for this analysis type'
+			bencherrtext = 'Benchmark analysis not available for this analysis type'
 			xtext=bquote(.(longvarname) ~ ' (' ~ .(unitstxt) ~ ')')
 			areturn = TaylorDiagram(obsname,data[[Analysis$vindex]]$model$data,
 				data[[Analysis$vindex]]$obs$data,varname,xtext,
@@ -267,7 +273,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 				data[[Analysis$vindex]]$obs$timing$whole,moname)
 		}else if(Analysis$type == 'AvWindow'){
 			# Not a benhcmark plot for the moment:
-			bencherrtext = 'B4: Benchmark analysis not available for this analysis type'
+			bencherrtext = 'Benchmark analysis not available for this analysis type'
 			ytext=bquote('Average'~.(longvarname) ~ .(unitstxt))
 			areturn = AveragingWindow(obsname,moname,data[[Analysis$vindex]]$model$data,
 				data[[Analysis$vindex]]$obs$data,varname,ytext,
@@ -275,11 +281,17 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		}
 		
 	}
-	print(outfiletype)
-	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-		metrics = metrics,
-		analysistype=Analysis$type, variablename=varname,
-		error=areturn$errtext,bencherror=bencherrtext)
+
+	if(areturn$errtext=='ok'){	
+		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
+			metrics = metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
+	}else{
+		cat('\n###',areturn$errtext,'###\n')
+		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
+			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,
+			error=areturn$errtext,bencherror=bencherrtext)
+	}	
+
 	return(result)
 }
 

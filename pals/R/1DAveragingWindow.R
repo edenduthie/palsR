@@ -10,11 +10,12 @@ AveragingWindow	= function(obslabel,modlabel,mod_data,obs_data,
 	varname,ytext,timestepsize){
 	library(boot) # load bootstrap library
 	errtext = 'ok'
+	metrics = list()
 	windowstepsize=2 # resolution of graph
 	maxwindow = 30 # in days, the largest averaging window
 	# Plot layout:
 	par(mfcol=c(2,2),mar=c(4,4,3,0.5),oma=c(0,0,0,1),
-		mgp=c(2.5,0.7,0),ps=12,tcl=-0.4)
+		mgp=c(2.5,0.7,0),ps=16,tcl=-0.4)
 	tstepinday=86400/timestepsize # number of time steps in a day
 	numcalcs=maxwindow*tstepinday/windowstepsize
 	tsteps=length(mod_data) # total number of timesteps
@@ -68,41 +69,42 @@ AveragingWindow	= function(obslabel,modlabel,mod_data,obs_data,
 	alltitle=paste('Obs:',obslabel,'  Model:',modlabel)
 	# Draw RMSE plot:
 	plot(xloc,rmse,type="l",xaxt="n",xlab='Averaging window size (days)',
-		ylab=paste('RMSE of',varname[1]),lwd=3,col='black',cex.axis=1.3,cex.lab=1.2)
+		ylab=paste('RMSE of',varname[1]),lwd=3,col='black')
 	# Work out x-axis ticks:
 	tix=c(0,as.integer(maxwindow/4),as.integer(2*maxwindow/4),
 	as.integer(3*maxwindow/4),maxwindow)
-	axis(1,at=tix,labels=as.character(tix),cex.axis=1.3)
-	title(alltitle,cex.main=1.2) # add title
+	axis(1,at=tix,labels=as.character(tix))
+	title(alltitle) # add title
 	# Draw gradient plot:
 	plot(xloc,mvals,type="l",xaxt="n",xlab='Averaging window size (days)',
-		ylab=paste(varname[1],'Mod v obs gradient'),lwd=1,col='blue',cex.lab=1.2,
-		ylim=c(min(mvals-mwidth),max(mvals+mwidth)),cex.axis=1.3)
+		ylab=paste(varname[1],'Mod v obs gradient'),lwd=1,col='blue',
+		ylim=c(min(mvals-mwidth),max(mvals+mwidth)))
 	# Sort out confidence polygon:
 	polyX=c(xloc,xloc[numcalcs:1])
 	polyY=c(mvals+mwidth,mvals[numcalcs:1]-mwidth[numcalcs:1])
 	polygon(polyX,polyY,col='grey')
 	lines(xloc,mvals,lwd=3,col='blue')		
-	axis(1,at=tix,labels=as.character(tix),cex.axis=1.3)
-	title(alltitle,cex.main=1.2) # add title
+	axis(1,at=tix,labels=as.character(tix))
+	title(alltitle) # add title
 	# Draw correlation plot:
 	plot(xloc,rvals,type="l",xaxt="n",xlab='Averaging window size (days)',
-		ylab=paste('Mod, obs CorrCoef',varname[1]),lwd=3,col='black',cex.axis=1.3,cex.lab=1.2)
-	axis(1,at=tix,labels=as.character(tix),cex.axis=1.3)
-	title(alltitle,cex.main=1.2) # add title
+		ylab=paste('Mod, obs CorrCoef',varname[1]),lwd=3,col='black')
+	axis(1,at=tix,labels=as.character(tix))
+	title(alltitle) # add title
 	# Draw std dev plot:
 	plot(xloc,stdevi[1,],type="l",xaxt="n",
 		xlab='Averaging window size (days)',
 		ylab=paste('Standard deviation of',varname[1]),lwd=3,col='blue',
 		ylim=c(min(stdevi[1,],stdevi[2,]),
-		max(stdevi[1,],stdevi[2,])),cex.axis=1.3,cex.lab=1.2)
+		max(stdevi[1,],stdevi[2,])))
 	lines(xloc,stdevi[2,],lwd=3,col='black')
-	axis(1,at=tix,labels=as.character(tix),cex.axis=1.3)
-	title(alltitle,cex.main=1.2) # add title
+	axis(1,at=tix,labels=as.character(tix))
+	title(alltitle) # add title
 	ypos = min(stdevi[1,],stdevi[2,]) +
 		0.8*(max(stdevi[1,],stdevi[2,])-min(stdevi[1,],stdevi[2,]))
 	legend(as.integer(3*maxwindow/4),ypos,c('Model','Obs'),lty=1,
 		col=c('blue','black'),lwd=3,bty="n")
-	result=list(errtext=errtext)
+	metrics[[1]] = list(name='NoMetric',model_value=NA)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 } # End function avwinflux
