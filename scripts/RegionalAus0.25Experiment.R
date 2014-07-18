@@ -39,8 +39,10 @@ for(f in 1:MOctr){
 for(f in 1:EDSctr){
 	print(paste("Data Set file: ",EvalDataSets[[f]][['path']]));
 }
-for(f in 1:Bctr){
-	print(paste("Bench file: ",Benchmarks[[f]][['path']]));
+if(Bctr !=0){
+	for(f in 1:Bctr){
+		print(paste("Bench file: ",Benchmarks[[f]][['path']]));
+	}
 }
 
 # Nominate variables to analyse here (use ALMA standard names) - fetches
@@ -48,7 +50,7 @@ for(f in 1:Bctr){
 vars = GetVariableDetails(c('Qle'))
 
 # Analyses that can apply to any variable:
-genAnalysis = c('Mean','SD','RMSE','Cor') #,'TempCorr','PDFall','PDF2D','RMSE','Taylor')
+genAnalysis = c('TimeMean') #,'TimeSD','TimeRMSE','TimeCor') #'PDFall','PDF2D','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)
@@ -91,11 +93,11 @@ for(v in 1:length(vars)){
 # Write outinfo to output list for javascript:
 output = list(files=OutInfo);
 
-#check error propagation!
-
 for(i in 1: length(output[["files"]])){
-	print(output[["files"]][[i]]$type)
-	print(output[["files"]][[i]]$filename)
-	print(output[["files"]][[i]]$error)
-	print(output[["files"]][[i]]$bencherror)
+	cat('Output ',i,': \n')
+	cat('  type:',output[["files"]][[i]]$type,'\n')
+	cat('  filename:',output[["files"]][[i]]$filename,'\n')
+	cat('  bench error:',output[["files"]][[i]]$bencherror,'\n')
+	cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
+		output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
 }

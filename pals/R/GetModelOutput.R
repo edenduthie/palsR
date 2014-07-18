@@ -231,8 +231,8 @@ GetBenchmarks = function(variable,filelist,nBench){
 	    	bench[[b]] = GetModelOutput(variable,thisbenchfiles)
 	    	if(bench[[b]]$err){ # i.e. there was an error of some sort retrieving benchmark
 	    		# Add to this benchamrk's errtext field - note it's a benchmark:
-	    		bench[[b]]$errtext = paste('B1: Benchmark error:',bench[[b]]$errtext)
-	    		bench[['errtext']] = paste(bench[['errtext']],'B1: Benchmark',b,':',bench[[b]]$errtext)
+	    		bench[[b]]$errtext = paste('Benchmark error: ',bench[[b]]$errtext,sep='')
+	    		bench[['errtext']] = paste(bench[['errtext']],'Benchmark ',b,': ',bench[[b]]$errtext,sep='')
 	    		# decrease the number of benchmarks available for this variable:
 	    		bench[['howmany']] = bench[['howmany']] - 1
 	    	}else{
@@ -247,7 +247,7 @@ GetBenchmarks = function(variable,filelist,nBench){
 	}else{
 		bench[['exist']] = FALSE
 		bench[['howmany']] = 0
-		bench[['errtext']] = 'B5: No user nominated benchmarks '
+		bench[['errtext']] = 'No user nominated benchmarks.'
 	}
 	return(bench)
 }

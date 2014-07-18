@@ -7,9 +7,6 @@
 DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	# Each call to this function will generate a single plot and its statistics
 	
-	# These will be metrics passed 
-	metrics = list(nme = 0, rmse=0, correlation=1, bias = 0)
-	
 	# Create outfilename:
 	outfile = setOutput('default')
 	
@@ -50,10 +47,11 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 		new_benchindex = bench$index
 		for(b in 1: bench$howmany){
 			# Check benchmark and obs timing are compatible:
-			tcheck = CheckTiming(obs$timing,bench[[bench$index[b]]]$timing,benchmark_timing=TRUE)
+			tcheck = CheckTiming(obs$timing,bench[[ bench$index[b] ]]$timing,benchmark_timing=TRUE)
 			if(tcheck$err){
 				# Report error with benchmark
-				bench$errtext = paste(bench$errtext,tcheck$errtext)
+				bench$errtext = paste(bench$errtext,'Benchmark',bench$index[b],':',tcheck$errtext)
+				bench[[bench$index[b]]]$errtext = tcheck$errtext
 				# Remove benchmark from benchmark list:
 				bench$howmany = bench$howmany - 1
 				if(bench$howmany == 0){
@@ -80,24 +78,30 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	cat('Remaining benchmarks:',bench$howmany,' \n')
 	
 	# Call analysis function:	
-	if(Analysis$type == 'Mean'){
+	if(Analysis$type == 'TimeMean'){
 		bencherrtext = bench$errtext
 		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)				
-	}else if(Analysis$type == 'SD'){
+	}else if(Analysis$type == 'TimeSD'){
 		bencherrtext = bench$errtext
 		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)
-	}else if(Analysis$type == 'RMSE'){
+	}else if(Analysis$type == 'TimeRMSE'){
 		bencherrtext = bench$errtext
 		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)		
-	}else if(Analysis$type == 'Cor'){
+	}else if(Analysis$type == 'TimeCor'){
 		bencherrtext = bench$errtext
 		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)	
 	}
-	print(outfiletype)
-	result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-		metrics = metrics,
-		analysistype=Analysis$type, variablename=varname,
-		error=areturn$errtext,bencherror=bencherrtext)
+	
+	if(areturn$errtext=='ok'){	
+		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
+			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
+	}else{
+		cat('\n###',areturn$errtext,'###\n')
+		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
+			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,
+			error=areturn$errtext,bencherror=bencherrtext)
+	}	
+	
 	return(result)
 }
 
