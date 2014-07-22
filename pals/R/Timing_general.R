@@ -58,40 +58,16 @@ is.leap = function(year){
 
 getMonthDays = function(leap=FALSE) {
 	# The days on which each month begins:
-	month_start=c()
-	month_length=c()
-	month_start[1]=1    # Jan
-	month_start[2]=32   # Feb
-	if(leap){
-		month_start[3]=61   # Mar
-		month_start[4]=92   # Apr
-		month_start[5]=122  # May
-		month_start[6]=153  # Jun
-		month_start[7]=183  # Jul
-		month_start[8]=214  # Aug
-		month_start[9]=245  # Sep
-		month_start[10]=275 # Oct
-		month_start[11]=306 # Nov
-		month_start[12]=336 # Dec
-		month_start[13]=367 # i.e. beginning of next year
-	}else{
-		month_start[3]=60   # Mar
-		month_start[4]=91   # Apr
-		month_start[5]=121  # May
-		month_start[6]=152  # Jun
-		month_start[7]=182  # Jul
-		month_start[8]=213  # Aug
-		month_start[9]=244  # Sep
-		month_start[10]=274 # Oct
-		month_start[11]=305 # Nov
-		month_start[12]=335 # Dec
-		month_start[13]=366 # i.e. beginning of next year
-	}
-	for(m in 1:12){
-		month_length[m]=month_start[m+1]-month_start[m]
-	}
-	month = list(start=month_start,length=month_length)
-	return(month)
+    if (leap) {    #  J   F   M   A    M    J    J    A    S    O    N    D    J
+        month_start=c(1, 32, 61, 92, 122, 153, 183, 214, 245, 275, 306, 336, 367)
+        feb = 29
+    } else {
+        month_start=c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366)
+        feb = 28
+    }
+	month_length=c(31, feb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+	return(list(start=month_start,length=month_length))
 }
 
 doydate = function(doy,leap=FALSE){
