@@ -8,7 +8,7 @@
 
 GetGPCP = function(dsetversion,years,missing_threshold){
 	cat(paste('Loading GPCP version',dsetversion,' - no missing data. \n'))
-	library(ncdf) # load packages
+	library(ncdf4) # load packages
 	if(dsetversion==2.2){
 		precipfile='~/data/global/GPCP/precip.mon.mean2.2.nc' 
 	}else{
@@ -20,12 +20,12 @@ GetGPCP = function(dsetversion,years,missing_threshold){
 	smonth = (years[1]-1979)*12 + 1
 	# Cacluate number of years
 	nyears = years[2]-years[1] + 1
-	pf=open.ncdf(precipfile,readunlim=FALSE) # open global mean temp file
+	pf=nc_open(precipfile,readunlim=FALSE) # open global mean temp file
 	# Meantemp is of dimension 72 (lon) by 36 (lat) by 12 (month)
-	precip=get.var.ncdf(pf,'precip',start=c(1,1,smonth),count=c(144,72,mcount))   # read mean temp data
-	lat_orig=get.var.ncdf(pf,'lat')   # read latitude values
-	lon_orig=get.var.ncdf(pf,'lon')   # read longitude values
-	close.ncdf(pf)
+	precip=ncvar_get(pf,'precip',start=c(1,1,smonth),count=c(144,72,mcount))   # read mean temp data
+	lat_orig=ncvar_get(pf,'lat')   # read latitude values
+	lon_orig=ncvar_get(pf,'lon')   # read longitude values
+	nc_close(pf)
 	
 	# transform lat and lon (and data to match)
 	lat = -lat_orig

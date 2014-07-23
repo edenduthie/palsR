@@ -1,0 +1,89 @@
+{
+ "files": [
+ {
+ "type": "Qle timemean",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1e88df33-ffa9-42fd-bdf2-3ef61c885ba8.png",
+"mimetype": "image/png",
+"metrics": [
+ {
+ "name": "TimeSpaceBias",
+"model_value": 5.5826,
+"bench_value": {
+ "bench1": 5.7406,
+"bench2": 8.9736,
+"bench3": 15.016 
+} 
+} 
+],
+"analysistype": "TimeMean",
+"variablename": "Qle",
+"bencherror": " " 
+},
+{
+ "type": "Qle timesd",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a0837e9b-3bfb-4d01-a699-ff53bdc38996.png",
+"mimetype": "image/png",
+"metrics": [
+ {
+ "name": "AvTimeSDbias",
+"model_value": 10.951,
+"bench_value": {
+ "bench1":  6.449,
+"bench2": 9.3529,
+"bench3": 14.841 
+} 
+} 
+],
+"analysistype": "TimeSD",
+"variablename": "Qle",
+"bencherror": " " 
+},
+{
+ "type": "Qle timermse",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/8a57b8e3-13f7-4fbc-876b-f917e9c9734e.png",
+"mimetype": "image/png",
+"metrics": [
+ {
+ "name": "TimeSpaceRMSE",
+"model_value": 22.525,
+"bench_value": {
+ "bench1": 25.938,
+"bench2": 30.061,
+"bench3": 34.122 
+} 
+} 
+],
+"analysistype": "TimeRMSE",
+"variablename": "Qle",
+"bencherror": " " 
+},
+{
+ "type": "Qle timecor",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/00cbd4ac-6f1d-4e9e-800f-4d61696995e3.png",
+"mimetype": "image/png",
+"metrics": [
+ {
+ "name": "AvTimeCor",
+"model_value": 0.71912,
+"bench_value": {
+ "bench1": 0.31105,
+"bench2": 0.21987,
+"bench3": 0.38092 
+} 
+},
+{
+ "name": "TimeSpaceCor",
+"model_value": null,
+"bench_value": {
+ "bench1": null,
+"bench2": null,
+"bench3": null 
+} 
+} 
+],
+"analysistype": "TimeCor",
+"variablename": "Qle",
+"bencherror": " " 
+} 
+] 
+}

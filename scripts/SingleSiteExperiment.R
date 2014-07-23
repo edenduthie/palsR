@@ -42,7 +42,7 @@ print(paste("Data Set file: ",EvalDataSets[[1]][['path']]));
 vars = GetVariableDetails(c('Qle','Qh','NEE','Rnet','Qg','SWnet'))
 
 # Analyses that can apply to any variable:
-genAnalysis = c('Timeseries','AnnualCycle','DiurnalCycle','PDF','Scatter','Taylor','AvWindow')
+genAnalysis = c('AvWindow','Scatter','Timeseries','AnnualCycle','DiurnalCycle','PDF','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)

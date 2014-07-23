@@ -59,11 +59,6 @@ cat('\nUser number of benchmarks:',nBench$number,'\n')
 
 # Set up analysis data and analysis list so we can use lapply or parlapply:
 AnalysisList = list()
-OutInfo = list()
-
-# Create cluster:
-#cl = makeCluster(getOption('cl.cores', detectCores()))
-#cl = makeCluster(getOption('cl.cores', 2))
 
 # Load all variables from obs and model output
 for(v in 1:length(vars)){
@@ -73,9 +68,15 @@ for(v in 1:length(vars)){
     
 	# Add those analyses that are equally applicable to any variable to analysis list:
 	for(a in 1:length(genAnalysis)){
-		AnalysisList[[((v-1)*length(genAnalysis) + a)]] = list(vindex=v, type=genAnalysis[a])
+		analysis_number = (v-1)*length(genAnalysis) + a
+		AnalysisList[[analysis_number]] = list(vindex=v, type=genAnalysis[a])
 	}
 }
+
+# Create cluster:
+#cl = makeCluster(getOption('cl.cores', detectCores()))
+#cl = makeCluster(getOption('cl.cores', 2))
+
 	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
 		obs=obs,model=model,bench=bench)
 #	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
