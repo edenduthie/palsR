@@ -4,7 +4,10 @@
 #
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-
+LineColours = function() {
+	# For line plots:
+	plotcolours=c('black','blue2','indianred3','gold2','yellowgreen')
+}
 ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
 	# Returns a colour range for gridded plots
 	library(colorRamps)

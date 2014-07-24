@@ -2,7 +2,7 @@
  "files": [
  {
  "type": "Qle avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e70423f3-a954-4c69-927f-4ccae2c88264.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/cc4531c1-bbd6-4416-b895-d56e7715c54f.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -15,7 +15,7 @@
 },
 {
  "type": "Qle scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/961e62fb-03b9-422b-845f-57f318a61f52.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/81c718fd-006d-4bcb-9f1b-a760034a9f89.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -28,7 +28,7 @@
 },
 {
  "type": "Qle timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a3519bd4-3706-4e8a-8996-a3d4b96ea376.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/75d26d89-5853-401c-a46e-de5c436371a0.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -41,7 +41,7 @@
 },
 {
  "type": "Qle annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/bfc09ed5-40d6-428b-a820-c5bcd4eace04.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d9a82ef2-1b3a-4b8a-8e61-cd3cba0aafcd.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -54,7 +54,7 @@
 },
 {
  "type": "Qle diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0d17fc22-4b5f-4719-b801-48adbaa1dcfd.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/98da7b08-9ab8-448d-a83e-6d2d97023c9c.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -67,7 +67,7 @@
 },
 {
  "type": "Qle pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/24484fcf-0695-4155-862f-f1e4f11d769f.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c1116f2d-dd3e-4a59-9511-fc260ac0a3d9.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -80,7 +80,7 @@
 },
 {
  "type": "Qle taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/29257e3c-b409-4e67-a23c-b3cc0fd6538f.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1dd96530-1a1a-4b10-8027-41f8948823cf.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -93,7 +93,7 @@
 },
 {
  "type": "Qh avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4465cb37-5dcc-41ba-8da0-cd4595390601.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3dfc1d00-1375-4fb0-8021-440a4dabf0fc.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -106,7 +106,7 @@
 },
 {
  "type": "Qh scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/2c5e8f9e-588e-427d-b463-462bf1bcf09a.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a50604e2-c185-4305-84b8-d485ea23fe76.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -119,7 +119,7 @@
 },
 {
  "type": "Qh timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0af7065b-6446-4ca2-814a-fae65bbb877a.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7ef9175f-59e8-4035-b0a5-49bc4b7a6dd0.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -132,7 +132,7 @@
 },
 {
  "type": "Qh annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/da9353b7-1e79-4a50-94cd-8ded6f1c28e5.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1c362c11-99d2-4405-ae75-b0cc2396ad96.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -145,7 +145,7 @@
 },
 {
  "type": "Qh diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/00c1f482-5ea8-4c84-899a-c6674697458b.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/ee77c010-ea4b-459a-95c7-a77a7a3eb2da.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -158,7 +158,7 @@
 },
 {
  "type": "Qh pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/52990cc3-7a51-4a05-ab16-a6e9cfc9fdb4.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6c23eac0-8584-456c-9c53-e0d9e2900465.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -171,7 +171,7 @@
 },
 {
  "type": "Qh taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/f2dbcc52-8854-4b1e-92b0-4176ebc1f955.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/820084fd-681f-40c3-b3f2-b82f3985cb2c.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -184,7 +184,7 @@
 },
 {
  "type": "NEE avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d450be1a-acc7-478a-ac3f-32895cd5dd28.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e232abc9-5cc3-4b68-8706-ca80db4ff35e.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -197,7 +197,7 @@
 },
 {
  "type": "NEE scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9abdfdb0-8210-4d29-9984-201ad998da2c.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b5c532e3-8726-44b6-b47c-606f512ce61b.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -210,7 +210,7 @@
 },
 {
  "type": "NEE timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/106ca6bc-5b78-489f-a267-657a7df5168d.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/5bb8a6e8-00a8-4c05-b9e0-f6fb2a25bc2e.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -223,7 +223,7 @@
 },
 {
  "type": "NEE annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e5aa19e7-0007-48fa-944e-c8b4c85fddfa.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a7cb5871-77da-4200-b805-e994e0ff4ad7.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -236,7 +236,7 @@
 },
 {
  "type": "NEE diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1d3c0d54-3ce6-4a00-bc9f-639bd8c61b5b.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/f89d3694-6c76-4264-b93f-5dd16e8f284a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -249,7 +249,7 @@
 },
 {
  "type": "NEE pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/aa892a38-36d4-4c59-a60a-49d1e02dcd05.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/ea1af80c-6b54-4a4a-8d01-65dacc626630.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -262,7 +262,7 @@
 },
 {
  "type": "NEE taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b3025359-4dcb-4549-b6d1-b914f98d826a.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/622665bd-7c6f-4b07-844a-310bb2d83739.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -275,7 +275,7 @@
 },
 {
  "type": "Rnet avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/73a1a020-241d-4909-94d8-796d2428925e.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/8d93b711-f990-4933-b467-33a06bfef35c.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -288,7 +288,7 @@
 },
 {
  "type": "Rnet scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3c44bc46-e9d0-4395-afe4-9bd9c782cd5b.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b692523f-769c-4b59-a943-d04f93f64d88.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -301,7 +301,7 @@
 },
 {
  "type": "Rnet timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/2108a780-fb80-4f92-8bd0-02dd8c4fc147.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6ef9d648-40ee-43e3-8c02-16c90179da0f.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -314,7 +314,7 @@
 },
 {
  "type": "Rnet annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/76489b61-2b4e-41bc-82da-fe38c91e07da.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c61dcf40-78be-487d-aecf-d1c62bfd6fc5.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -327,7 +327,7 @@
 },
 {
  "type": "Rnet diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/35187a08-d8ab-4ccd-9a67-8c1cf9f7c651.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/06922337-fce2-49d1-9e3b-5f95d8fe971a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -340,7 +340,7 @@
 },
 {
  "type": "Rnet pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/34ff5654-dd40-4439-aec1-1a5312df3f3a.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/73ffd8f8-2e35-4e3a-8f8d-109d84b67326.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -353,7 +353,7 @@
 },
 {
  "type": "Rnet taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7a60aec0-c025-451b-99a2-787d6f8b9dc3.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/51c0325b-93eb-4add-ad3e-8a42cd1d8f49.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -366,7 +366,7 @@
 },
 {
  "type": "Qg avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/bfc12219-ebc0-4069-ac6a-fe8fea3c9794.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/85a4dfd1-5d46-475b-88c5-f3399539519e.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -379,7 +379,7 @@
 },
 {
  "type": "Qg scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7f504260-7e57-4abb-96de-042c1481b0c9.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9d1264db-91b7-474d-b177-29332e9813d6.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -392,7 +392,7 @@
 },
 {
  "type": "Qg timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b3fad8dc-086f-46e4-b7a5-06c1e181c7bc.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/ac0950ed-8477-4bdd-bcd5-f8ec01bb707a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -405,7 +405,7 @@
 },
 {
  "type": "Qg annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/00818d94-d44e-4f67-9c58-2fe1877443a0.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d03d0ebc-f9dc-4267-8a26-a19c1b46f32d.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -418,7 +418,7 @@
 },
 {
  "type": "Qg diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/511c1cac-f442-4ca5-9969-f4259956c273.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/267651a8-553f-41d0-8c3d-faea4d1034cc.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -431,7 +431,7 @@
 },
 {
  "type": "Qg pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d0f4805f-c46f-4516-be81-46026887db25.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6eb0c10f-1b5f-4907-81f9-e301c684b618.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -444,7 +444,7 @@
 },
 {
  "type": "Qg taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9a56fa91-d8eb-423f-9eb0-8e69f64dee90.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4906e694-f5a2-4896-886d-adec74e34e25.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -457,49 +457,49 @@
 },
 {
  "type": "SWnet avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1ae2166a-27c5-4d63-88c8-fd91892fc6ff.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3af5201a-395a-4d03-9473-99bc768f9c25.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/77ddf506-9cfb-4c44-8cf6-3d7368ed5efd.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/10c558c9-72ab-4f5b-8561-c8e06f23ab60.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/944cfa10-541c-4584-9f16-dacb74a64111.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/606251f6-5467-4c91-9a61-1f1d2a973db2.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9d08fec4-3985-4095-8846-d6803369ed69.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/949fbd57-55b3-41e6-b6a1-127d3c8bfeb8.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4578c13e-e54a-4549-86e8-425f58e58b95.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9c441529-4c19-43f9-8f1c-13ded4d8e2cc.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d13eb3fd-d379-4fd4-bec1-14462152fae5.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/f32216dd-92e7-427e-8789-e71feae48a1b.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0b151216-c32d-44ba-baf8-317c08a1df51.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b64b49ce-0a0d-417e-a652-ed01a9a79f5c.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
 "bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 

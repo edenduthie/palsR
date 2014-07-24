@@ -8,9 +8,6 @@ NcMissingVal=-9999 # missing value in created netcdf files
 CurrentTemplateVersion = '1.0.2'
 KnownTemplateVersions = c('1.0.1','1.0.2')
 #
-getPlotColours = function() {
-	plotcolours=c('black','blue2','indianred3','gold2','yellowgreen')
-}
 # Variable order in spreadsheet template versions:
 templateCols = function(templateVersion = CurrentTemplateVersion){
 	if(templateVersion=='1.0.1'){
@@ -253,9 +250,3 @@ QgMultiplier = c(1,1,1,1,1)
 QgAddition = c(0,0,0,0,0)
 QgUnits = list(name=QgUnitsName,multiplier=QgMultiplier,
 	addition=QgAddition)
-	
-# Definitions of standard empirical benchmark levels:
-benchnames = c('1lin','2lin','3km27')
-benchx = list(c('SWdown'),c('SWdown','Tair'),c('SWdown','Tair','Qair'))
-benchtype = c('mlr','mlr','kmeans')
-benchparam = c(0,0,27)

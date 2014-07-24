@@ -2,147 +2,109 @@
 #
 # This set of functions is used for training empirical models used to benchmark
 # LSM simulations as well as using these trained models to perform benchmark 
-# simulations.
+# simulations, and save the results in an ALMA format netcdf output file.
 #
-# Gab Abramowitz CCRC, UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 
-GenerateBenchmarkSet = function(TrainPathsMet,TrainPathsFlux,
-	PredictPathMet,DatSetName,DataSetVersion,PredictNcPath,SiteLat,
-	SiteLon,varnames,varsunits,removeflagged){
+GenerateEmpBenchmark = function(TrainPathsMet,TrainPathsFlux,PredictPathMet,PredictNcPath,
+	varnames,varsunits,removeflagged,binfo,outofsample){
 	
-	library(ncdf) # load netcdf library
+	library(ncdf4) # load netcdf library
 	
 	ntrainsites = length(TrainPathsMet) # number of training sites
 	
 	# Define netcdf file for storing benchmark simulations:
 	missing_value=NcMissingVal # default missing value for all variables
 	# Define x, y dimensions
-	xd = dim.def.ncdf('x',vals=c(1),units='')	
-	yd = dim.def.ncdf('y',vals=c(1),units='')
-	# Open met prediction file to copy timing details:
-	mfid=open.ncdf(PredictPathMet,readunlim=FALSE)
-	timeunits=att.get.ncdf(mfid,'time','units')
-	timedata=get.var.ncdf(mfid,'time')
-	close.ncdf(mfid)
+	xd = ncdim_def('x',vals=c(1),units='')	
+	yd = ncdim_def('y',vals=c(1),units='')
+	# Open met prediction file to copy timing and global attribute details:
+	mfid=nc_open(PredictPathMet,readunlim=FALSE,write=FALSE)
+	timeunits=ncatt_get(mfid,'time','units')
+	timedata=ncvar_get(mfid,'time')
+	DataSetName=ncatt_get(mfid,varid=0,'PALS_dataset_name')
+	DataSetVersion=ncatt_get(mfid,varid=0,'PALS_dataset_version')
+	Lat=ncvar_get(mfid,'latitude')
+	Lon=ncvar_get(mfid,'longitude')
+	nc_close(mfid)
+	
 	# Define time dimension:
-	td = dim.def.ncdf('time',unlim=TRUE,units=timeunits$value,vals=timedata)
+	td = ncdim_def('time',unlim=TRUE,units=timeunits$value,vals=timedata)
 	# Begin defining variables (time independent first):
 	benchvars = list() # initialise
 	# Define latitude variable:
-	benchvars[[1]] = var.def.ncdf('latitude',units='degrees_north',
+	benchvars[[1]] = ncvar_def('latitude',units='degrees_north',
 		dim=list(xd,yd),missval=missing_value,longname='Latitude')
 	# Define longitude variable:
-	benchvars[[2]] = var.def.ncdf('longitude',units='degrees_east',
+	benchvars[[2]] = ncvar_def('longitude',units='degrees_east',
 		dim=list(xd,yd),missval=missing_value,longname='Longitude')
 	# Define time varying benchmark variables:
-	vctr = 3 # variable counter
 	for(v in 1:length(varnames)){
-		for(b in 1:length(benchnames)){
-			benchvars[[vctr]]=var.def.ncdf(name=paste(varnames[v],'_',
-				benchnames[b],sep=''),units=varsunits[v],dim=list(xd,yd,td),
-				missval=missing_value,
-				longname=paste('Empirical',varnames[v],
-					'benchmark timeseries',benchnames[b]))
-			vctr = vctr + 1
-		}
-	}
-	# If Qle, Qh and Qg empirical benchmarks are being generated, define Rnet as well:
-	if(any(varnames=='Qle') & any(varnames=='Qh') & any(varnames=='Qg')){
-		for(b in 1:length(benchnames)){
-			benchvars[[vctr]]=var.def.ncdf(name=paste('Rnet_',
-				benchnames[b],sep=''),units=RnetUnitsName[1],dim=list(xd,yd,td),
-				missval=missing_value,
-				longname=paste('Empirical Rnet benchmark timeseries',benchnames[b]))
-			vctr = vctr + 1
-		}	
+		benchvars[[(v+2)]]=ncvar_def(name=varnames[v],units=varsunits[v],
+			dim=list(xd,yd,td),missval=missing_value,
+			longname=paste('Empirical',varnames[v],'benchmark timeseries'))
 	}
 		
 	# Create benchmark netcdf file:
-	ncid = create.ncdf(filename=PredictNcPath,vars=benchvars)
-	# Add ancillary details about benchmarks:
-	for(b in 1:length(benchnames)){
-		# First just create string of input variable names:
-		benchin = ''
-		cnt = 1
-		repeat{
-			benchin = paste(benchin,benchx[[b]][cnt],sep='')
-			if(length(benchx[[b]]) == cnt){ 
-				break 
-			}else{
-				benchin = paste(benchin,', ',sep='')
-			}
-			cnt = cnt + 1
+	ncid = nc_create(filename=PredictNcPath,vars=benchvars)
+	
+	# Add ancillary details about benchmark:
+	# First just create string of input variable names:
+	benchin = ''
+	cnt = 1
+	repeat{
+		benchin = paste(benchin,binfo$x[cnt],sep='')
+		if(length(binfo$x) == cnt){ 
+			break 
+		}else{
+			benchin = paste(benchin,', ',sep='')
 		}
-		for(v in 1:length(varnames)){
-			# Save this string as benchmark_inputs attribute:
-			att.put.ncdf(ncid,paste(varnames[v],'_',benchnames[b],sep=''),
-				'benchmark_inputs',benchin)
-			# Add empirical model type attribute:
-			att.put.ncdf(ncid,paste(varnames[v],'_',benchnames[b],sep=''),
-				'benchmark_modeltype',benchtype[b])
-		}
-		# If we're creating Rnet as well, add attributes:
-		if(any(varnames=='Qle') & any(varnames=='Qh') & any(varnames=='Qg')){
-			att.put.ncdf(ncid,paste('Rnet_',benchnames[b],sep=''),
-				'source',paste('Constructed as a sum of',
-				benchnames[b],' Qle, Qh and Qg'))
-		}
+		cnt = cnt + 1
 	}
+	# Then save this string as benchmark_inputs attribute and
+	# add empirical model type attribute:
+	for(v in 1:length(varnames)){
+		ncatt_put(ncid,varnames[v],'benchmark_inputs',benchin)
+		ncatt_put(ncid,varnames[v],'benchmark_modeltype',binfo$type)
+	}
+	
 	# Write global attributes:
-	att.put.ncdf(ncid,varid=0,attname='Production_time',
-		attval=as.character(Sys.time()))
-	att.put.ncdf(ncid,varid=0,attname='Production_source',
-		attval='PALS empirical benchmark simulations')
+	ncatt_put(ncid,varid=0,attname='Production_time',attval=as.character(Sys.time()))
+	ncatt_put(ncid,varid=0,attname='Production_source',
+		attval='Empirical benchmark simulation')
 	if(removeflagged){ # Note if gap-filled data has been excluded 
-		att.put.ncdf(ncid,varid=0,attname='Exclusions',
+		ncatt_put(ncid,varid=0,attname='Exclusions',
  			attval='Empirical models trained only on non-gap-filled data')
 	}
-	att.put.ncdf(ncid,varid=0,attname='PALS_dataset_name',
-		attval=DataSetName)
-	att.put.ncdf(ncid,varid=0,attname='PALS_dataset_version',
-		attval=DataSetVersion)
-	att.put.ncdf(ncid,varid=0,attname='Contact',
-		attval='palshelp@gmail.com')
+	if(outofsample){
+		ncatt_put(ncid,varid=0,attname='Out-of-sample',
+ 			attval=paste(DataSetName,'data was NOT used in training regression parameters for this prediction.'))
+	}
+	ncatt_put(ncid,varid=0,attname='PALS_dataset_name',attval=DataSetName)
+	ncatt_put(ncid,varid=0,attname='PALS_dataset_version',attval=DataSetVersion)
+	ncatt_put(ncid,varid=0,attname='Contact',attval='palshelp@gmail.com')
 	# Add time-independent variable data to file:
-	put.var.ncdf(ncid,'latitude',vals=SiteLat)
-	put.var.ncdf(ncid,'longitude',vals=SiteLon)
+	ncvar_put(ncid,'latitude',vals=Lat)
+	ncvar_put(ncid,'longitude',vals=Lon)
 	# Create paths to training data files:
 	TrainPaths = c(TrainPathsMet,TrainPathsFlux)
 	# Calculate benchmarks and add them to file:
-	for(b in 1:length(benchnames)){
-		for(v in 1:length(varnames)){
-			cat('Training benchmark',b,' for variable:',varnames[v],'\n')
-			# Establish empirical model parameters on training data sets:
-			trainedmodel = TrainEmpModel(ntrainsites,TrainPaths,
-				benchx[[b]],varnames[v],benchparam[b],benchtype[b],
-				removeflagged=removeflagged)
-			# Use those parameters to make a prediction:
-			cat('Predicting using benchmark',b,' \n')
-			empprediction = PredictEmpFlux(PredictPathMet,benchx[[b]],
-				varnames[v],trainedmodel)
-			# Write this benchmark model to the netcdf file:
-			cat('writing to netcdf file... \n')
-			put.var.ncdf(ncid,paste(varnames[v],'_',benchnames[b],sep=''),
-				vals=empprediction)
-			# Save Qle, Qh and Qg data to construct Rnet:
-			if(varnames[v]=='Qle'){
-				BQle = empprediction
-			}else if(varnames[v]=='Qh'){
-				BQh = empprediction
-			}else if(varnames[v]=='Qg'){
-				BQg = empprediction
-			}
-		}
-		# If all prerequisite variables exist, write Rnet:
-		if(any(varnames=='Qle') & any(varnames=='Qh') & any(varnames=='Qg')){
-			put.var.ncdf(ncid,paste('Rnet_',benchnames[b],sep=''),
-				vals=(BQle+BQh+BQg))
-		}
+	for(v in 1:length(varnames)){
+		cat('Training benchmark',binfo$type,' for variable:',varnames[v],'\n')
+		# Establish empirical model parameters on training data sets:
+		trainedmodel = TrainEmpModel(ntrainsites,TrainPaths,binfo$x,varnames[v],
+			binfo$par[b],binfo$type[b],removeflagged=removeflagged)
+		# Use those parameters to make a prediction:
+		cat('...Predicting using benchmark \n')
+		empprediction = PredictEmpFlux(PredictPathMet,binfo$x,
+			varnames[v],trainedmodel)
+		# Write this benchmark model to the netcdf file:
+		cat('...writing to netcdf file \n')
+		ncvar_put(ncid,varnames[v],vals=empprediction)
 	}
 	# Close benchmarks netcdf file:
-	close.ncdf(ncid)
-	
+	nc_close(ncid)
 	return()
 }
 

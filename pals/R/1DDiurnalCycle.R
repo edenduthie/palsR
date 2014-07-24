@@ -144,7 +144,7 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 	xloc=c(0:(tstepinday-1)) # set location of x-coords in plot
 	yaxmin=min(avday) # y axis minimum in plot
 	yaxmax=max(avday)+(max(avday)-yaxmin)*0.15 # y axis maximum in plot
-	plotcolours=getPlotColours() # in PALSconstants
+	plotcolours=LineColours() # in PALSconstants
 	# Now plot each panel:
 	for(k in 1:4){# for each season (DJF, MAM etc)
 		# Plot obs data result:
