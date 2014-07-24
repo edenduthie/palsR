@@ -164,15 +164,18 @@ GetLatLon = function(mfid){
 		latlen = mfid$dim[[exists_lat$dimnum]]$len
 	}else{
 		# or as a normal variable:
-		# but first make sure we're just dealing with a 1D defined latitude;
-		# this will need to be changed when different grid types are acceptable:
-		if(mfid$var[[exists_lat$varnum]]$ndims != 1){
-			errtext = 'PALS cannot yet cope with lat being more than 1D'	
-			latlon = list(err=TRUE,errtext=errtext)
-			return(latlon)
+		if(mfid$var[[exists_lat$varnum]]$ndims != 1){ # If not a 1D latitude variable
+			# Check that it's still a lat-lon grid:
+			lat = ncvar_get(mfid,lat_det[[1]][['Name']][exists_lat$index]) # get lat data
+			latlen = length(unique(as.vector(lat))) # i.e. the number of unique latitude values
+			if(any(mfid$var[exists_lat$index]$size != latlen)){
+				# i.e. number of unique lat vals is not equal to the length of either of the dims
+				# on which latitude depends
+				errtext = 'PALS cannot yet cope with non lat-lon grids yet.'	
+				latlon = list(err=TRUE,errtext=errtext)
+				return(latlon)
+			}
 		}
-		lat = ncvar_get(mfid,lat_det[[1]][['Name']][exists_lat$index])
-		latlen = length(lat)
 	}
 	
 	# Repeat the process for longitude:
@@ -192,15 +195,18 @@ GetLatLon = function(mfid){
 		lonlen = mfid$dim[[exists_lon$dimnum]]$len
 	}else{
 		# or as a normal variable:
-		# but first make sure we're just dealing with a 1D defined longitude;
-		# this will need to be changed when different grid types are acceptable:
-		if(mfid$var[[exists_lon$varnum]]$ndims != 1){
-			errtext = 'PALS cannot yet cope with lon being more than 1D'	
-			latlon = list(err=TRUE,errtext=errtext)
-			return(latlon)
+		if(mfid$var[[exists_lon$varnum]]$ndims != 1){ # If not a 1D latitude variable
+			# Check that it's still a lat-lon grid:
+			lon = ncvar_get(mfid,lon_det[[1]][['Name']][exists_lon$index]) # get lon data
+			lonlen = length(unique(as.vector(lon))) # i.e. the number of unique latitude values
+			if(any(mfid$var[exists_lat$index]$size != latlen)){
+				# i.e. number of unique lat vals is not equal to the length of either of the dims
+				# on which latitude depends
+				errtext = 'PALS cannot yet cope with non lat-lon grids yet.'	
+				latlon = list(err=TRUE,errtext=errtext)
+				return(latlon)
+			}
 		}
-		lon = ncvar_get(mfid,lon_det[[1]][['Name']][exists_lon$index])
-		lonlen = length(lon)
 	}
 	# Return result:
 	latlon = list(err=FALSE,errtext=errtext,lat=lat,lon=lon,latlen=latlen,lonlen=lonlen)

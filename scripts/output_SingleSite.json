@@ -2,7 +2,7 @@
  "files": [
  {
  "type": "Qle avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/399a37c2-a40b-4fbf-88da-983195d4fbcb.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e70423f3-a954-4c69-927f-4ccae2c88264.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -15,7 +15,7 @@
 },
 {
  "type": "Qle scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/887165f1-ee68-4f34-bdfd-57cfb82cb88c.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/961e62fb-03b9-422b-845f-57f318a61f52.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -27,21 +27,8 @@
 "bencherror": "Benchmark analysis not available for this analysis type" 
 },
 {
- "type": "Qle diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4923d21a-a035-4589-ae8c-1c367eaf6ae8.png",
-"mimetype": "image/png",
-"metrics": {
- "nme":      0,
-"rmse":      0,
-"correlation":      1 
-},
-"analysistype": "DiurnalCycle",
-"variablename": "Qle",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
-},
-{
  "type": "Qle timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e3457f5b-db72-415a-b0f2-c6acd68a7a6e.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/a3519bd4-3706-4e8a-8996-a3d4b96ea376.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -50,11 +37,11 @@
 },
 "analysistype": "Timeseries",
 "variablename": "Qle",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Qle annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/48633403-720e-4e08-8d1c-121182a3e956.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/bfc09ed5-40d6-428b-a820-c5bcd4eace04.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -63,11 +50,24 @@
 },
 "analysistype": "AnnualCycle",
 "variablename": "Qle",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
+},
+{
+ "type": "Qle diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0d17fc22-4b5f-4719-b801-48adbaa1dcfd.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qle",
+"bencherror": " " 
 },
 {
  "type": "Qle pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3a5c244b-6a87-424c-8e65-91f6b69dd0b0.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/24484fcf-0695-4155-862f-f1e4f11d769f.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -76,11 +76,11 @@
 },
 "analysistype": "PDF",
 "variablename": "Qle",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Qle taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/fdeb7eee-4686-4f52-a4a8-cb6244acbdd9.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/29257e3c-b409-4e67-a23c-b3cc0fd6538f.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -93,7 +93,7 @@
 },
 {
  "type": "Qh avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d505b329-8b15-4548-94d1-8df3ef1b493d.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4465cb37-5dcc-41ba-8da0-cd4595390601.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -106,7 +106,7 @@
 },
 {
  "type": "Qh scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4373e272-12c4-419b-b815-0ae08362af20.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/2c5e8f9e-588e-427d-b463-462bf1bcf09a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -118,21 +118,8 @@
 "bencherror": "Benchmark analysis not available for this analysis type" 
 },
 {
- "type": "Qh diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/45001375-e7b6-4083-9f8c-be1b5e8bf81e.png",
-"mimetype": "image/png",
-"metrics": {
- "nme":      0,
-"rmse":      0,
-"correlation":      1 
-},
-"analysistype": "DiurnalCycle",
-"variablename": "Qh",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
-},
-{
  "type": "Qh timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/06ff57fc-1076-4813-9e0b-ad5a5059f311.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0af7065b-6446-4ca2-814a-fae65bbb877a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -141,11 +128,11 @@
 },
 "analysistype": "Timeseries",
 "variablename": "Qh",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Qh annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/536ac8b8-dc0d-446e-8abc-004155e91593.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/da9353b7-1e79-4a50-94cd-8ded6f1c28e5.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -154,11 +141,24 @@
 },
 "analysistype": "AnnualCycle",
 "variablename": "Qh",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
+},
+{
+ "type": "Qh diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/00c1f482-5ea8-4c84-899a-c6674697458b.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qh",
+"bencherror": " " 
 },
 {
  "type": "Qh pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/8b2c6a11-60fe-42f2-bf0c-b0d84a75bc97.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/52990cc3-7a51-4a05-ab16-a6e9cfc9fdb4.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -167,11 +167,11 @@
 },
 "analysistype": "PDF",
 "variablename": "Qh",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Qh taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d90ff5ab-5895-492e-acd6-5337a456466b.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/f2dbcc52-8854-4b1e-92b0-4176ebc1f955.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -184,7 +184,7 @@
 },
 {
  "type": "NEE avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/bf3fe825-8df8-434b-9ea7-151d249f471c.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d450be1a-acc7-478a-ac3f-32895cd5dd28.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -197,7 +197,7 @@
 },
 {
  "type": "NEE scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/675780c9-5cb8-4050-966d-2993c7f4a19f.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9abdfdb0-8210-4d29-9984-201ad998da2c.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -209,21 +209,8 @@
 "bencherror": "Benchmark analysis not available for this analysis type" 
 },
 {
- "type": "NEE diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/921ecd3c-b3b6-4280-9645-9d0b7f9de469.png",
-"mimetype": "image/png",
-"metrics": {
- "nme":      0,
-"rmse":      0,
-"correlation":      1 
-},
-"analysistype": "DiurnalCycle",
-"variablename": "NEE",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
-},
-{
  "type": "NEE timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/301d9880-66c8-4cf9-a7bf-d96001f2a6a9.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/106ca6bc-5b78-489f-a267-657a7df5168d.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -232,11 +219,11 @@
 },
 "analysistype": "Timeseries",
 "variablename": "NEE",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "NEE annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/cc725a51-7464-4ab7-86d9-904ba8dbf7fa.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e5aa19e7-0007-48fa-944e-c8b4c85fddfa.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -245,11 +232,24 @@
 },
 "analysistype": "AnnualCycle",
 "variablename": "NEE",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "NEE diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1d3c0d54-3ce6-4a00-bc9f-639bd8c61b5b.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "NEE",
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "NEE pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/88f9ad2c-aa0b-4271-9753-832b3701dfc7.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/aa892a38-36d4-4c59-a60a-49d1e02dcd05.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -258,11 +258,11 @@
 },
 "analysistype": "PDF",
 "variablename": "NEE",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable NEE does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "NEE taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c488b061-515a-4924-abc3-7f3da3f6b2b2.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b3025359-4dcb-4549-b6d1-b914f98d826a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -275,7 +275,7 @@
 },
 {
  "type": "Rnet avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d8e4a5a4-81c8-43a8-b313-51a9ab0c6e19.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/73a1a020-241d-4909-94d8-796d2428925e.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -288,7 +288,7 @@
 },
 {
  "type": "Rnet scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/5a535504-1882-485f-acc5-0ffcd1ad261e.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/3c44bc46-e9d0-4395-afe4-9bd9c782cd5b.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -300,21 +300,8 @@
 "bencherror": "Benchmark analysis not available for this analysis type" 
 },
 {
- "type": "Rnet diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/02d90db8-015c-434e-8e7a-715c64dcc25b.png",
-"mimetype": "image/png",
-"metrics": {
- "nme":      0,
-"rmse":      0,
-"correlation":      1 
-},
-"analysistype": "DiurnalCycle",
-"variablename": "Rnet",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
-},
-{
  "type": "Rnet timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1a25d892-c5e9-4682-97da-316e544fdb31.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/2108a780-fb80-4f92-8bd0-02dd8c4fc147.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -323,11 +310,11 @@
 },
 "analysistype": "Timeseries",
 "variablename": "Rnet",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Rnet annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/fb77be12-21d9-47c2-9177-9a08259a101d.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/76489b61-2b4e-41bc-82da-fe38c91e07da.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -336,11 +323,24 @@
 },
 "analysistype": "AnnualCycle",
 "variablename": "Rnet",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
+},
+{
+ "type": "Rnet diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/35187a08-d8ab-4ccd-9a67-8c1cf9f7c651.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Rnet",
+"bencherror": " " 
 },
 {
  "type": "Rnet pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/87045b22-0429-4232-ab55-eb1b4cf15d5b.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/34ff5654-dd40-4439-aec1-1a5312df3f3a.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -349,11 +349,11 @@
 },
 "analysistype": "PDF",
 "variablename": "Rnet",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: PALS cannot yet cope with lat being more than 1D" 
+"bencherror": " " 
 },
 {
  "type": "Rnet taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/695f5f86-00ca-40f8-9abd-4740ecd298cb.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7a60aec0-c025-451b-99a2-787d6f8b9dc3.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -366,7 +366,7 @@
 },
 {
  "type": "Qg avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b9e841e9-0791-491d-8aab-1e96704edc38.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/bfc12219-ebc0-4069-ac6a-fe8fea3c9794.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -379,7 +379,7 @@
 },
 {
  "type": "Qg scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6691f6d3-b413-4d01-888a-b849aa2f1707.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/7f504260-7e57-4abb-96de-042c1481b0c9.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -391,21 +391,8 @@
 "bencherror": "Benchmark analysis not available for this analysis type" 
 },
 {
- "type": "Qg diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/17fbb12c-f86f-43f9-9b6b-4394ea7f7b5f.png",
-"mimetype": "image/png",
-"metrics": {
- "nme":      0,
-"rmse":      0,
-"correlation":      1 
-},
-"analysistype": "DiurnalCycle",
-"variablename": "Qg",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
-},
-{
  "type": "Qg timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/e4819a11-3ebc-450d-a8d0-52abdc118e2a.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/b3fad8dc-086f-46e4-b7a5-06c1e181c7bc.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -414,11 +401,11 @@
 },
 "analysistype": "Timeseries",
 "variablename": "Qg",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "Qg annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/775044b6-ff05-4941-9e7d-9876fbc49aa6.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/00818d94-d44e-4f67-9c58-2fe1877443a0.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -427,11 +414,24 @@
 },
 "analysistype": "AnnualCycle",
 "variablename": "Qg",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "Qg diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/511c1cac-f442-4ca5-9969-f4259956c273.png",
+"mimetype": "image/png",
+"metrics": {
+ "nme":      0,
+"rmse":      0,
+"correlation":      1 
+},
+"analysistype": "DiurnalCycle",
+"variablename": "Qg",
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "Qg pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/11bf0e5d-ac2d-4c94-9b7b-7da392f0eb92.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d0f4805f-c46f-4516-be81-46026887db25.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -440,11 +440,11 @@
 },
 "analysistype": "PDF",
 "variablename": "Qg",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable Qg does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "Qg taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4244172d-6cba-49fa-b215-da45d87d9fa1.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9a56fa91-d8eb-423f-9eb0-8e69f64dee90.png",
 "mimetype": "image/png",
 "metrics": {
  "nme":      0,
@@ -457,52 +457,52 @@
 },
 {
  "type": "SWnet avwindow",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/6cf33319-4aec-4f5c-bb18-07b973ec3189.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/1ae2166a-27c5-4d63-88c8-fd91892fc6ff.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet scatter",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/cf6989b6-b7e6-4589-bc8c-b82e190fb25c.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/77ddf506-9cfb-4c44-8cf6-3d7368ed5efd.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
-},
-{
- "type": "SWnet diurnalcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/5d2f9d7c-b0af-45d4-91b8-b2c3dc150852.png",
-"mimetype": "image/png",
-"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet timeseries",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/5fd74588-d56a-4d50-be43-d9a42e174a6e.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/944cfa10-541c-4584-9f16-dacb74a64111.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet annualcycle",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/c7468f00-f144-4216-adc7-b145a9923a23.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/9d08fec4-3985-4095-8846-d6803369ed69.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+},
+{
+ "type": "SWnet diurnalcycle",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/4578c13e-e54a-4549-86e8-425f58e58b95.png",
+"mimetype": "image/png",
+"error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet pdf",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/be5e29a4-58a1-45d8-8788-7cd1926b353d.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/d13eb3fd-d379-4fd4-bec1-14462152fae5.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 },
 {
  "type": "SWnet taylor",
-"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/da974787-e05b-4796-84f2-202c439cd9cd.png",
+"filename": "/Users/gab/Documents/admin/PALS/scripts/palsR/scripts/0b151216-c32d-44ba-baf8-317c08a1df51.png",
 "mimetype": "image/png",
 "error": "DS2: Variable SWnet does not exist in data set ElSaler2Fluxnet1.4",
-"bencherror": " Benchmark 1: Benchmark error: PALS cannot yet cope with lat being more than 1DBenchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
+"bencherror": " Benchmark 2: Benchmark error: M3: Requested variable SWnet does not appear to exist in Model Ouput: PenmanMontElSaler2" 
 } 
 ] 
 }
