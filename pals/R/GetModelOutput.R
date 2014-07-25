@@ -25,6 +25,7 @@ GetModelOutput = function(variable,filelist){
 			errtext = paste('M3: Requested variable',variable[['Name']][1],
 				'does not appear to exist in Model Ouput:', filelist[[f]][['name']])
 			model=list(errtext=errtext,err=TRUE)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 		# Check variable units are known:
@@ -32,6 +33,7 @@ GetModelOutput = function(variable,filelist){
 		# If units issue, return error:
 		if(units$err){
 			model=list(errtext=units$errtext,err=TRUE)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 		# Get timing details for each file:
@@ -40,6 +42,7 @@ GetModelOutput = function(variable,filelist){
 		# If timing issue, return error:
 		if(modeltiming[[f]]$err){
 			model=list(errtext=modeltiming[[f]]$errtext,err=TRUE)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 	}
@@ -61,12 +64,14 @@ GetModelOutput = function(variable,filelist){
 		latlon = GetLatLon(mfid[[1]])
 		if(latlon$err){	
 			model = list(err=TRUE,errtext=latlon$errtext)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 		# Check that MO files don't repeat years:
 		if(length(unique(allyear)) != length(allyear)){ # i.e. a repeated year has been removed
 			errtext='Model output has two files with the same starting year.'
 			model = list(err=TRUE,errtext=errtext)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 		
@@ -82,6 +87,7 @@ GetModelOutput = function(variable,filelist){
 			if(any(gap_bw_files != 1)){
 				errtext='Model output is missing some years.'
 				model = list(err=TRUE,errtext=errtext)
+				mfid = lapply(mfid, nc_close)
 				return(model)
 			}
 		}
@@ -102,6 +108,7 @@ GetModelOutput = function(variable,filelist){
 		latlon = GetLatLon(mfid[[1]])
 		if(latlon$err){	
 			model = list(err=TRUE,errtext=latlon$errtext)
+			mfid = lapply(mfid, nc_close)
 			return(model)
 		}
 		# Allocate space for data:
@@ -133,9 +140,7 @@ GetModelOutput = function(variable,filelist){
 	}
 	
 	# Close all files for this model output:
-	for(f in 1:length(filelist)){
-		nc_close(mfid[[f]])	
-	}
+	mfid = lapply(mfid, nc_close)
 	
 	# Apply any units changes:
 	vdata = vdata*units$multiplier + units$addition

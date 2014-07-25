@@ -31,11 +31,13 @@ GetFluxnetVariable = function(variable,filedetails,flagonly=FALSE){
 			errtext = paste('DS2: Variable ',variable[['Name']][1],
 				' does not exist in data set ',filedetails[['name']],sep='')
 			obs=list(errtext=errtext,exists=FALSE,qcexists=FALSE,err=TRUE)
+			fid = nc_close(fid)
 			return(obs)
 		}else{
 			errtest = paste('DS2: Variable ',variable[['Name']][1],
 				'does not exist in data set',filedetails[['name']],sep='')
 			obs=list(errtext=errtext,exists=FALSE,err=TRUE,qcexists=FALSE)
+			fid = nc_close(fid)
 			return(obs)
 		}
 	}
