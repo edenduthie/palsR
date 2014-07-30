@@ -58,7 +58,7 @@ FindTimeVarName = function(fid){
 		# Search for time as a dimension variable:
 		for (d in 1:ndims){ # Search through all dimensions in netcdf file
 			if(fid$dim[[d]]$name=='time' | fid$dim[[d]]$name=='t' |
-				fid$dim[[d]]$name=='time_counter'){
+				fid$dim[[d]]$name=='time_counter' | fid$dim[[d]]$name=='Time'){
 				# Now check for time dimension variable:
 				if(fid$dim[[d]]$dimvarid$id != -1){ # i.e. dim var exists	
 					exists = TRUE # i.e. found time dimension variable
