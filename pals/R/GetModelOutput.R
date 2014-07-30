@@ -139,6 +139,18 @@ GetModelOutput = function(variable,filelist){
 			interval=modeltiming[[1]]$interval)
 	}
 	
+	if((variable[['Name']][1]=='NEE') & (length(vdata) != (ntsteps*latlon$lonlen*latlon$latlen))){
+		# likely an ORCHIDEE file where NEE has dim (x,y,t,vegtype), in which case sum over 
+		# vegtype dim - NEE values are already weighted by vegtype fraction:
+		vdata = apply(vdata,c(1,2,3),sum)
+	}else if(length(vdata) != (ntsteps*latlon$lonlen*latlon$latlen)){
+		errtext = paste('Requested variable',variable[['Name']][1],
+				'has more dimensions than expected in Model Ouput:', filelist[[f]][['name']])
+		model = list(err=TRUE,errtext=errtext)
+		mfid = lapply(mfid, nc_close)
+		return(model)
+	}
+
 	# Close all files for this model output:
 	mfid = lapply(mfid, nc_close)
 	

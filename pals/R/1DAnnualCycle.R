@@ -48,7 +48,7 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		}
 	}
 	xloc=c(1:12) # set location of x-coords
-	plotcolours=LineColours() # in PALSconstants
+	plotcolours=LineColours()
 	# Plot model output result:
 	yaxmin=min(data_monthly) # y axis minimum in plot
 	yaxmax=max(data_monthly)+0.18*(max(data_monthly)-yaxmin) # y axis maximum in plot

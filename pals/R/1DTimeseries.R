@@ -15,7 +15,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
 	nyears=as.integer(ndays/365) # find # years in data set
-		plotcolours=LineColours() # in PALSconstants
+		plotcolours=LineColours() 
 	# x-axis labels:
 	xxat=c()
 	xxlab=c()
