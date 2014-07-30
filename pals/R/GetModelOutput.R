@@ -129,8 +129,22 @@ GetModelOutput = function(variable,filelist){
 			}
 		}else{
 			for(f in 1:length(filelist)){ # For each file sent by js
-				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = 
-					ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index])
+				vdata_tmp = ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index])
+
+				if ((variable[['Name']][1]=='NEE') & (length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen))) {
+					# likely an ORCHIDEE file where NEE has dim (x,y,t,vegtype), in which case sum over
+					# vegtype dim - NEE values are already weighted by vegtype fraction:
+					vdata_tmp = apply(vdata,c(1,2,3),sum)
+				}
+				if(length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen)){
+					errtext = paste('Requested variable',variable[['Name']][1],
+							'has more dimensions than expected in Model Ouput:', filelist[[f]][['name']])
+					model = list(err=TRUE,errtext=errtext)
+					mfid = lapply(mfid, nc_close)
+					return(model)
+				}
+
+				vdata[,,((f-1)*tsteps1+1) : ((f-1)*tsteps1+tsteps1)] = vdata_tmp
 			}
 		}
 		# Create model timing list to reflect aggregated data:
@@ -139,18 +153,6 @@ GetModelOutput = function(variable,filelist){
 			interval=modeltiming[[1]]$interval)
 	}
 	
-	if((variable[['Name']][1]=='NEE') & (length(vdata) != (ntsteps*latlon$lonlen*latlon$latlen))){
-		# likely an ORCHIDEE file where NEE has dim (x,y,t,vegtype), in which case sum over 
-		# vegtype dim - NEE values are already weighted by vegtype fraction:
-		vdata = apply(vdata,c(1,2,3),sum)
-	}else if(length(vdata) != (ntsteps*latlon$lonlen*latlon$latlen)){
-		errtext = paste('Requested variable',variable[['Name']][1],
-				'has more dimensions than expected in Model Ouput:', filelist[[f]][['name']])
-		model = list(err=TRUE,errtext=errtext)
-		mfid = lapply(mfid, nc_close)
-		return(model)
-	}
-
 	# Close all files for this model output:
 	mfid = lapply(mfid, nc_close)
 	
