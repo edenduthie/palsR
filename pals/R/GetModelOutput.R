@@ -129,12 +129,12 @@ GetModelOutput = function(variable,filelist){
 			}
 		}else{
 			for(f in 1:length(filelist)){ # For each file sent by js
-				vdata_tmp = ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index])
+				vdata_tmp = ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index],collapse_degen=FALSE)
 
 				if ((variable[['Name']][1]=='NEE') & (length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen))) {
 					# likely an ORCHIDEE file where NEE has dim (x,y,t,vegtype), in which case sum over
 					# vegtype dim - NEE values are already weighted by vegtype fraction:
-					vdata_tmp = apply(vdata_tmp,c(1,2,3),sum)
+					vdata_tmp = apply(vdata_tmp,c(1,2,4),sum)
 				}
 				if(length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen)){
 					errtext = paste('Requested variable',variable[['Name']][1],
