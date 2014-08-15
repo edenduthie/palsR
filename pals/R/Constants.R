@@ -98,6 +98,13 @@ GetVariableDetails = function(request_names){
 			var_details[['Addition']] = c(0)
 			var_details[['UnitsText']] = ''
 			var_details[['PlotName']] = 'Longitude'
+		}else if(request_names[v] == 'time'){
+			var_details[['Name']] = c('time','timestep','time_counter','time_bounds','Time')
+			var_details[['UnitsName']] = c('seconds', 'days')
+			var_details[['Multiplier']] = c(1, 86400)
+			var_details[['Addition']] = c(0,0)
+			var_details[['UnitsText']] = 'seconds'
+			var_details[['PlotName']] = 'seconds'
 		# Met variables
 		}else if(request_names[v] == 'SWdown'){
 			var_details[['Name']] = c('SWdown')
