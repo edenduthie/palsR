@@ -14,7 +14,7 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 	metrics = list()
 	if(!whole){ # we need a whole number of years for this to run
 		errtext = 'AnnualCycle analysis requires a whole number of years of data.'
-		result = list(errtext=errtext)
+		result = list(errtext=errtext,metrics=list(first=list(name='fail',model_value=NA)))
 		return(result)
 	}
 	ncurves = length(acdata[1,]) # Number of curves in final plot:

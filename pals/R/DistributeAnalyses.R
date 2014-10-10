@@ -26,14 +26,12 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	errcheck = CanAnalysisProceed(obs, model)
 	if(errcheck$err){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-			error=errcheck$errtext,bencherror=bench$errtext)
+			error=errcheck$errtext,bencherror=bench$errtext,metrics=list(first=list(name='fail',model_value=NA)))
 		return(result)
 	}
 	
 	# Test benchmark timing compatibility, and remove any benchmarks if necessary:
 	bench = PruneBenchmarks(obs,bench)
-
-	cat('Remaining benchmarks:',bench$howmany,' \n')
 	
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
@@ -100,13 +98,13 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		errcheck = CanAnalysisProceed(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$model)
 		if(errcheck$err){
 			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-				error=errcheck$errtext,bencherror=data[[Analysis$vindex]]$bench$errtext)
+				error=errcheck$errtext,bencherror=data[[Analysis$vindex]]$bench$errtext,
+				metrics=list(first=list(name='fail',model_value=NA)))
 			return(result)
 		}
 		
 		# Test benchmark timing compatibility, and remove any benchmarks if necessary:
 		bench = PruneBenchmarks(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$bench)
-		cat('Remaining benchmarks:',bench$howmany,' \n')
 		
 		# Create data matrix to send to analysis function:
 		adata=matrix(NA,length(data[[Analysis$vindex]]$obs$data),(2+data[[Analysis$vindex]]$bench$howmany))
@@ -195,7 +193,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 
 	if(areturn$errtext=='ok'){	
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-			metrics = metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
+			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
 	}else{
 		cat('\n###',areturn$errtext,'###\n')
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
@@ -207,6 +205,8 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 }
 
 CanAnalysisProceed = function(obs,model){
+	# Checks obs, model variables were found and timing is appropriate.
+	
 	# Check for obs or model aren't missing variable data:
 	readcheck = CheckDataRead(obs$err,obs$errtext,model$err,model$errtext)
 	# Don't proceed and report error if there's an issue:		
@@ -224,6 +224,8 @@ CanAnalysisProceed = function(obs,model){
 }
 
 CheckDataRead = function(obserr,obserrtext,moderr,moderrtext){
+	# Simply reports whether there was a read error from either
+	# obs or model output reading (no file, appropriate variable etc)
 	errtext = 'ok'
 	err = FALSE
 	if(obserr){
@@ -238,7 +240,7 @@ CheckDataRead = function(obserr,obserrtext,moderr,moderrtext){
 }
 
 PruneBenchmarks = function(obs,bench){
-	# Test benchmark timing compatibility, and remove benchmark if necessary:
+	# Test benchmark timing compatibility, and remove benchmark(s) if necessary:
 	if(bench$exist){
 		# We'll need to use bench$index inside the for loop and also want to 
 		# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
@@ -272,5 +274,6 @@ PruneBenchmarks = function(obs,bench){
 		# Overwrite bench$index with values that account for any benchmarks that failed:
 		bench$index = new_benchindex
 	}
+	cat('Remaining benchmarks:',bench$howmany,' \n')
 	return(bench)	
 }

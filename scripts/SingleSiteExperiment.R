@@ -92,6 +92,6 @@ for(i in 1: length(output[["files"]])){
 	cat('  type:',output[["files"]][[i]]$type,'\n')
 	cat('  filename:',output[["files"]][[i]]$filename,'\n')
 	cat('  bench error:',output[["files"]][[i]]$bencherror,'\n')
-#	cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
-#		output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
+	cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
+		output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
 }
