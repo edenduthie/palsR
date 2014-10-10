@@ -7,9 +7,11 @@ GetModelOutput = function(variable,filelist){
 	library(ncdf4) # load netcdf library
 	errtext='ok'
 	
-	mfid=list() # initialise
-	modeltiming = list() # initialise
+	mfid=list() # initialise netcdf file ID list
+	modeltiming = list() # initialise list of each file's timing details
 	
+	# First check that each file exists, contains the variable we want, has known units,
+	# and known timing structure:
 	for(f in 1:length(filelist)){ # For each file of this MO:
 		# Check file exists:
 		if(!file.exists(filelist[[f]][['path']])){
@@ -38,7 +40,6 @@ GetModelOutput = function(variable,filelist){
 		}
 		# Get timing details for each file:
 		modeltiming[[f]] = GetTimingNcfile(mfid[[f]])
-		
 		# If timing issue, return error:
 		if(modeltiming[[f]]$err){
 			model=list(errtext=modeltiming[[f]]$errtext,err=TRUE)
@@ -47,7 +48,7 @@ GetModelOutput = function(variable,filelist){
 		}
 	}
 	
-	# Now try to understand how file data needs to be assembled:
+	# Now try to ascertain how the data in these files needs to be assembled:
 	allintervals = c()
 	alltsteps = c()
 	allyear = c()
@@ -151,6 +152,11 @@ GetModelOutput = function(variable,filelist){
 		modeltimingall = list(tstepsize=modeltiming[[1]]$tstepsize,tsteps=ntsteps,
 			syear=modeltiming[[1]]$syear,smonth=modeltiming[[1]]$smonth,sdoy=modeltiming[[1]]$sdoy,
 			interval=modeltiming[[1]]$interval)
+	}else{
+		errtext='PALS is not currently able to read model output files with this timing structure.'
+		model = list(err=TRUE,errtext=errtext)
+		mfid = lapply(mfid, nc_close)
+		return(model)
 	}
 	
 	# Close all files for this model output:
