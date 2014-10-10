@@ -21,22 +21,12 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	filestring = paste(getwd(),outfile,sep = "/")
 	# Analysis identifier for javascript:
 	outfiletype = paste(varname,tolower(Analysis$type))
-		
-	# Check for obs or model aren't missing variable data:
-	errcheck = CanAnalysisProceed(obs$err,obs$errtext,model$err,model$errtext)
-	# Don't proceed and report error if there's an issue:		
-	if( ! errcheck$proceed){
+	
+	# Check obs or model aren't missing variable data and timing is compatible:
+	errcheck = CanAnalysisProceed(obs, model)
+	if(errcheck$err){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
 			error=errcheck$errtext,bencherror=bench$errtext)
-		return(result)
-	}	
-	
-	# Check model, obs timing consistency
-	tcheck = CheckTiming(obs$timing,model$timing)	
-	# Don't proceed and report error if there's an issue:	
-	if(tcheck$err){
-		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-			error=tcheck$errtext,bencherror=bench$errtext)
 		return(result)
 	}
 	
@@ -107,7 +97,7 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 
 DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 	
-	# These will be metrics passed 
+	# These will be metrics passed unless overwritten below
 	metrics = list(nme = 0, rmse=0,correlation=1)
 	
 	# Create outfilename:
@@ -115,17 +105,16 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 	
 	# First deal with multiple-variable analyses:
 	if(Analysis$type == 'Conserve'){
-	# No single variable, so 'multiple' returned in javascript:
-	varname = 'multiple'
-	# Analysis identifier for javascript:
-	outfiletype = Analysis$type
+		# No single variable, so 'multiple' returned in javascript:
+		varname = 'multiple'
+		# Analysis identifier for javascript:
+		outfiletype = Analysis$type
 	
 	}else if(Analysis$type == 'EvapFrac'){
-	# No single variable, so 'multiple' returned in javascript:
-	varname = 'multiple'
-	# Analysis identifier for javascript:
-	outfiletype = Analysis$type
-	
+		# No single variable, so 'multiple' returned in javascript:
+		varname = 'multiple'
+		# Analysis identifier for javascript:
+		outfiletype = Analysis$type
 	
 	}else{ # Analysis will be for a single variable.
 		# The name of this variable
@@ -139,23 +128,11 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		# Analysis identifier for javascript:
 		outfiletype = paste(varname,tolower(Analysis$type))
 		
-		# Check for obs or model aren't missing variable data:
-		errcheck = CanAnalysisProceed(data[[Analysis$vindex]]$obs$err,
-			data[[Analysis$vindex]]$obs$errtext,data[[Analysis$vindex]]$model$err,
-			data[[Analysis$vindex]]$model$errtext)
-		# Don't proceed and report error if there's an issue:		
-		if( ! errcheck$proceed){
+		# Check obs or model aren't missing variable data and timing is compatible:
+		errcheck = CanAnalysisProceed(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$model)
+		if(errcheck$err){
 			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
 				error=errcheck$errtext,bencherror=data[[Analysis$vindex]]$bench$errtext)
-			return(result)
-		}		
-		# Check model, obs timing consistency
-		tcheck = CheckTiming(data[[Analysis$vindex]]$model$timing,
-			data[[Analysis$vindex]]$obs$timing)	
-		# Don't proceed and report error if there's an issue:	
-		if(tcheck$err){
-			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-				error=tcheck$errtext,bencherror=data[[Analysis$vindex]]$bench$errtext)
 			return(result)
 		}
 		
@@ -295,16 +272,33 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 	return(result)
 }
 
-CanAnalysisProceed = function(obserr,obserrtext,moderr,moderrtext){
+CanAnalysisProceed = function(obs,model){
+	# Check for obs or model aren't missing variable data:
+	readcheck = CheckDataRead(obs$err,obs$errtext,model$err,model$errtext)
+	# Don't proceed and report error if there's an issue:		
+	if(readcheck$err){
+		return(readcheck)
+	}	
+	# Check model, obs timing consistency
+	tcheck = CheckTiming(obs$timing,model$timing)	
+	# Don't proceed and report error if there's an issue:	
+	if(tcheck$err){
+		return(tcheck)
+	}
+	proceed = list(err=FALSE)
+	return(proceed)
+}
+
+CheckDataRead = function(obserr,obserrtext,moderr,moderrtext){
 	errtext = 'ok'
-	proceed = TRUE
+	err = FALSE
 	if(obserr){
-		proceed = FALSE
+		err = TRUE
 		errtext = obserrtext
 	}else if(moderr){
-		proceed = FALSE
+		err = TRUE
 		errtext = moderrtext
 	}	
-	result = list(proceed = proceed,errtext = errtext)
+	result = list(err = err,errtext = errtext)
 	return(result)
 }
