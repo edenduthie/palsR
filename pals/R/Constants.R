@@ -130,7 +130,7 @@ GetVariableDetails = function(request_names){
 		}else if(request_names[v] == 'PSurf'){
 			var_details[['Name']] = c('PSurf')
 			var_details[['UnitsName']] = c('Pa','pa','hPa')
-			var_details[['Multiplier']] = c(1,1,0.01)
+			var_details[['Multiplier']] = c(1,1,100)
 			var_details[['Addition']] = c(0,0,0)
 			var_details[['UnitsText']] = 'Pa'
 			var_details[['PlotName']] = 'Surface air pressure'
