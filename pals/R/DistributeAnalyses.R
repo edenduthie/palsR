@@ -22,7 +22,7 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	# Analysis identifier for javascript:
 	outfiletype = paste(varname,tolower(Analysis$type))
 	
-	# Check obs or model aren't missing variable data and timing is compatible:
+	# Check obs or model aren't missing variable data and that their timing is compatible:
 	errcheck = CanAnalysisProceed(obs, model)
 	if(errcheck$err){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
@@ -30,41 +30,9 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 		return(result)
 	}
 	
-	# Test benchmark timing compatibility, and remove benchmark if necessary:
-	if(bench$exist){
-		# We'll need to use bench$index inside the for loop and also want to 
-		# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
-		new_benchindex = bench$index
-		for(b in 1: bench$howmany){
-			# Check benchmark and obs timing are compatible:
-			tcheck = CheckTiming(obs$timing,bench[[ bench$index[b] ]]$timing,benchmark_timing=TRUE)
-			if(tcheck$err){
-				# Report error with benchmark
-				bench$errtext = paste(bench$errtext,'Benchmark',bench$index[b],':',tcheck$errtext)
-				bench[[bench$index[b]]]$errtext = tcheck$errtext
-				# Remove benchmark from benchmark list:
-				bench$howmany = bench$howmany - 1
-				if(bench$howmany == 0){
-					# If that was the only benchmark, note there no longer any:
-					bench$exist = FALSE
-				}else{
-					# Change index of appropriate benchmarks:
-					oldlength = length(new_benchindex)
-					if(b==1){
-						new_benchindex = new_benchindex[2:oldlength]
-					}else if(b==oldlength){	
-						new_benchindex = new_benchindex[1:(oldlength-1)]
-					}else{
-						new_benchindex = 
-							c(new_benchindex[1:(b-1)],new_benchindex[(b+1):oldlength])
-					}
-				}
-			}
-		}
-		# Overwrite bench$index with values that account for any benchmarks that failed:
-		bench$index = new_benchindex
-	}
-	
+	# Test benchmark timing compatibility, and remove any benchmarks if necessary:
+	bench = PruneBenchmarks(obs,bench)
+
 	cat('Remaining benchmarks:',bench$howmany,' \n')
 	
 	# Call analysis function:	
@@ -128,7 +96,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		# Analysis identifier for javascript:
 		outfiletype = paste(varname,tolower(Analysis$type))
 		
-		# Check obs or model aren't missing variable data and timing is compatible:
+		# Check obs or model aren't missing variable data and and that their timing is compatible:
 		errcheck = CanAnalysisProceed(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$model)
 		if(errcheck$err){
 			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
@@ -136,43 +104,9 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 			return(result)
 		}
 		
-		# Test benchmark timing compatibility:
-		if(data[[Analysis$vindex]]$bench$exist){
-			# We'll need to use bench$index inside the for loop and also want to 
-			# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
-			new_benchindex = data[[Analysis$vindex]]$bench$index
-			for(b in 1: (data[[Analysis$vindex]]$bench$howmany)){
-				tcheck = CheckTiming(data[[Analysis$vindex]]$bench[[ data[[Analysis$vindex]]$bench$index[b] ]]$timing,
-					data[[Analysis$vindex]]$obs$timing)
-				if(tcheck$err){
-					# Report error with benchmark
-					data[[Analysis$vindex]]$bench$errtext = 
-						paste(data[[Analysis$vindex]]$bench$errtext,'Benchmark',
-						data[[Analysis$vindex]]$bench$index[b],':',tcheck$errtext)
-					data[[Analysis$vindex]]$bench[[data[[Analysis$vindex]]$bench$index[b]]]$errtext = tcheck$errtext
-					# Remove benchmark from benchmark list:
-					data[[Analysis$vindex]]$bench$howmany = data[[Analysis$vindex]]$bench$howmany - 1
-					if(data[[Analysis$vindex]]$bench$howmany == 0){
-						# If that was the only benchmark, note there no longer any:
-						data[[Analysis$vindex]]$bench$exist = FALSE
-					}else{
-						# Change index of appropriate benchmarks:
-						oldlength = length(new_benchindex)
-						if(b==1){
-							new_benchindex = new_benchindex[2:oldlength]
-						}else if(b==oldlength){	
-							new_benchindex = new_benchindex[1:(oldlength-1)]
-						}else{
-							new_benchindex = 
-								c(new_benchindex[1:(b-1)],new_benchindex[(b+1):oldlength])
-						}
-					}	
-					
-				}
-			}
-			# Overwrite bench$index with values that account for any benchmarks that failed:
-			data[[Analysis$vindex]]$bench$index = new_benchindex
-		}
+		# Test benchmark timing compatibility, and remove any benchmarks if necessary:
+		bench = PruneBenchmarks(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$bench)
+		cat('Remaining benchmarks:',bench$howmany,' \n')
 		
 		# Create data matrix to send to analysis function:
 		adata=matrix(NA,length(data[[Analysis$vindex]]$obs$data),(2+data[[Analysis$vindex]]$bench$howmany))
@@ -301,4 +235,42 @@ CheckDataRead = function(obserr,obserrtext,moderr,moderrtext){
 	}	
 	result = list(err = err,errtext = errtext)
 	return(result)
+}
+
+PruneBenchmarks = function(obs,bench){
+	# Test benchmark timing compatibility, and remove benchmark if necessary:
+	if(bench$exist){
+		# We'll need to use bench$index inside the for loop and also want to 
+		# modify it for future use, so modify new_benchindex instead, then overwrite bench$index:
+		new_benchindex = bench$index
+		for(b in 1: bench$howmany){
+			# Check benchmark and obs timing are compatible:
+			tcheck = CheckTiming(obs$timing,bench[[ bench$index[b] ]]$timing,benchmark_timing=TRUE)
+			if(tcheck$err){
+				# Report error with benchmark
+				bench$errtext = paste(bench$errtext,'Benchmark',bench$index[b],':',tcheck$errtext)
+				bench[[bench$index[b]]]$errtext = tcheck$errtext
+				# Remove benchmark from benchmark list:
+				bench$howmany = bench$howmany - 1
+				if(bench$howmany == 0){
+					# If that was the only benchmark, note there no longer any:
+					bench$exist = FALSE
+				}else{
+					# Change index of appropriate benchmarks:
+					oldlength = length(new_benchindex)
+					if(b==1){
+						new_benchindex = new_benchindex[2:oldlength]
+					}else if(b==oldlength){	
+						new_benchindex = new_benchindex[1:(oldlength-1)]
+					}else{
+						new_benchindex = 
+							c(new_benchindex[1:(b-1)],new_benchindex[(b+1):oldlength])
+					}
+				}
+			}
+		}
+		# Overwrite bench$index with values that account for any benchmarks that failed:
+		bench$index = new_benchindex
+	}
+	return(bench)	
 }
