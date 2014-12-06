@@ -11,9 +11,10 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 	timestepsize,whole,modlabel='no'){
 	######
 	errtext = 'ok'
+	metrics = list()
 	if(!whole){ # we need a whole number of years for this to run
-		errtext = 'DS3: AnnualCycle analysis requires a whole number of years of data.'
-		result = list(errtext=errtext)
+		errtext = 'AnnualCycle analysis requires a whole number of years of data.'
+		result = list(errtext=errtext,metrics=list(first=list(name='fail',model_value=NA)))
 		return(result)
 	}
 	ncurves = length(acdata[1,]) # Number of curves in final plot:
@@ -47,7 +48,7 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		}
 	}
 	xloc=c(1:12) # set location of x-coords
-	plotcolours=getPlotColours() # in PALSconstants
+	plotcolours=LineColours()
 	# Plot model output result:
 	yaxmin=min(data_monthly) # y axis minimum in plot
 	yaxmax=max(data_monthly)+0.18*(max(data_monthly)-yaxmin) # y axis maximum in plot
@@ -78,7 +79,18 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		scorestring = paste(signif(pscore,digits=3),collapse=', ')
 		scoretext = paste('Score: ',scorestring,'\n','(NME)',sep='')
 		text(8,max(data_monthly)+0.1*(max(data_monthly)-yaxmin),scoretext,pos=4,offset=1)
+		if(ncurves==2){ # model only
+			metrics[[1]] = list(name='NME',model_value=pscore[1])	
+		}else if(ncurves==3){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],bench_value=list(bench1=pscore[2]))	
+		}else if(ncurves==4){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],
+				bench_value=list(bench1=pscore[2],bench2=pscore[3]))
+		}else if(ncurves==5){
+			metrics[[1]] = list(name='NME',model_value=pscore[1],
+				bench_value=list(bench1=pscore[2],bench2=pscore[3],bench3=pscore[4]))
+		}
 	}
-	result=list(errtext=errtext)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 } # End function AnnualCycle

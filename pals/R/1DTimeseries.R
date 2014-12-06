@@ -9,12 +9,13 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
 	#
 	errtext = 'ok'
+	metrics = list()
 	ncurves = length(tsdata[1,]) # Number of curves in final plot:
 	ntsteps = length(tsdata[,1]) # Number of timesteps in data:
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
 	nyears=as.integer(ndays/365) # find # years in data set
-		plotcolours=getPlotColours() # in PALSconstants
+		plotcolours=LineColours() 
 	# x-axis labels:
 	xxat=c()
 	xxlab=c()
@@ -63,7 +64,28 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 					sum(abs(mean(data_smooth[,1]) - data_smooth[,1]))
 				allscore[p-1] = sum(abs(tsdata[,1] - tsdata[,p]))/
 					sum(abs(mean(tsdata[,1]) - tsdata[,1]))
-			}	
+			}
+			# Report NME metric:
+			metricname = paste('NME',winsize,'-dayAvs',sep='')
+			if(ncurves==2){ # model only
+				metrics[[1]] = list(name=metricname,model_value=smoothscore[1])	
+				metrics[[2]] = list(name='NME',model_value=allscore[1])	
+			}else if(ncurves==3){
+				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2]))	
+				metrics[[2]] = list(name='NME',model_value=allscore[1],bench_value=list(bench1=allscore[2]))	
+			}else if(ncurves==4){
+				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3]))	
+				metrics[[2]] = list(name='NME',model_value=allscore[1],
+					bench_value=list(bench1=allscore[2],bench2=allscore[3]))
+			}else if(ncurves==5){
+				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3],bench3=smoothscore[4]))	
+				metrics[[2]] = list(name='NME',model_value=allscore[1],
+					bench_value=list(bench1=allscore[2],bench2=allscore[3],bench3=allscore[4]))
+			}
+			
 		}
 		for(l in 1:nyears){
 			xxat[(2*l-1)] = (l-1)*365 + 1
@@ -181,6 +203,6 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 		}
 	}
 	axis(1,at=xxat,labels=xxlab,cex.axis=plotcex)
-	result = list(errtext = errtext)
+	result = list(err=FALSE,errtext = errtext,metrics=metrics)
 	return(result)
 }

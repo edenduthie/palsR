@@ -8,7 +8,8 @@
 #
 DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 	timestepsize,whole,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
-	errtext = 'ok'	
+	errtext = 'ok'
+	metrics = list()
 	if(!whole){ # we need a whole number of years for this to run
 		errtext = 'DS3: DiurnalCycle analysis requires a whole number of years of data.'
 		result = list(errtext=errtext)
@@ -24,7 +25,7 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 	nyears=as.integer(ndays/365) # find # years in data set
 	# Plot layout:
 	par(mfcol=c(2,2),mar=c(4,4,3,0.5),oma=c(0,0,0,1),
-		mgp=c(2.5,0.7,0),ps=12,tcl=-0.4)
+		mgp=c(2.5,0.7,0),ps=16,tcl=-0.4)
 	avday=array(0,dim=c(4,tstepinday,ncurves)) # initialise
 	if(modlabel=='no'){
 		alltitle=paste('Obs:',obslabel)
@@ -125,17 +126,30 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 			removefractotal = sum(exclvals) / ntsteps
 		}
 	} # for each curve (mod, obs, etc)
+	
+	# Report NME metric:
+	if(ncurves==2){ # model only
+		metrics[[1]] = list(name='NME',model_value=pscoretotal[1])	
+	}else if(ncurves==3){
+		metrics[[1]] = list(name='NME',model_value=pscoretotal[1],bench_value=list(bench1=pscoretotal[2]))	
+	}else if(ncurves==4){
+		metrics[[1]] = list(name='NME',model_value=pscoretotal[1],
+			bench_value=list(bench1=pscoretotal[2],bench2=pscoretotal[3]))
+	}else if(ncurves==5){
+		metrics[[1]] = list(name='NME',model_value=pscoretotal[1],
+			bench_value=list(bench1=pscoretotal[2],bench2=pscoretotal[3],bench3=pscoretotal[4]))
+	}
+	
 	# Determine boundaries for plots:
 	xloc=c(0:(tstepinday-1)) # set location of x-coords in plot
 	yaxmin=min(avday) # y axis minimum in plot
 	yaxmax=max(avday)+(max(avday)-yaxmin)*0.15 # y axis maximum in plot
-	plotcolours=getPlotColours() # in PALSconstants
+	plotcolours=LineColours() 
 	# Now plot each panel:
 	for(k in 1:4){# for each season (DJF, MAM etc)
 		# Plot obs data result:
 		plot(xloc,avday[k,,1],type="l",xaxt="n",xlab=paste(labels[k],'hour of day'),
-			ylab=ytext,lwd=4,col=plotcolours[1],ylim=c(yaxmin,yaxmax),
-			cex.lab=1.2,cex.axis=1.3)
+			ylab=ytext,lwd=4,col=plotcolours[1],ylim=c(yaxmin,yaxmax))
 		# Then add other curves, if any:
 		if(ncurves>1){
 			pscore = matrix(NA,4,(ncurves-1))
@@ -147,8 +161,8 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 			}	
 		}	
 		axis(1,at=c(0,6*tstepinday/24,12*tstepinday/24,18*tstepinday/24,
-			23*tstepinday/24),labels=c('0','6','12','18','23'),cex.axis=1.3)
-		title(alltitle,cex.main=1.1) # add title
+			23*tstepinday/24),labels=c('0','6','12','18','23'))
+		title(alltitle) # add title
 		if(k==1){
 			# Position legend (and total score, if required):
 			posctr = 1
@@ -203,6 +217,6 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 			text((tstepinday/2),yaxmax-(yaxmax-yaxmin)*0.07,scoretext,pos=4)	
 		}
 	} # each plot / season
-	result=list(errtext=errtext)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 } # End function DiurnalCycle

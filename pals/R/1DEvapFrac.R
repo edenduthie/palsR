@@ -5,7 +5,7 @@
 # [latent heat/(latent heat+sensible heat)] using a moving window
 # of weekly averages of these two variables.
 # 
-# Gab Abramowitz CCRC, UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 EvapFrac = function(obslabel,qledata,qhdata,ytext,legendtext,timestepsize,
 	winsize=30,modlabel='no',qleqcdata=matrix(-1,nrow=1,ncol=1),
@@ -39,7 +39,7 @@ EvapFrac = function(obslabel,qledata,qhdata,ytext,legendtext,timestepsize,
 	}
 	# Decide y axis range (add space for legend and score):
 	yrange=c(yaxmin,yaxmax + 0.24*(yaxmax-yaxmin))
-	plotcolours=getPlotColours() # in PALSconstants
+	plotcolours=LineColours() 
 	# Plot observed time series:
 	plot(xloc,efrac[,1],type="l",xaxt="n",xlab='Time',ylab=ytext,
 		lwd=3,col=plotcolours[1],ylim=yrange,cex.lab=1.3,cex.axis=1.3)

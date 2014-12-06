@@ -1,6 +1,6 @@
-# PALSconstants.R
+# Constants.R
 #
-# Gab Abramowitz, UNSW, 2010 (palshelp at gmail dot com)
+# Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 #
 zeroC = 273.15
 SprdMissingVal=-9999 # missing value in spreadsheet
@@ -8,9 +8,6 @@ NcMissingVal=-9999 # missing value in created netcdf files
 CurrentTemplateVersion = '1.0.2'
 KnownTemplateVersions = c('1.0.1','1.0.2')
 #
-getPlotColours = function() {
-	plotcolours=c('black','blue2','indianred3','gold2','yellowgreen')
-}
 # Variable order in spreadsheet template versions:
 templateCols = function(templateVersion = CurrentTemplateVersion){
 	if(templateVersion=='1.0.1'){
@@ -86,13 +83,72 @@ GetVariableDetails = function(request_names){
 	variable_list = list()
 	for(v in 1:length(request_names)){
 		var_details = list()
-		if(request_names[v] == 'SWdown'){
+		# Dimensional variables
+		if(request_names[v] == 'lat'){
+			var_details[['Name']] = c('y','lat','latitude','Lat','Latitude')
+			var_details[['UnitsName']] = c('degrees_north')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = ''
+			var_details[['PlotName']] = 'Latitude'
+		}else if(request_names[v] == 'lon'){
+			var_details[['Name']] = c('x','lon','longitude','Lon','Longitude')
+			var_details[['UnitsName']] = c('degrees_east')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = ''
+			var_details[['PlotName']] = 'Longitude'
+		# Met variables
+		}else if(request_names[v] == 'SWdown'){
 			var_details[['Name']] = c('SWdown')
 			var_details[['UnitsName']] = c('W/m2','W/m^2','Wm^{-2}','wm2','watt/m^2')
 			var_details[['Multiplier']] = c(1,1,1,1,1)
 			var_details[['Addition']] = c(0,0,0,0,0)
 			var_details[['UnitsText']] = 'W/'~m^{2}
 			var_details[['PlotName']] = 'Downward shortwave radiation'
+		}else if(request_names[v] == 'LWdown'){
+			var_details[['Name']] = c('LWdown')
+			var_details[['UnitsName']] = c('W/m2','W/m^2','Wm^{-2}','wm2','watt/m^2')
+			var_details[['Multiplier']] = c(1,1,1,1,1)
+			var_details[['Addition']] = c(0,0,0,0,0)
+			var_details[['UnitsText']] = 'W/'~m^{2}
+			var_details[['PlotName']] = 'Downward longwave radiation'
+		}else if(request_names[v] == 'Tair'){
+			var_details[['Name']] = c('Tair')
+			var_details[['UnitsName']] = c('K')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = 'K'
+			var_details[['PlotName']] = 'Surface air temperature'
+		}else if(request_names[v] == 'Qair'){
+			var_details[['Name']] = c('Qair')
+			var_details[['UnitsName']] = c('kg/kg','g/g')
+			var_details[['Multiplier']] = c(1,1)
+			var_details[['Addition']] = c(0,0)
+			var_details[['UnitsText']] = 'kg/kg'
+			var_details[['PlotName']] = 'Specific humidity'
+		}else if(request_names[v] == 'PSurf'){
+			var_details[['Name']] = c('PSurf')
+			var_details[['UnitsName']] = c('Pa','pa','hPa')
+			var_details[['Multiplier']] = c(1,1,100)
+			var_details[['Addition']] = c(0,0,0)
+			var_details[['UnitsText']] = 'Pa'
+			var_details[['PlotName']] = 'Surface air pressure'
+		}else if(request_names[v] == 'Rainf'){
+			var_details[['Name']] = c('Rainf')
+			var_details[['UnitsName']] = c('mm/s','kg/m^2/s', 'kg/m^2s', 'mm/day')
+			var_details[['Multiplier']] = c(1,1,1,86400)
+			var_details[['Addition']] = c(0,0,0,0)
+			var_details[['UnitsText']] = 'mm/s'
+			var_details[['PlotName']] = 'Specific humidity'
+		}else if(request_names[v] == 'Wind'){
+			var_details[['Name']] = c('Wind')
+			var_details[['UnitsName']] = c('m/s')
+			var_details[['Multiplier']] = c(1)
+			var_details[['Addition']] = c(0)
+			var_details[['UnitsText']] = 'm/s'
+			var_details[['PlotName']] = 'Specific humidity'
+		# Flux variables
 		}else if(request_names[v] == 'Qh'){
 			var_details[['Name']] = c('Qh','FSH') # FSH->CLM
 			var_details[['UnitsName']] = c('W/m2','W/m^2','Wm^{-2}','wm2','watt/m^2')
@@ -239,9 +295,3 @@ QgMultiplier = c(1,1,1,1,1)
 QgAddition = c(0,0,0,0,0)
 QgUnits = list(name=QgUnitsName,multiplier=QgMultiplier,
 	addition=QgAddition)
-	
-# Definitions of standard empirical benchmark levels:
-benchnames = c('1lin','2lin','3km27')
-benchx = list(c('SWdown'),c('SWdown','Tair'),c('SWdown','Tair','Qair'))
-benchtype = c('mlr','mlr','kmeans')
-benchparam = c(0,0,27)

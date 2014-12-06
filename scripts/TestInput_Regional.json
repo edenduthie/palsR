@@ -1,0 +1,269 @@
+{
+   "_id" : "mVJDHsjHSJWHK",
+   "files" : [
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1984.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1985.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1986.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1987.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1988.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1989.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1990.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1991.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1992.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1993.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1994.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1995.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1996.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1997.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1998.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_1999.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2000.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2001.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2002.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2003.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2004.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/Australia/ET/cable_output_Mark/cable_output_2005.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestAus"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1984.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1985.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1986.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1987.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1988.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1989.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1990.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1991.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1992.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1993.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1994.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1995.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1996.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1997.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1998.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_1999.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2000.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2001.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2002.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2003.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2004.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/Australia/ET/GLEAM_Mark/GLEAM.New_0.25deg.daily_Aust_EVAP_EVSOIL_2005.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_Mark"
+       }
+   ]
+}

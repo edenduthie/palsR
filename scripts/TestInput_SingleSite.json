@@ -3,32 +3,32 @@
    "files" : [
        {
            "type" : "ModelOutput",
-           "path" : "TestModelOutput.nc",
+           "path" : "TestMO_SingleSite.nc",
            "mimetype" : "application/x-netcdf",
 	   "name" : "CABLE1.4_ElSaler2"
        },
        {   
            "type" : "DataSet", 
-           "path" : "TestDataSetFlux.nc",
+           "path" : "TestDSFlux_SingleSite.nc",
            "mimetype" : "application/x-netcdf",
 	       "name" : "ElSaler2Fluxnet1.4"
        },
        {   
            "type" : "DataSet", 
-           "path" : "TestDataSetMet.nc",
+           "path" : "TestDSMet_SingleSite.nc",
            "mimetype" : "application/x-netcdf",  
 	       "name" : "ELSaler2Fluxnet1.4"
        },
        {
 	   "type" : "Benchmark", 
-           "path" : "TestBenchmark1.nc",
+           "path" : "TestBench1_SingleSite.nc",
            "mimetype" : "application/x-netcdf",
            "number" : "1",
 	       "name" : "Jules3.1ElSaler2"
        },
        {
 	   "type" : "Benchmark", 
-           "path" : "TestBenchmark2.nc",
+           "path" : "TestBench2_SingleSite.nc",
            "mimetype" : "application/x-netcdf",
            "number" : "2",
 	       "name" : "PenmanMontElSaler2"

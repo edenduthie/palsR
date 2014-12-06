@@ -7,12 +7,13 @@
 PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 	nbins=500,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
 	errtext = 'ok'
+	metrics = list()
 	xcut = 1/100
 	ncurves = length(pdfdata[1,]) # Number of curves in final plot:
 	ntsteps = length(pdfdata[,1]) # Number of timesteps in data:
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
-	plotcolours=getPlotColours() # in PALSconstants
+	plotcolours=LineColours() 
 	xmin = min(pdfdata)
 	xmax = max(pdfdata)
 	allden = list()
@@ -70,6 +71,17 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 		}
 		scoretext = paste(overl,collapse=', ')
 		text(x=(xlow+(xhigh-xlow)*0.75),y=ymax*0.6,labels=paste('Overlap: ',scoretext,'%',sep=''),pos=4)
+		if(ncurves==2){ # model only
+			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1])	
+		}else if(ncurves==3){
+			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],bench_value=list(bench1=overl[2]))	
+		}else if(ncurves==4){
+			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],
+				bench_value=list(bench1=overl[2],bench2=overl[3]))
+		}else if(ncurves==5){
+			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],
+				bench_value=list(bench1=overl[2],bench2=overl[3],bench3=overl[4]))
+		}
 	}
 	if(vqcdata[1,1] != -1){
 		ltext = c(legendtext[1])
@@ -96,6 +108,6 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 	}else{
 		title(paste(varname[1],' density:   Obs - ',obslabel,'   Model - ',modlabel,sep=''))
 	}
-	result=list(errtext=errtext)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 }

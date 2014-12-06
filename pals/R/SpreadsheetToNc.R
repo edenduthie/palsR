@@ -3,8 +3,111 @@
 # A collection of functions to convert flux tower
 # data from spreadsheet to netcdf.
 #
-# Gab Abramowitz UNSW 2012 (palshelp at gmail dot com)
+# Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
+ReadTextFluxData = function(fileinname){
+	# This function reads tab-delimited text files containing
+	# met and flux data from Fluxnet data providers.
+	# First get site name, lat, lon, elevation and time step size:
+	SiteDetails = scan(file=fileinname,what='list',skip=0,
+		nmax=2,quiet=TRUE,sep=',')
+	templateVersion = as.character(SiteDetails[2])
+	if(!any(KnownTemplateVersions == templateVersion)){
+		errtext = paste('S1: Unknown spreadsheet format (please use current PALS version: ',
+			CurrentTemplateVersion,').',sep='')
+		CheckError(errtext)
+	}	
+	# Get column names and classes:
+	tcol = templateCols(templateVersion)
+	# Read flux tower data:
+	FluxData = read.csv(file=fileinname,header=FALSE,skip=3,
+		colClasses=tcol$classes,col.names=tcol$names)
+	# Note number of time steps in data:
+	ntsteps = length(FluxData$SWdown)
+	if(!(ntsteps>=12 && ntsteps < 1e9)){
+		CheckError(paste('S5: Unable to determine number of time steps in:',
+			stripFilename(fileinname)))
+	}
+	# and time step size:
+	timestepsize = (FluxData$LocHoD[2]-FluxData$LocHoD[1])*3600
+	if( !(timestepsize>=300 && timestepsize<=3600) ){
+		CheckError(paste('S5: Unable to ascertain time step size in',
+			stripFilename(fileinname)))
+	}
+	tstepinday=86400/timestepsize # time steps in a day
+	ndays = ntsteps/tstepinday # number of days in data set
+	# Find starting date / time:
+	if(substr(FluxData$LocDate[1],2,2)=='/'){ # i.e. one char day
+		sday = as.numeric(substr(FluxData$LocDate[1],1,1))
+		if(substr(FluxData$LocDate[1],4,4)=='/'){ # i.e. one char month
+			smonth = as.numeric(substr(FluxData$LocDate[1],3,3))
+			ystart=5
+		}else if(substr(FluxData$LocDate[1],5,5)=='/'){ # i.e. two char month
+			smonth = as.numeric(substr(FluxData$LocDate[1],3,4))
+			ystart=6
+		}else{
+			CheckError(paste('S1: Error interpreting data set starting',
+				'date from spreadsheet.'))
+		}
+	}else if(substr(FluxData$LocDate[1],3,3)=='/'){ # i.e. two char day
+		sday = as.numeric(substr(FluxData$LocDate[1],1,2))
+		if(substr(FluxData$LocDate[1],5,5)=='/'){ # i.e. one char month
+			smonth = as.numeric(substr(FluxData$LocDate[1],4,4))
+			ystart=6
+		}else if(substr(FluxData$LocDate[1],6,6)=='/'){ # i.e. two char month
+			smonth = as.numeric(substr(FluxData$LocDate[1],4,5))
+			ystart=7
+		}else{
+			CheckError(paste('S1: Error interpreting data set starting',
+				'date from spreadsheet.'))
+		}
+	}else{
+		CheckError(paste('S1: Error interpreting data set starting',
+			'date from spreadsheet.'))
+	}
+	# Create starting year:
+	ystr = substr(FluxData$LocDate[1],ystart,nchar(FluxData$LocDate[1]))
+	if(nchar(ystr)==2){ # two character yesr
+		if(as.numeric(ystr)<60){
+			nystr = paste('20',ystr,sep='')
+		}else{
+			nystr = paste('19',ystr,sep='')
+		}
+	}else if(nchar(ystr)==4){ # four character year
+		nystr = ystr
+		# do nothing	
+	}else{
+		CheckError(paste('S1: Error interpreting data set starting',
+			'date from spreadsheet.'))
+	}
+	syear = as.numeric(nystr)	
+	shod = FluxData$LocHoD[1] # starting hour of day
+	intyears = Yeardays(syear,ndays)
+	# Collate start time variables:
+	starttime=list(syear=syear,smonth=smonth,sday=sday,shod=shod)
+	# Create list for function exit:
+	filedata = list(data=FluxData,ntsteps=ntsteps,
+		starttime=starttime,templateVersion=templateVersion,
+		timestepsize=timestepsize,ndays=ndays,whole=intyears$whole)
+	return(filedata)
+}
+CheckSpreadsheetTiming = function(DataFromText) {
+	# Checks that uploaded spreadsheet data is compatible 
+	# with time step size in web form; that a whole number of 
+	# days are present; and whether there are an integer 
+	# number of years.
+	tstepinday=86400/DataFromText$timestepsize # time steps in a day
+	ndays = DataFromText$ntsteps/tstepinday # number of days in data set
+	if((ndays - round(ndays)) != 0){
+		CheckError(paste('S2: Spreadsheet does not appear to contain a',
+			'whole number of days of data. Please amend.'))
+	}
+	if((DataFromText$starttime$sday != 1) | (DataFromText$starttime$smonth != 1)){
+		CheckError(paste('S2: Spreadsheet data does not appear to begin',
+			'on 1st January. Please amend.'))
+	}
+}
+
 ChangeMetUnits = function(datain,found,elevation){
 	# Performs units changes from flux data provider
 	# template units to netcdf met/flux file units.
@@ -15,11 +118,10 @@ ChangeMetUnits = function(datain,found,elevation){
 	datain$data$Tair = datain$data$Tair + zeroC
 	if(found$PSurf){
 		# Pressure from mbar to Pa
-		datain$data$PSurf = datain$data$PSurf * 100
+		datain$data$PSurf = Mbar2Pa(datain$data$PSurf)
 	}else{
 		# Synthesize PSurf based on temperature and elevation
-		datain$data$PSurf = 101325 * (datain$data$Tair/
-			(datain$data$Tair + 0.0065*elevation))^(9.80665/287.04/0.0065)
+		datain$data$PSurf = SynthesizePSurf(datain$data$Tair,elevation)
 		datain$data$PSurfFlag = 0 # i.e. all gap-filled
 	}
 	# Rainfall from mm/timestep to mm/s
@@ -33,6 +135,272 @@ ChangeMetUnits = function(datain,found,elevation){
 		datain$data$Tair,datain$data$PSurf)
 	return(datain)
 }
+CheckTextDataRanges = function(datain,found){
+	# Get acceptable ranges for variables:	
+	range = GetVariableRanges()
+	# Check variable ranges:
+	if(any(datain$data$SWdown<range$SWdown[1])|
+		any(datain$data$SWdown>range$SWdown[2])){
+		badval = FindRangeViolation(datain$data$SWdown,range$SWdown)
+		errtext = paste('S2: Downward SW radiation outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$SWdown[1]),':',
+			as.character(range$SWdown[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(found$LWdown){
+		if(any(datain$data$LWdown<range$LWdown[1])|
+			any(datain$data$LWdown>range$LWdown[2])){
+			badval = FindRangeViolation(datain$data$LWdown,range$LWdown)
+			errtext = paste('S2: Downward LW radiation outside expected',
+				' ranges: ',as.character(badval),' [',
+				as.character(range$LWdown[1]),':',
+				as.character(range$LWdown[2]),']',sep='')
+			CheckError(errtext)
+		}
+	}
+	if(any(datain$data$Tair<range$Tair[1])|
+		any(datain$data$Tair>range$Tair[2])){
+		badval = FindRangeViolation(datain$data$Tair,range$Tair)
+		errtext = paste('S2: Surface air temperature outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Tair[1]),':',
+			as.character(range$Tair[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$Qair<range$Qair[1])|
+		any(datain$data$Qair>range$Qair[2])){
+		badval = FindRangeViolation(datain$data$Qair,range$Qair)
+		errtext = paste('S2: Specific humidity outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Qair[1]),':',
+			as.character(range$Qair[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$Wind<range$Wind[1])|
+		any(datain$data$Wind>range$Wind[2])){
+		badval = FindRangeViolation(datain$data$Wind,range$Wind)
+		errtext = paste('S2: Scalar windspeed outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Wind[1]),':',
+			as.character(range$Wind[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$Rainf<range$Rainf[1])|
+		any(datain$data$Rainf>range$Rainf[2])){
+		badval = FindRangeViolation(datain$data$Rainf,range$Rainf)
+		errtext = paste('S2: Rainfall rate outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Rainf[1]),':',
+			as.character(range$Rainf[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(found$Snowf){
+		if(any(datain$data$Snowf<range$Snowf[1])|
+			any(datain$data$Snowf>range$Snowf[2])){
+			badval = FindRangeViolation(datain$data$Snowf,range$Snowf)
+			errtext = paste('S2: Snowfall rate outside expected',
+				' ranges: ',as.character(badval),' [',
+				as.character(range$Snowf[1]),':',
+				as.character(range$Snowf[2]),']',sep='')
+			CheckError(errtext)
+		}
+	}
+	if(any(datain$data$PSurf<range$PSurf[1])|
+		any(datain$data$PSurf>range$PSurf[2])){
+		badval = FindRangeViolation(datain$data$PSurf,range$PSurf)
+		errtext = paste('S2: Surface air pressure outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$PSurf[1]),':',
+			as.character(range$PSurf[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$Qle<range$Qle[1])|
+		any(datain$data$Qle>range$Qle[2])){
+		badval = FindRangeViolation(datain$data$Qle,range$Qle)
+		errtext = paste('S2: Latent heat flux outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Qle[1]),':',
+			as.character(range$Qle[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$Qh<range$Qh[1])|
+		any(datain$data$Qh>range$Qh[2])){
+		badval = FindRangeViolation(datain$data$Qh,range$Qh)
+		errtext = paste('S2: Sensible heat flux outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$Qh[1]),':',
+			as.character(range$Qh[2]),']',sep='')
+		CheckError(errtext)
+	}
+	if(any(datain$data$NEE<range$NEE[1])|
+		any(datain$data$NEE>range$NEE[2])){
+		badval = FindRangeViolation(datain$data$NEE,range$NEE)
+		errtext = paste('S2: Net ecosystem exchange outside expected',
+			' ranges: ',as.character(badval),' [',
+			as.character(range$NEE[1]),':',
+			as.character(range$NEE[2]),']',sep='')
+		CheckError(errtext)
+	}
+}
+
+# Check the existence of optional variables:
+CheckTextDataVars = function(datain){
+	# First check that all essential variables are present:
+	if(any(datain$data$SWdown==SprdMissingVal)){
+		CheckError('S2: Downward shortwave has missing values.')
+	}
+	if(any(datain$data$Tair==SprdMissingVal)){
+		CheckError('S2: Air temperature has missing values.')
+	}
+	if(any(datain$data$Qair==SprdMissingVal)){
+		CheckError('S2: Humidity has missing values.')
+	}
+	if(any(datain$data$Wind==SprdMissingVal)){
+		CheckError('S2: Windspeed has missing values.')
+	}
+	if(any(datain$data$Rainf==SprdMissingVal)){
+		CheckError('S2: Rainfall has missing values.')
+	}
+	# Initialise list of found variables:
+	LWdown = FALSE# surface incident longwave rad [W/m^2]
+	LWdown_all = FALSE# gapless surface incident longwave rad [W/m^2]
+	Snowf = FALSE # snowfall rate [mm/s]
+	PSurf = FALSE # surface air pressure [Pa]
+	CO2air = FALSE# near surface CO2 concentration [ppmv]
+	Qle = FALSE   # latent heat flux [W/m^2]
+	Qh = FALSE    # sensible heat flux [W/m^2]
+	Qg = FALSE    # ground heat flux [W/m^2]
+	NEE = FALSE   # net ecosystem exchange CO2 [umol/m^2/s]
+	GPP = FALSE   # gross primary production CO2 [umol/m^2/s]
+	SWup = FALSE  # reflected SW rad [W/m^2]
+	Rnet = FALSE  # net absorbed radiation [W/m^2]
+	SWdown_qc = FALSE
+	Tair_qc = FALSE
+	Qair_qc = FALSE
+	Wind_qc = FALSE
+	Rainf_qc = FALSE
+	LWdown_qc = FALSE
+	Snowf_qc = FALSE 
+	PSurf_qc = FALSE 
+	CO2air_qc = FALSE
+	Qle_qc = FALSE   
+	Qh_qc = FALSE    
+	Qg_qc = FALSE    
+	NEE_qc = FALSE
+	GPP_qc = FALSE
+	SWup_qc = FALSE  
+	Rnet_qc = FALSE  
+	found = list(LWdown=LWdown,LWdown_all=LWdown_all,Snowf=Snowf,
+		PSurf=PSurf,CO2air=CO2air,Qle=Qle,Qh=Qh,Qg=Qg,NEE=NEE,
+		SWup=SWup,Rnet=Rnet,SWdown_qc=SWdown_qc,Tair_qc=Tair_qc,
+		Qair_qc=Qair_qc,Wind_qc=Wind_qc,Rainf_qc=Rainf_qc,
+		LWdown_qc=LWdown_qc,Snowf_qc=Snowf_qc,PSurf_qc=PSurf_qc,
+		CO2air_qc=CO2air_qc,Qle_qc=Qle_qc,Qh_qc=Qh_qc,
+		Qg_qc=Qg_qc,NEE_qc=NEE_qc,GPP_qc=GPP_qc,SWup_qc=SWup_qc,
+		Rnet_qc=Rnet_qc)
+	
+	# Begin checking:
+	if(any(datain$data$LWdown!=SprdMissingVal)){ # note unusual condition
+		found$LWdown = TRUE # some data present
+		if(!any(datain$data$LWdown==SprdMissingVal)){
+			found$LWdown_all = TRUE # all data present
+		}
+	}
+	if(!any(datain$data$Snowf==SprdMissingVal)){
+		found$Snowf = TRUE
+	}
+	if(!any(datain$data$PSurf==SprdMissingVal)){
+		found$PSurf = TRUE
+	}
+	if(!any(datain$data$CO2air==SprdMissingVal)){
+		found$CO2air = TRUE
+	}
+	if(!any(datain$data$Qle==SprdMissingVal)){
+		found$Qle = TRUE
+	}
+	if(!any(datain$data$Qh==SprdMissingVal)){
+		found$Qh = TRUE
+	}
+	if(!any(datain$data$Qg==SprdMissingVal)){
+		found$Qg = TRUE
+	}
+	if(!any(datain$data$NEE==SprdMissingVal)){
+		found$NEE = TRUE
+	}
+	if(!any(datain$data$GPP==SprdMissingVal) && 
+		datain$templateVersion!='1.0.1'){
+		found$GPP = TRUE
+	}
+	if(!any(datain$data$SWup==SprdMissingVal)){
+		found$SWup = TRUE
+	}
+	if(!any(datain$data$Rnet==SprdMissingVal)){
+		found$Rnet = TRUE
+	}
+	# Note change of "found" criteria for qc flags:
+	if(any(datain$data$SWdownFlag!=SprdMissingVal)){
+		found$SWdown_qc = TRUE
+	}
+	if(any(datain$data$TairFlag!=SprdMissingVal)){
+		found$Tair_qc = TRUE
+	}
+	if(any(datain$data$QairFlag!=SprdMissingVal)){
+		found$Qair_qc = TRUE
+	}
+	if(any(datain$data$RainfFlag!=SprdMissingVal)){
+		found$Rainf_qc = TRUE
+	}
+	if(any(datain$data$LWdownFlag!=SprdMissingVal)){
+		found$LWdown_qc = TRUE
+	}
+	if(any(datain$data$SnowfFlag!=SprdMissingVal)){
+		found$Snowf_qc = TRUE
+	}
+	if(any(datain$data$PSurfFlag!=SprdMissingVal)){
+		found$PSurf_qc = TRUE
+	}else if(! found$PSurf){
+		# If we didn't find PSurf, we know PALS will 
+		# synthesize, and we'll mark that in qc variable.
+		found$PSurf_qc = TRUE
+	}
+	if(any(datain$data$CO2airFlag!=SprdMissingVal)){
+		found$CO2air_qc = TRUE
+	}
+	if(any(datain$data$WindFlag!=SprdMissingVal)){
+		found$Wind_qc = TRUE
+	}
+	if(any(datain$data$QleFlag!=SprdMissingVal)){
+		found$Qle_qc = TRUE
+	}
+	if(any(datain$data$QhFlag!=SprdMissingVal)){
+		found$Qh_qc = TRUE
+	}
+	if(any(datain$data$QgFlag!=SprdMissingVal)){
+		found$Qg_qc = TRUE
+	}
+	if(any(datain$data$NEEFlag!=SprdMissingVal)){
+		found$NEE_qc = TRUE
+	}
+	if(any(datain$data$GPPFlag!=SprdMissingVal)){
+		found$GPP_qc = TRUE
+	}
+	if(any(datain$data$SWupFlag!=SprdMissingVal)){
+		found$SWup_qc = TRUE
+	}
+	if(any(datain$data$RnetFlag!=SprdMissingVal)){
+		found$Rnet_qc = TRUE
+	}
+	# IF no LSM testing variables are found, report it:
+	if((!found$Qle)&(!found$Qh)&(!found$NEE)&(!found$Rnet)&
+		(!found$GPP)&(!found$SWup)&(!found$Qg)){
+		CheckError(paste('S2: Could not find any LSM evaluation',
+		'varaibles: Qle, Qh, Qg, NEE, GPP, SWup or Rnet.'))
+	}
+	return(found)	
+}
+
+
 CreateFluxNcFile = function(fluxfilename,datain,latitude,longitude,
 	timestepsize,datasetname,datasetversion,found,starttime,templateVersion,
 	elevation=NA,measurementheight=NA,canopyheight=NA,
@@ -549,151 +917,4 @@ CreateMetNcFile = function(metfilename,datain,latitude,longitude,timestepsize,
 	}
 	# Close netcdf file:
 	close.ncdf(ncid)
-}
-ReadTextFluxData = function(fileinname){
-	# This function reads tab-delimited text files containing
-	# met and flux data from Fluxnet data providers.
-	# First get site name, lat, lon, elevation and time step size:
-	SiteDetails = scan(file=fileinname,what='list',skip=0,
-		nmax=2,quiet=TRUE,sep=',')
-	templateVersion = as.character(SiteDetails[2])
-	if(!any(KnownTemplateVersions == templateVersion)){
-		errtext = paste('S1: Unknown spreadsheet format (please use current PALS version: ',
-			CurrentTemplateVersion,').',sep='')
-		CheckError(errtext)
-	}	
-	# Get column names and classes:
-	tcol = templateCols(templateVersion)
-	# Read flux tower data:
-	FluxData = read.csv(file=fileinname,header=FALSE,skip=3,
-		colClasses=tcol$classes,col.names=tcol$names)
-	# Note number of time steps in data:
-	ntsteps = length(FluxData$SWdown)
-	if(!(ntsteps>=12 && ntsteps < 1e9)){
-		CheckError(paste('S5: Unable to determine number of time steps in:',
-			stripFilename(fileinname)))
-	}
-	# and time step size:
-	timestepsize = (FluxData$LocHoD[2]-FluxData$LocHoD[1])*3600
-	if( !(timestepsize>=300 && timestepsize<=3600) ){
-		CheckError(paste('S5: Unable to ascertain time step size in',
-			stripFilename(fileinname)))
-	}
-	tstepinday=86400/timestepsize # time steps in a day
-	ndays = ntsteps/tstepinday # number of days in data set
-	# Find starting date / time:
-	if(substr(FluxData$LocDate[1],2,2)=='/'){ # i.e. one char day
-		sday = as.numeric(substr(FluxData$LocDate[1],1,1))
-		if(substr(FluxData$LocDate[1],4,4)=='/'){ # i.e. one char month
-			smonth = as.numeric(substr(FluxData$LocDate[1],3,3))
-			ystart=5
-		}else if(substr(FluxData$LocDate[1],5,5)=='/'){ # i.e. two char month
-			smonth = as.numeric(substr(FluxData$LocDate[1],3,4))
-			ystart=6
-		}else{
-			CheckError(paste('S1: Error interpreting data set starting',
-				'date from spreadsheet.'))
-		}
-	}else if(substr(FluxData$LocDate[1],3,3)=='/'){ # i.e. two char day
-		sday = as.numeric(substr(FluxData$LocDate[1],1,2))
-		if(substr(FluxData$LocDate[1],5,5)=='/'){ # i.e. one char month
-			smonth = as.numeric(substr(FluxData$LocDate[1],4,4))
-			ystart=6
-		}else if(substr(FluxData$LocDate[1],6,6)=='/'){ # i.e. two char month
-			smonth = as.numeric(substr(FluxData$LocDate[1],4,5))
-			ystart=7
-		}else{
-			CheckError(paste('S1: Error interpreting data set starting',
-				'date from spreadsheet.'))
-		}
-	}else{
-		CheckError(paste('S1: Error interpreting data set starting',
-			'date from spreadsheet.'))
-	}
-	# Create starting year:
-	ystr = substr(FluxData$LocDate[1],ystart,nchar(FluxData$LocDate[1]))
-	if(nchar(ystr)==2){ # two character yesr
-		if(as.numeric(ystr)<60){
-			nystr = paste('20',ystr,sep='')
-		}else{
-			nystr = paste('19',ystr,sep='')
-		}
-	}else if(nchar(ystr)==4){ # four character year
-		nystr = ystr
-		# do nothing	
-	}else{
-		CheckError(paste('S1: Error interpreting data set starting',
-			'date from spreadsheet.'))
-	}
-	syear = as.numeric(nystr)	
-	shod = FluxData$LocHoD[1] # starting hour of day
-	intyears = Yeardays(syear,ndays)
-	# Collate start time variables:
-	starttime=list(syear=syear,smonth=smonth,sday=sday,shod=shod)
-	# Create list for function exit:
-	filedata = list(data=FluxData,ntsteps=ntsteps,
-		starttime=starttime,templateVersion=templateVersion,
-		timestepsize=timestepsize,ndays=ndays,whole=intyears$whole)
-	return(filedata)
-}
-SynthesizeLWdown=function(TairK,RH,technique){
-	if(technique=='Swinbank (1963)'){
-		# Synthesise LW down from air temperature only:
-		lwdown = 0.0000094*0.0000000567*TairK^6
-	}else if(technique=='Brutsaert (1975)'){
-		satvapres = 611.2*exp(17.67*((TairK-zeroC)/(TairK-29.65)))
-		vapres = pmax(5,RH)/100*satvapres
-		emiss = 0.642*(vapres/TairK)^(1/7)
-		lwdown = emiss*0.0000000567*TairK^4
-	}else if(technique=='Abramowitz (2012)'){
-		satvapres = 611.2*exp(17.67*((TairK-zeroC)/(TairK-29.65)))
-		vapres = pmax(5,RH)/100*satvapres
-		lwdown = 2.648*TairK + 0.0346*vapres - 474
-	}else{
-		CheckError('S4: Unknown requested LWdown synthesis technique.')
-	}
-	return(lwdown)
-}
-gapfillLWdown = function(LWdownIN,TairK,RH,technique){
-	# Fills any gaps in LWdown time series using synthesis:
-	LWdownOUT = c() # initialise
-	LWflag = c() # initialise
-	for(t in 1:length(LWdownIN)){
-		if(LWdownIN[t]==SprdMissingVal){
-			LWdownOUT[t] = SynthesizeLWdown(TairK[t],RH[t],technique)
-			LWflag[t] = 0
-		}else{
-			LWdownOUT[t] = LWdownIN[t]
-			LWflag[t] = 1
-		}
-	}
-	return(list(data=LWdownOUT,flag=LWflag))
-}
-
-Rel2SpecHum = function(relHum,tk,PSurf){
-	# Converts relative humidity to specific humidity.
-	# tk - T in Kelvin; PSurf in Pa; relHum as %
-	tempC = tk - zeroC
-	# Sat vapour pressure in Pa
-	esat = 610.78*exp( 17.27*tempC / (tempC + 237.3) )
-	# Then specific humidity at saturation:
-	ws = 0.622*esat/(PSurf - esat)
-	# Then specific humidity:
-	specHum = (relHum/100) * ws
-	
-	return(specHum)
-}
-
-Spec2RelHum = function(specHum,tk,PSurf){
-	# Converts relative humidity to specific humidity.
-	# tk - T in Kelvin; PSurf in Pa; relHum as %
-	tempC = tk - zeroC
-	# Sat vapour pressure in Pa
-	esat = 610.78*exp( 17.27*tempC / (tempC + 237.3) )
-	# Then specific humidity at saturation:
-	ws = 0.622*esat/(PSurf - esat)
-	# Then relative humidity:
-	relHum = pmax(pmin(specHum/ws*100, 100),0)
-	
-	return(relHum)
 }

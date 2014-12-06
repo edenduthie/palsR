@@ -1,10 +1,10 @@
-# Master script for single site flux tower based experiments
+# Master script for Australian continental 0.25 x 0.25 degree experiment
 # Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
 
 library(pals)
 library(parallel)
 
-print(input["_id"])
+print(paste('ID:',input["_id"]))
 files <- input[["files"]]
 
 # Retrieve model output, forcing and evaluation data set and benchmark location and 
@@ -33,59 +33,66 @@ for (i in 1:(length(files))  ) {
         	name=file[['name']],number=file[['number']]) # user rank of benchmark
     }
 }
-
-print(paste("Model Output file: ",ModelOutputs[[1]][['path']]));
-print(paste("Data Set file: ",EvalDataSets[[1]][['path']]));
+for(f in 1:MOctr){
+	print(paste("Model Output file: ",ModelOutputs[[f]][['path']]));
+}
+for(f in 1:EDSctr){
+	print(paste("Data Set file: ",EvalDataSets[[f]][['path']]));
+}
+if(Bctr !=0){
+	for(f in 1:Bctr){
+		print(paste("Bench file: ",Benchmarks[[f]][['path']]));
+	}
+}
 
 # Nominate variables to analyse here (use ALMA standard names) - fetches
 # alternate names, units, units transformations etc:
-vars = GetVariableDetails(c('Qle','Qh','NEE','Rnet','Qg','SWnet'))
+vars = GetVariableDetails(c('Qle'))
 
 # Analyses that can apply to any variable:
-genAnalysis = c('AvWindow','Scatter','Timeseries','AnnualCycle','DiurnalCycle','PDF','Taylor')
+genAnalysis = c('TimeMean','TimeSD','TimeRMSE','TimeCor') #'PDFall','PDF2D','Taylor')
 
 # Determine number of user-nominated benchmarks:
 nBench = NumberOfBenchmarks(Benchmarks,Bctr)
 
+cat('\nUser number of benchmarks:',nBench$number,'\n')
+
 # Set up analysis data and analysis list so we can use lapply or parlapply:
-AnalysisData = list()
 AnalysisList = list()
 
 # Load all variables from obs and model output
-analysis_number = 0
 for(v in 1:length(vars)){
-	obs = GetFluxnetVariable(vars[[v]],EvalDataSets[[1]])
-    model = GetModelOutput(vars[[v]],ModelOutputs)
+	obs = GetGLEAM_Aus(vars[[v]],EvalDataSets,force_interval='monthly')
+    model = GetModelOutput(vars[[v]],ModelOutputs)  
     bench = GetBenchmarks(vars[[v]],Benchmarks,nBench)
-	# Save model, obs, bench data for each variable:
-	AnalysisData[[v]] = list(obs=obs, model=model, bench = bench)
+    
 	# Add those analyses that are equally applicable to any variable to analysis list:
 	for(a in 1:length(genAnalysis)){
 		analysis_number = (v-1)*length(genAnalysis) + a
 		AnalysisList[[analysis_number]] = list(vindex=v, type=genAnalysis[a])
 	}
 }
+
+# Create cluster:
+#cl = makeCluster(getOption('cl.cores', detectCores()))
+#cl = makeCluster(getOption('cl.cores', 2))
+
+	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
+		obs=obs,model=model,bench=bench)
+#	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
+#		obs=obs,model=model,bench=bench)
+
 # Add multiple variable analysis to analysis list:
 # analysis_number = analysis_number + 1
 # AnalysisList[[analysis_number]] = list(vindex=0, type='EvapFrac')
 # analysis_number = analysis_number + 1
 # AnalysisList[[analysis_number]] = list(vindex=0, type='Conserve')
 
-# Create cluster:
-cl = makeCluster(getOption('cl.cores', detectCores()))
-#cl = makeCluster(getOption('cl.cores', 4))
-
-# Process analyses using lapply:
-#outinfo = lapply(AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
-outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=AnalysisData,vars=vars)
-
 # stop cluster
-stopCluster(cl)
+#stopCluster(cl)
 
 # Write outinfo to output list for javascript:
-output = list(files=outinfo);
-
-#check error propagation!
+output = list(files=OutInfo);
 
 for(i in 1: length(output[["files"]])){
 	cat('Output ',i,': \n')

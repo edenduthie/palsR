@@ -8,6 +8,8 @@ TaylorDiagram = function(ObsLabel,mod_data,obs_data,varname,xtext,
 	timestepsize,whole,modlabel){
 	library(plotrix) # load package with Taylor diagram
 	errtext = 'ok'
+	metrics = list()
+	metrics[[1]] = list(name='RMSE',model_value=sqrt(mean(((as.vector(mod_data)-as.vector(obs_data))^2),na.rm=TRUE)))
 	taylor.diagram(ref=obs_data,model=mod_data,xlab=xtext,pcex=2,
 		main=paste(varname[1],' Taylor diagram:  Obs - ',ObsLabel,
 		'  Mod - ',modlabel, sep=''),ref.sd=TRUE,show.gamma=TRUE,
@@ -86,6 +88,6 @@ TaylorDiagram = function(ObsLabel,mod_data,obs_data,varname,xtext,
 		legend(lpos,1.3*lpos,col=c('blue','red'),pch=19,
 			legend=c('per timestep','daily averages'))
 	}
-	result=list(errtext=errtext)
+	result=list(err=FALSE,errtext=errtext,metrics=metrics)
 	return(result)
 } # End function TaylorDiagram
