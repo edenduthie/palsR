@@ -15,7 +15,7 @@ GetModelOutput = function(variable,filelist){
 	for(f in 1:length(filelist)){ # For each file of this MO:
 		# Check file exists:
 		if(!file.exists(filelist[[f]][['path']])){
-			errtext = paste('M4: Model output file',filelist[[f]][['path']],'does not exist.')
+			errtext = paste('Model output file',filelist[[f]][['path']],'does not exist.')
 			model=list(errtext=errtext,err=TRUE)
 			return(model)	
 		}
@@ -24,7 +24,7 @@ GetModelOutput = function(variable,filelist){
 		# Check that requested variable exists:
 		exists = AnyNcvarExists(mfid[[f]],variable[['Name']])
 		if( ! exists$var){
-			errtext = paste('M3: Requested variable',variable[['Name']][1],
+			errtext = paste('Requested variable',variable[['Name']][1],
 				'does not appear to exist in Model Ouput:', filelist[[f]][['name']])
 			model=list(errtext=errtext,err=TRUE)
 			mfid = lapply(mfid, nc_close)
@@ -362,7 +362,7 @@ CheckNcvarUnits = function(fid,vname,variable,file){
 	}
 	if( ! UnitsMatch){ # i.e. didn't recognise variable units
 		units=mvunits$value
-		errtext = paste('M3: Did not recognise units',mvunits$value,'for',
+		errtext = paste('Did not recognise units',mvunits$value,'for',
 			fid$var[[v]]$name,'in model output file',file)
 		units = list(errtext = errtext, err=TRUE)
 		return(units)	

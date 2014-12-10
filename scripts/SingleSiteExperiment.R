@@ -82,6 +82,9 @@ outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=Analysi
 # stop cluster
 stopCluster(cl)
 
+# Draw summary metric table here:
+tableOut = MetricTableSingleSite(outinfo,nBench$number)
+
 # Write outinfo to output list for javascript:
 output = list(files=outinfo);
 

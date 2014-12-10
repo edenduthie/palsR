@@ -26,7 +26,7 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	errcheck = CanAnalysisProceed(obs, model)
 	if(errcheck$err){
 		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
-			error=errcheck$errtext,bencherror=bench$errtext,metrics=list(first=list(name='fail',model_value=NA)))
+			error=errcheck$errtext,bencherror=bench$errtext,metrics=list(first=list(name='failed',model_value=NA)))
 		return(result)
 	}
 	
@@ -97,9 +97,9 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		# Check obs or model aren't missing variable data and and that their timing is compatible:
 		errcheck = CanAnalysisProceed(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$model)
 		if(errcheck$err){
-			result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+			result = list(type=outfiletype,filename=filestring,mimetype="image/png",analysistype=Analysis$type,
 				error=errcheck$errtext,bencherror=data[[Analysis$vindex]]$bench$errtext,
-				metrics=list(first=list(name='fail',model_value=NA)))
+				metrics=list(first=list(name='failed',model_value=NA)),variablename=varname)
 			return(result)
 		}
 		
@@ -190,7 +190,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		}
 		
 	}
-
+	# Don't return errtext in output list unless there is an error - as requested by Eden
 	if(areturn$errtext=='ok'){	
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
