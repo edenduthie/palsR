@@ -7,9 +7,35 @@
 TaylorDiagram = function(data,varinfo){
 	library(plotrix) # load package with Taylor diagram
 	errtext = 'ok'
-	xtext=bquote(.(varinfo$PlotName) ~ ' (' ~ .(varinfo$UnitsText) ~ ')')
+	# First report metrics:
 	metrics = list()
-	metrics[[1]] = list(name='RMSE',model_value=sqrt(mean(((as.vector(data$model$data)-as.vector(data$obs$data))^2),na.rm=TRUE)))
+	if(data$bench$exist){
+		if(data$bench$howmany == 1){
+			metrics[[1]] = list(name='Correlation',
+				model_value=cor(as.vector(data$model$data), as.vector(data$obs$data)),
+				bench_value=list(
+				bench1=cor(as.vector(data$bench[[ data$bench$index[1] ]]$data), as.vector(data$obs$data)) ))
+		}else if(data$bench$howmany == 2){
+			metrics[[1]] = list(name='Correlation',
+				model_value=cor(as.vector(data$model$data),as.vector(data$obs$data)),
+				bench_value=list(
+				bench1=cor(as.vector(data$bench[[ data$bench$index[1] ]]$data), as.vector(data$obs$data)),
+				bench2=cor(as.vector(data$bench[[ data$bench$index[2] ]]$data), as.vector(data$obs$data)) ))
+		}else if(data$bench$howmany == 3){
+			metrics[[1]] = list(name='Correlation',
+				model_value=cor(as.vector(data$model$data), as.vector(data$obs$data)),
+				bench_value=list(
+				bench1=cor(as.vector(data$bench[[ data$bench$index[1] ]]$data), as.vector(data$obs$data)),
+				bench2=cor(as.vector(data$bench[[ data$bench$index[2] ]]$data), as.vector(data$obs$data)),
+				bench3=cor(as.vector(data$bench[[ data$bench$index[3] ]]$data), as.vector(data$obs$data)) ))
+		}
+	 }else{
+		metrics[[1]] = list(name='Correlation',
+			model_value=cor(as.vector(data$model$data),as.vector(data$obs$data)))
+	}
+	
+	# Text for x-axis:
+	xtext=bquote(.(varinfo$PlotName) ~ ' (' ~ .(varinfo$UnitsText) ~ ')')
 	# First plot model on Taylor plot:
 	taylor.diagram(ref=data$obs$data,model=data$model$data,xlab=xtext,pcex=2,
 		main=paste(varinfo$name[1],' Taylor diagram:  Obs - ',data$obs$name,'  Mod - ',data$model$name, sep=''),

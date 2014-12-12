@@ -66,7 +66,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 					sum(abs(mean(tsdata[,1]) - tsdata[,1]))
 			}
 			# Report NME metric:
-			metricname = paste('NME',winsize,'-dayAvs',sep='')
+			metricname = paste('NME',winsize,'dayAv',sep='')
 			if(ncurves==2){ # model only
 				metrics[[1]] = list(name=metricname,model_value=smoothscore[1])	
 				metrics[[2]] = list(name='NME',model_value=allscore[1])	

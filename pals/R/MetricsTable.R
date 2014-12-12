@@ -38,9 +38,9 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	winner = c()
 	# Collate metric data:
 	for(i in 1: length(outinfo)){ # for each analysis performed
-		if(outinfo[[i]]$variablename != 'multiple'){ # i.e. this is a single variable analysis
+		if(outinfo[[i]]$variablename != 'multiple'){ # i.e. this is a single variable analysis		
 			nmetrics = length(outinfo[[i]]$metrics) # Number of metrics for this analysis
-			for(m in 1:nmetrics){
+			for(m in 1:nmetrics){				
 				if(outinfo[[i]]$metrics[[m]]$name != 'failed'){ # if analysis was successful
 					# First get obs DS, MO name for plot title (need only happen once, overwritten):
 					obsname = outinfo[[i]]$obsname
@@ -243,9 +243,12 @@ BestInMetric = function(name,model,bench1,bench2,bench3){
 		result = which.min(c(model,bench1,bench2,bench3))
 	}else if(grepl('grad',tolower(name)) | grepl('gradient',tolower(name))){
 		result = which.min(abs(1-c(model,bench1,bench2,bench3)))
-	}else if(grepl('pdf',tolower(name)) | grepl('overlap',tolower(name))){
+	}else if(grepl('pdf',tolower(name)) | grepl('overlap',tolower(name)) | 
+		grepl('correlation',tolower(name)) | grepl('cor',tolower(name))){
 		result = which.max(c(model,bench1,bench2,bench3))
 	}else if(grepl('int',tolower(name)) | grepl('intercept',tolower(name))){
+		result = which.min(abs(c(model,bench1,bench2,bench3)))
+	}else if(grepl('bias',tolower(name))){
 		result = which.min(abs(c(model,bench1,bench2,bench3)))
 	}
 	return(result)

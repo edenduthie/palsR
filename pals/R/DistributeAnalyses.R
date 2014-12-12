@@ -174,8 +174,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 				data[[Analysis$vindex]]$obs$timing$whole,ebal=FALSE,
 				modlabel=moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'Taylor'){
-			# Not a benhcmark plot for the moment:
-			bencherrtext = 'Benchmark analysis not available for this analysis type'
+			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			areturn = TaylorDiagram(data[[Analysis$vindex]],vars[[Analysis$vindex]])
 		}else if(Analysis$type == 'AvWindow'){
 			# Not a benhcmark plot for the moment:

@@ -42,7 +42,7 @@ for (i in 1:(length(files))  ) {
 vars = GetVariableDetails(c('NEE','Qle','Qh','Rnet','Qg','SWnet'))
 
 # Analyses that can apply to any variable:
-analyses = c('Timeseries','AnnualCycle','DiurnalCycle','Taylor','Scatter','PDF')
+analyses = c('Taylor','Timeseries','AnnualCycle','DiurnalCycle','Scatter','PDF')
 
 # Determine number of user-nominated benchmarks:
 BenchInfo = BenchmarkInfo(BenchmarkFiles,Bctr)
