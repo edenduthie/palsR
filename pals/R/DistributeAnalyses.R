@@ -104,7 +104,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 		}
 		
 		# Test benchmark timing compatibility, and remove any benchmarks if necessary:
-		bench = PruneBenchmarks(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$bench)
+		data[[Analysis$vindex]]$bench = PruneBenchmarks(data[[Analysis$vindex]]$obs,data[[Analysis$vindex]]$bench)
 		
 		# Create data matrix to send to analysis function:
 		adata=matrix(NA,length(data[[Analysis$vindex]]$obs$data),(2+data[[Analysis$vindex]]$bench$howmany))
@@ -134,6 +134,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 				benchnames[b] = data[[Analysis$vindex]]$bench[[ data[[Analysis$vindex]]$bench$index[b] ]]$name
 			}
 		}
+		
 		legendtext = c('Observed',moname,benchnames)
 		
 		# Call analysis function:	
@@ -193,12 +194,13 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 	# Don't return errtext in output list unless there is an error - as requested by Eden
 	if(areturn$errtext=='ok'){	
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
+			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,
+			bencherror=bencherrtext,obsname=obsname,moname=moname,benchnames=benchnames)
 	}else{
 		cat('\n###',areturn$errtext,'###\n')
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,
-			error=areturn$errtext,bencherror=bencherrtext)
+			error=areturn$errtext,bencherror=bencherrtext,obsname=obsname,moname=moname,benchnames=benchnames)
 	}	
 
 	return(result)
@@ -274,6 +276,5 @@ PruneBenchmarks = function(obs,bench){
 		# Overwrite bench$index with values that account for any benchmarks that failed:
 		bench$index = new_benchindex
 	}
-	cat('Remaining benchmarks:',bench$howmany,' \n')
 	return(bench)	
 }

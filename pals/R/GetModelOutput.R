@@ -238,28 +238,28 @@ GetLatLon = function(mfid){
 	return(latlon)
 }
 
-GetBenchmarks = function(variable,filelist,nBench){
+GetBenchmarks = function(variable,BenchmarkFiles,BenchInfo){
 	# Collects the model outputs that form benchmark simulations as a list
 	errtext = 'ok'
-	bench = list()
-	if(nBench$number > 0){
+	bench = list() # initialise benchmark data llist
+	if(BenchInfo$number > 0){
 		# Save for nBench$number positions in list for benchmark data;
 		# they'll be filled shortly:
-		for(b in 1:nBench$number){
+		for(b in 1:BenchInfo$number){
 			bench[[b]] = 0
 		}
     	bench[['exist']] = TRUE
     	bench[['howmany']] = 0
     	bench[['index']] = c()
     	bench[['errtext']] = ' '
-    	for(b in 1:nBench$number){
+    	for(b in 1:BenchInfo$number){
     		bench[['howmany']] = bench[['howmany']] + 1
     		# Select those files in file list that correspond to benchmark 'b'
     		thisbenchfiles = list()
-    		for(f in 1:length(nBench$benchfiles[[b]])){
-    			thisbenchfiles[[f]] = filelist[[ nBench$benchfiles[[b]][f] ]]
+    		for(f in 1:length(BenchInfo$benchfiles[[b]])){
+    			thisbenchfiles[[f]] = BenchmarkFiles[[ BenchInfo$benchfiles[[b]][f] ]]
     		}
-	    	bench[[b]] = GetModelOutput(variable,thisbenchfiles)
+	    	bench[[b]] = GetModelOutput(variable,thisbenchfiles)	    	
 	    	if(bench[[b]]$err){ # i.e. there was an error of some sort retrieving benchmark
 	    		# Add to this benchamrk's errtext field - note it's a benchmark:
 	    		bench[[b]]$errtext = paste('Benchmark error: ',bench[[b]]$errtext,sep='')

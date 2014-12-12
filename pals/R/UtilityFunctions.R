@@ -8,6 +8,15 @@ LineColours = function() {
 	# For line plots:
 	plotcolours=c('black','blue2','indianred3','gold2','yellowgreen')
 }
+TableWinColour = function() {
+	'lightgreen'	
+}
+TableModelColour = function() {
+	'gray87'	
+}
+TableBenchmarkColour = function() {
+	'gray93'	
+}
 ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
 	# Returns a colour range for gridded plots
 	library(colorRamps)
@@ -136,34 +145,38 @@ CheckVersionCompatibility = function(filepath1,filepath2){
 	}
 }
 
-NumberOfBenchmarks = function(bench,Bctr){
+BenchmarkInfo = function(BenchmarkFiles,Bctr){
 	# Determines the number of user nominated benchmarks in a call to an 
 	# experiment script, as well as the number of files associated with each.
 	# Bctr - total number of benchmark files
-	# bench - contains data for each file
-	if(Bctr == 0){
+	# BenchmarkFiles - contains data for each file
+	# nBench - number of user nominated benchmarks
+	# nBenchfiles - a list of vectors of file indices for each benchmark
+	if(Bctr == 0){ # no benchmark files sent by javascript
 		nBench = 0
-		benchfiles = NA
+		nBenchfiles = NA
 	}else{
 		nBench = 1
-		# Determine number of user nominated benchmarks:
+		# Determine number of user nominated benchmarks, and the name of each:
+		benchnames = c()
 		for(b in 1:Bctr){
-			nBench = max(nBench, as.integer(bench[[Bctr]]$number))
+			nBench = max(nBench, as.integer(BenchmarkFiles[[b]]$number))
+			benchnames[as.integer(BenchmarkFiles[[b]]$number)] = BenchmarkFiles[[b]]$name
 		}
 		# Store which files belong to which benchmark:
-		benchfiles = list()
+		nBenchfiles = list()
 		bexists = c(0)
 		for(b in 1:Bctr){
-			benchnumber = as.integer(bench[[b]]$number)
+			benchnumber = as.integer(BenchmarkFiles[[b]]$number)
 			if(any(bexists == benchnumber)){
-				benchfiles[[benchnumber]] = c(benchfiles[[benchnumber]] , b)
+				nBenchfiles[[benchnumber]] = c(nBenchfiles[[benchnumber]] , b)
 			}else{
-				benchfiles[[benchnumber]] = c(b)
+				nBenchfiles[[benchnumber]] = c(b)
 				bexists = c(bexists,benchnumber)
 			}
 		}
 	}
-	result = list(number = nBench, benchfiles=benchfiles)
+	result = list(number = nBench, benchfiles=nBenchfiles, names=benchnames)
 	return(result)
 }
 #
