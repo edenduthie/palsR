@@ -72,14 +72,14 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 		scoretext = paste(overl,collapse=', ')
 		text(x=(xlow+(xhigh-xlow)*0.75),y=ymax*0.6,labels=paste('Overlap: ',scoretext,'%',sep=''),pos=4)
 		if(ncurves==2){ # model only
-			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1])	
+			metrics[[1]] = list(name='%Overlap',model_value=overl[1])	
 		}else if(ncurves==3){
-			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],bench_value=list(bench1=overl[2]))	
+			metrics[[1]] = list(name='%Overlap',model_value=overl[1],bench_value=list(bench1=overl[2]))	
 		}else if(ncurves==4){
-			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],
+			metrics[[1]] = list(name='%Overlap',model_value=overl[1],
 				bench_value=list(bench1=overl[2],bench2=overl[3]))
 		}else if(ncurves==5){
-			metrics[[1]] = list(name='PDFoverlap%',model_value=overl[1],
+			metrics[[1]] = list(name='%Overlap',model_value=overl[1],
 				bench_value=list(bench1=overl[2],bench2=overl[3],bench3=overl[4]))
 		}
 	}

@@ -66,26 +66,35 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 					sum(abs(mean(tsdata[,1]) - tsdata[,1]))
 			}
 			# Report NME metric:
-			metricname = paste('NME',winsize,'dayAv',sep='')
+			metricname = paste('NME',winsize,'day',sep='')
 			if(ncurves==2){ # model only
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1])	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE))	
 				metrics[[2]] = list(name='NME',model_value=allscore[1])	
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1])	
 			}else if(ncurves==3){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],bench_value=list(bench1=allscore[2]))	
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2]))	
 			}else if(ncurves==4){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE),
+					bench2=mean(tsdata[,4]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],
 					bench_value=list(bench1=allscore[2],bench2=allscore[3]))
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3]))	
 			}else if(ncurves==5){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3],bench3=smoothscore[4]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE),
+					bench2=mean(tsdata[,4]-tsdata[,1],na.rm=TRUE),
+					bench3=mean(tsdata[,5]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],
 					bench_value=list(bench1=allscore[2],bench2=allscore[3],bench3=allscore[4]))
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3],bench3=smoothscore[4]))	
 			}
-			
 		}
 		for(l in 1:nyears){
 			xxat[(2*l-1)] = (l-1)*365 + 1

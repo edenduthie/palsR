@@ -39,10 +39,10 @@ for (i in 1:(length(files))  ) {
 
 # Nominate variables to analyse here (use ALMA standard names) - fetches
 # alternate names, units, units transformations etc:
-vars = GetVariableDetails(c('NEE','Qle','Qh','Rnet','Qg','SWnet'))
+vars = GetVariableDetails(c('Qle','Qh','NEE','Rnet','Qg','SWnet'))
 
 # Analyses that can apply to any variable:
-analyses = c('Taylor','Timeseries','AnnualCycle','DiurnalCycle','Scatter','PDF')
+analyses = c('Timeseries','Taylor','AnnualCycle','DiurnalCycle','Scatter','PDF')
 
 # Determine number of user-nominated benchmarks:
 BenchInfo = BenchmarkInfo(BenchmarkFiles,Bctr)

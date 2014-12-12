@@ -18,6 +18,9 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	ypadding = 1.0
 	# Table text sizing:
 	tablecex = 0.95
+	# Table grid:
+	xpos=c(-0.3,5,8)
+	ypos=c(5.3,0)
 	
 	# First get obs, model and benchmark names:
 	obsname = outinfo[[1]]$obsname
@@ -88,6 +91,7 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	initnames = paste(dfall[variable==vars[1],][,3],' (',dfall[variable==vars[1],][,1],')',sep='')
 	dfrownames = PadRowNames(initnames)
 	ctr = 1
+	vctr = c() # initialise index of columns for each variable in final data frame
 	
 	# First (column) entry in final table data frame is model metric values (for all analyses) for var 1:
 	dffinal = data.frame(a=signif(dfall[variable==vars[1],][,4],sfig))
@@ -97,21 +101,22 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	if(!all(is.na(dfall[variable==vars[1],][,5]))){ # if any bench1 values for var 1 (for all analyses) exist
 		ctr = ctr + 1
 		dffinal[ctr] = signif(dfall[variable==vars[1],][,5],sfig) # benchmark 1 metric values for var 1
-		dfcolumns = c(dfcolumns,paste('B1',vars[1]))
+		dfcolumns = c(dfcolumns,'B1')
 		dfcolours[ctr] = ifelse(c((dfall[variable==vars[1],][,8]) == 2),TableWinColour(),TableBenchmarkColour())
 	}
 	if(!all(is.na(dfall[variable==vars[1],][,6]))){
 		ctr = ctr + 1
 		dffinal[ctr] = signif(dfall[variable==vars[1],][,6],sfig) # benchmark 2 metric values for var 1
-		dfcolumns = c(dfcolumns,paste('B2',vars[1]))
+		dfcolumns = c(dfcolumns,'B2')
 		dfcolours[ctr] = ifelse(c((dfall[variable==vars[1],][,8]) == 3),TableWinColour(),TableBenchmarkColour())
 	}
 	if(!all(is.na(dfall[variable==vars[1],][,7]))){
 		ctr = ctr + 1
 		dffinal[ctr] = signif(dfall[variable==vars[1],][,7],sfig) # benchmark 3 metric values for var 1
-		dfcolumns = c(dfcolumns,paste('B3',vars[1]))
+		dfcolumns = c(dfcolumns,'B3')
 		dfcolours[ctr] = ifelse(c((dfall[variable==vars[1],][,8]) == 4),TableWinColour(),TableBenchmarkColour())
 	}
+	vctr[1] = ctr
 	if(length(vars) > 1){
 		for(v in 2:length(vars)){
 			ctr = ctr + 1
@@ -121,21 +126,22 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 			if(!all(is.na(dfall[variable==vars[v],][,5]))){
 				ctr = ctr + 1
 				dffinal[ctr] = signif(dfall[variable==vars[v],][,5],sfig)
-				dfcolumns = c(dfcolumns,paste('B1',vars[v]))
+				dfcolumns = c(dfcolumns,'B1')
 				dfcolours[ctr] = ifelse(c((dfall[variable==vars[v],][,8]) == 2),TableWinColour(),TableBenchmarkColour())
 			}
 			if(!all(is.na(dfall[variable==vars[v],][,6]))){
 				ctr = ctr + 1
 				dffinal[ctr] = signif(dfall[variable==vars[v],][,6],sfig)
-				dfcolumns = c(dfcolumns,paste('B2',vars[v]))
+				dfcolumns = c(dfcolumns,'B2')
 				dfcolours[ctr] = ifelse(c((dfall[variable==vars[v],][,8]) == 3),TableWinColour(),TableBenchmarkColour())
 			}
 			if(!all(is.na(dfall[variable==vars[v],][,7]))){
 				ctr = ctr + 1
 				dffinal[ctr] = signif(dfall[variable==vars[v],][,7],sfig)
-				dfcolumns = c(dfcolumns,paste('B3',vars[v]))
+				dfcolumns = c(dfcolumns,'B3')
 				dfcolours[ctr] = ifelse(c((dfall[variable==vars[v],][,8]) == 4),TableWinColour(),TableBenchmarkColour())
 			}
+			vctr[v] = ctr
 			# Decide whether table should be split:
 			if((v==halfvars) && (ctr > 5)){
 				halftable = ctr + 1	
@@ -160,14 +166,30 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	mtext(title_line2,cex=1.1,col='blue4')
 	# Draw table:
 	if(split_table){
-		addtable2plot(-0.3,5.3,dffinal[1:(halftable-1)],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
-			display.rownames=TRUE,bg=as.matrix(dfcolours)[,1:(halftable-1)],xpad=xpadding,ypad=ypadding)
-		addtable2plot(-0.3,0,dffinal[halftable:length(dffinal)],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
-			display.rownames=TRUE,bg=as.matrix(dfcolours)[,halftable:length(dffinal)],xpad=xpadding,ypad=ypadding)
-	}else{	
+		addtable2plot(xpos[1],ypos[1],dffinal[1:vctr[1]],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+			display.rownames=TRUE,bg=as.matrix(dfcolours)[,1:vctr[1]],xpad=xpadding,ypad=ypadding)
+		for(v in 2:3){
+			addtable2plot(xpos[v],ypos[1],dffinal[(vctr[v-1]+1):(vctr[v])],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+				display.rownames=FALSE,bg=as.matrix(dfcolours)[,(vctr[v-1]+1):(vctr[v])],xpad=xpadding,ypad=ypadding)	
+		}
+		addtable2plot(xpos[1],ypos[2],dffinal[(vctr[3]+1):vctr[4]],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+			display.rownames=TRUE,bg=as.matrix(dfcolours)[,(vctr[3]+1):vctr[4]],xpad=xpadding,ypad=ypadding)
+		for(v in 5:length(vars)){
+			addtable2plot(xpos[v%%3],ypos[2],dffinal[(vctr[v-1]+1):(vctr[v])],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+				display.rownames=FALSE,bg=as.matrix(dfcolours)[,(vctr[v-1]+1):(vctr[v])],xpad=xpadding,ypad=ypadding)	
+		}
+	}else{
+		addtable2plot(xpos[1],7,dffinal[1:vctr[1]],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+			display.rownames=TRUE,bg=as.matrix(dfcolours)[,1:vctr[1]],xpad=xpadding,ypad=ypadding)
+		for(v in 2:length(vars)){
+			addtable2plot(xpos[v],7,dffinal[(vctr[v-1]+1):(vctr[v])],bty='o',hlines=TRUE,vlines=TRUE,cex=tablecex,
+				display.rownames=FALSE,bg=as.matrix(dfcolours)[,(vctr[v-1]+1):(vctr[v])],xpad=xpadding,ypad=ypadding)	
+		}
+		
 		addtable2plot(-0.2,7,dffinal,bty='o',hlines=TRUE,vlines=TRUE,display.rownames=TRUE,cex=tablecex,
 			bg=as.matrix(dfcolours),xpad=xpadding,ypad=ypadding)
 	}
+		
 	# Return analysis result by adding to outinfo list of analyses results.		
 	result = list(type=thisanalysistype,filename=paste(getwd(),outfile,sep = "/"),
 		mimetype="image/png",analysistype=thisanalysistype)
