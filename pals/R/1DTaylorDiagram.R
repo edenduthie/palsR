@@ -36,42 +36,27 @@ TaylorDiagram = function(ObsLabel,mod_data,obs_data,varname,xtext,
 	taylor.diagram(ref=oavday,model=oavday,pcex=2,add=TRUE,
 	ref.sd=TRUE,show.gamma=TRUE,col='red',pch=1)
 	# If we have whole years of data, plot monthly values as well
-	if(whole){ 
-		# Calculate monthly values:
-		month_start=c()
-		month_start[1]=1    # Jan
-		month_start[2]=32   # Feb
-		month_start[3]=60   # Mar
-		month_start[4]=91   # Apr
-		month_start[5]=121  # May
-		month_start[6]=152  # Jun
-		month_start[7]=182  # Jul
-		month_start[8]=213  # Aug
-		month_start[9]=244  # Sep
-		month_start[10]=274 # Oct
-		month_start[11]=305 # Nov
-		month_start[12]=335 # Dec
-		month_start[13]=366 # i.e. beginning of next year
+	if(whole){
+		month = getMonthDays()
 		mod_monthly=c() # initialise monthly averages
 		obs_monthly=c()   # initialise monthly averages
 		# Transform daily means into monthly means:
 		for(l in 1:12){ # for each month
-			month_length=month_start[l+1]-month_start[l]
 			mod_month=0 # initialise
 			obs_month=0   # initialise
 			for(k in 1:nyears){ # for each year of data set
 				# Add all daily averages for a given month
 				# over all data set years:
 				mod_month = mod_month + 
-					sum(mavday[(month_start[l]+(k-1)*365):
-					(month_start[l+1]-1 +(k-1)*365) ] )
+					sum(mavday[(month$start[l]+(k-1)*365):
+					(month$start[l+1]-1 +(k-1)*365) ] )
 				obs_month = obs_month + 
-					sum(oavday[(month_start[l]+(k-1)*365):
-					(month_start[l+1]-1 +(k-1)*365) ] )
+					sum(oavday[(month$start[l]+(k-1)*365):
+					(month$start[l+1]-1 +(k-1)*365) ] )
 			}
 			# then divide by the total number of days added above:
-			mod_monthly[l]=mod_month/(month_length*nyears)
-			obs_monthly[l]=obs_month/(month_length*nyears)
+			mod_monthly[l]=mod_month/(month$length*nyears)
+			obs_monthly[l]=obs_month/(month$length*nyears)
 		}
 		# Plot monthly averages:
 		taylor.diagram(ref=obs_monthly,model=mod_monthly,pcex=2,add=TRUE,
