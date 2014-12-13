@@ -4,7 +4,7 @@
 #
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
+PALSScatter = function(data,varinfo,ebal=FALSE){
 	#
 	errtext = 'ok'
 	metrics = list()
@@ -14,13 +14,20 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	# Plot layout:
 	par(mfcol=c(1,2),mar=c(4,4,3,0.5),oma=c(0,0,0,1),
 		mgp=c(2.5,0.7,0),ps=14,tcl=-0.4)
+	# Get plot colours, adjuted for any removed benchmarks:
+	plotcols = BenchmarkColours(data$bench,plotobs=FALSE)
+	# Get legend text:
+	legendtext = LegendText(data,plotobs=FALSE)
+	# Define legend line types:
+	linetypes = c(1,3,3,3)
 	# Define x and y-axis text
 	if(ebal){
 		xtext = paste(xytext[1],':',data$model$name)
 		ytext = paste(xytext[2],':',data$model$name)
 	}else{
-		xtext = paste(xytext[1],':',data$obs$name)
-		ytext = paste(xytext[2],':',data$model$name)
+		vtext = bquote(.(tolower(varinfo$PlotName)) ~ ' (' ~.(varinfo$UnitsText) ~ ')')
+		xtext = paste('Observed :',data$obs$name)
+		ytext = paste('Modelled :',data$model$name)
 	}
 	
 	# Prescribe data in scatterplots / regressions, removing qc flagged data if available:
@@ -56,11 +63,11 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	xmin=min(x_mod)
 	# First plot scatter of per timestep values:
 	plot(x=x_mod,y=y_mod,main=bquote('Per time step' ~ .(vtext)),
-		col=LineColours()[2],xlab=xtext,ylab=ytext,
+		col=plotcols[1],xlab=xtext,ylab=ytext,
 		type='p',pch='.',cex=3,ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
 	# Overplot with better looking points:
-	points(x=x_mod,y=y_mod,pch=20,col=LineColours()[2],cex=0.35)
+	points(x=x_mod,y=y_mod,pch=20,col=plotcols[1],cex=0.35)
 	# Define per time step regression coefficients:
 	sline = lm(y_mod~x_mod,na.action=na.omit)
 	if(data$bench$exist){
@@ -76,45 +83,35 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	abline(a=0,b=1,col='black',lwd=1)
 	# Add benchmark regresion lines to plot:
 	if(data$bench$exist){
-		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=4,lty=3)
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=plotcols[2],lwd=4,lty=3)
 		if(data$bench$howmany == 2){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=plotcols[3],lwd=4,lty=3)
 		}else if(data$bench$howmany == 3){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
-			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=4,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=plotcols[3],lwd=4,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=plotcols[4],lwd=4,lty=3)
 		}
 	}
 	# Add regresion line to plot
-	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=5)
+	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=plotcols[1],lwd=5)
 	# Add regression parameter text to plot:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',signif(b1line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',signif(b1line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name)
-			linetypes = c(1,3)
 		}else if(data$bench$howmany == 2){
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
 				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
 				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
-				data$bench[[ data$bench$index[2] ]]$name)
-			linetypes = c(1,3,3)
 		}else if(data$bench$howmany == 3){	
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
 				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2),',',signif(b3line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
 				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2),',',signif(b3line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
-				data$bench[[ data$bench$index[2] ]]$name,data$bench[[ data$bench$index[3] ]]$name)
-			linetypes = c(1,3,3,3)
 		}
 	}else{
 		intdetail = paste('Intercept:',signif(sline$coefficients[1],2))
 		graddetail = paste('Gradient:',signif(sline$coefficients[2],2))
-		legendtext = c(data$model$name)
-		linetypes = c(1)
 	}
 	yrange = max(ymax,xmax) - min(ymin,xmin)
 	text(x=min(ymin,xmin),y=max(ymax,xmax),labels=intdetail,pos=4)
@@ -124,7 +121,7 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	}
 	# Add legend to plot:
 	legend(x=(max(xmax,ymax)-yrange*0.5),y=(max(ymax,xmax)-yrange*0.85),legendtext,
-		lty=linetypes,col=LineColours()[2:5],lwd=3,bty="n",yjust=0.8)
+		lty=linetypes,col=plotcols,lwd=3,bty="n",yjust=0.8)
 	# Define per time step metrics:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
@@ -240,12 +237,12 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	ymin=min(yday,na.rm=TRUE)
 	xmax=max(xday,na.rm=TRUE)
 	xmin=min(xday,na.rm=TRUE)
-	plot(x=xday,y=yday,main=bquote('Daily average' ~ .(vtext)),col=LineColours()[2],
+	plot(x=xday,y=yday,main=bquote('Daily average' ~ .(vtext)),col=plotcols[1],
 		xlab=xtext,ylab=ytext,type='p',pch='.',cex=3,
 		ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
 	# Overplot with better looking points:
-	points(x=xday,y=yday,pch=20,col=LineColours()[2],cex=0.35)
+	points(x=xday,y=yday,pch=20,col=plotcols[1],cex=0.35)
 	# Define daily regression coefficients:
 	sline = lm(yday~xday,na.action=na.omit)
 	if(data$bench$exist){
@@ -261,52 +258,42 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	abline(a=0,b=1,col='black',lwd=1)
 	# Add benchmark regresion lines to plot:
 	if(data$bench$exist){
-		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=4,lty=3)
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=plotcols[2],lwd=4,lty=3)
 		if(data$bench$howmany == 2){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=plotcols[3],lwd=4,lty=3)
 		}else if(data$bench$howmany == 3){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
-			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=4,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=plotcols[3],lwd=4,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=plotcols[4],lwd=4,lty=3)
 		}
 	}
 	# Add regresion line to plot
-	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=5)
+	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=plotcols[1],lwd=5)
 	# Add regression parameter text to plot:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',signif(b1line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',signif(b1line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name)
-			linetypes = c(1,3)
 		}else if(data$bench$howmany == 2){
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
 				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
 				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
-				data$bench[[ data$bench$index[2] ]]$name)
-			linetypes = c(1,3,3)
 		}else if(data$bench$howmany == 3){	
 			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
 				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2),',',signif(b3line$coefficients[1],2))
 			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
 				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2),',',signif(b3line$coefficients[2],2))
-			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
-				data$bench[[ data$bench$index[2] ]]$name,data$bench[[ data$bench$index[3] ]]$name)
-			linetypes = c(1,3,3,3)
 		}
 	}else{
 		intdetail = paste('Intercept:',signif(sline$coefficients[1],2))
 		graddetail = paste('Gradient:',signif(sline$coefficients[2],2))
-		legendtext = c(data$model$name)
-		linetypes = c(1)
 	}
 	yrange = max(ymax,xmax) - min(ymin,xmin)
 	text(x=min(ymin,xmin),y=max(ymax,xmax),labels=intdetail,pos=4)
 	text(x=min(ymin,xmin),y=(min(ymin,xmin)+0.955*yrange),labels=graddetail,pos=4)
 	# Add legend to plot:
 	legend(x=(max(xmax,ymax)-yrange*0.5),y=(max(ymax,xmax)-yrange*0.85),legendtext,
-		lty=linetypes,col=LineColours()[2:5],lwd=3,bty="n",yjust=0.8)
+		lty=linetypes,col=plotcols,lwd=3,bty="n",yjust=0.8)
 	# If this an energy balance plot, add cumulative total:
 	if(ebal){
 		allebal = sum(ebalday)*timestepsize/3600/ndays # in Watt-hours

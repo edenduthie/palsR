@@ -164,12 +164,8 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 			areturn = PALSPdf(obsname,adata,varname,xtext,legendtext,
 				data[[Analysis$vindex]]$obs$timing,nbins,moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'Scatter'){
-			# Not a benhcmark plot for the moment:
-			bencherrtext = 'Benchmark analysis not available for this analysis type'
-			vtext = bquote(.(tolower(vars[[Analysis$vindex]][['PlotName']])) ~ ' (' ~.(vars[[Analysis$vindex]][['UnitsText']]) ~ ')')
-			xytext = c('Observed','Modelled')
-			areturn = PALSScatter(data[[Analysis$vindex]],vars[[Analysis$vindex]],xytext,vtext,ebal=FALSE)
-				
+			bencherrtext = data[[Analysis$vindex]]$bench$errtext
+			areturn = PALSScatter(data[[Analysis$vindex]],vars[[Analysis$vindex]],ebal=FALSE)
 		}else if(Analysis$type == 'Taylor'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			areturn = TaylorDiagram(data[[Analysis$vindex]],vars[[Analysis$vindex]])
