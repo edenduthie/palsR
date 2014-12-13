@@ -59,6 +59,8 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 		col=LineColours()[2],xlab=xtext,ylab=ytext,
 		type='p',pch='.',cex=3,ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
+	# Overplot with better looking points:
+	points(x=x_mod,y=y_mod,pch=20,col=LineColours()[2],cex=0.35)
 	# Define per time step regression coefficients:
 	sline = lm(y_mod~x_mod,na.action=na.omit)
 	if(data$bench$exist){
@@ -74,16 +76,16 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	abline(a=0,b=1,col='black',lwd=1)
 	# Add benchmark regresion lines to plot:
 	if(data$bench$exist){
-		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=3,lty=3)
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=4,lty=3)
 		if(data$bench$howmany == 2){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
 		}else if(data$bench$howmany == 3){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
-			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=3,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=4,lty=3)
 		}
 	}
 	# Add regresion line to plot
-	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=4)
+	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=5)
 	# Add regression parameter text to plot:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
@@ -242,6 +244,8 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 		xlab=xtext,ylab=ytext,type='p',pch='.',cex=3,
 		ylim=c(min(ymin,xmin),max(ymax,xmax)),
 		xlim=c(min(ymin,xmin),max(ymax,xmax)))
+	# Overplot with better looking points:
+	points(x=xday,y=yday,pch=20,col=LineColours()[2],cex=0.35)
 	# Define daily regression coefficients:
 	sline = lm(yday~xday,na.action=na.omit)
 	if(data$bench$exist){
@@ -257,16 +261,16 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	abline(a=0,b=1,col='black',lwd=1)
 	# Add benchmark regresion lines to plot:
 	if(data$bench$exist){
-		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=3,lty=3)
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=4,lty=3)
 		if(data$bench$howmany == 2){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
 		}else if(data$bench$howmany == 3){
-			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
-			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=3,lty=3)
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=4,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=4,lty=3)
 		}
 	}
 	# Add regresion line to plot
-	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=4)
+	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=5)
 	# Add regression parameter text to plot:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
