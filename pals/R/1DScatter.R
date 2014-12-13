@@ -28,13 +28,10 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 		x_mod = data$obs$data[as.logical(data$obs$qc)]
 		y_mod = data$model$data[as.logical(data$obs$qc)]
 		if(data$bench$exist){
-			if(data$bench$howmany == 1){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data[as.logical(data$obs$qc)]
-			}else if(data$bench$howmany == 2){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data[as.logical(data$obs$qc)]
+			b1_mod = data$bench[[ data$bench$index[1] ]]$data[as.logical(data$obs$qc)]
+			if(data$bench$howmany == 2){
 				b2_mod = data$bench[[ data$bench$index[2] ]]$data[as.logical(data$obs$qc)]
 			}else if(data$bench$howmany == 3){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data[as.logical(data$obs$qc)]
 				b2_mod = data$bench[[ data$bench$index[2] ]]$data[as.logical(data$obs$qc)]
 				b3_mod = data$bench[[ data$bench$index[3] ]]$data[as.logical(data$obs$qc)]
 			}
@@ -43,13 +40,10 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 		x_mod = data$obs$data
 		y_mod = data$model$data
 		if(data$bench$exist){
-			if(data$bench$howmany == 1){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data
-			}else if(data$bench$howmany == 2){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data
+			b1_mod = data$bench[[ data$bench$index[1] ]]$data
+			if(data$bench$howmany == 2){
 				b2_mod = data$bench[[ data$bench$index[2] ]]$data
 			}else if(data$bench$howmany == 3){
-				b1_mod = data$bench[[ data$bench$index[1] ]]$data
 				b2_mod = data$bench[[ data$bench$index[2] ]]$data
 				b3_mod = data$bench[[ data$bench$index[3] ]]$data
 			}
@@ -68,30 +62,68 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	# Define per time step regression coefficients:
 	sline = lm(y_mod~x_mod,na.action=na.omit)
 	if(data$bench$exist){
-		if(data$bench$howmany == 1){
-			b1line = lm(b1_mod~x_mod,na.action=na.omit)
-		}else if(data$bench$howmany == 2){
-			b1line = lm(b1_mod~x_mod,na.action=na.omit)
+		b1line = lm(b1_mod~x_mod,na.action=na.omit)
+		if(data$bench$howmany == 2){
 			b2line = lm(b2_mod~x_mod,na.action=na.omit)
 		}else if(data$bench$howmany == 3){
-			b1line = lm(b1_mod~x_mod,na.action=na.omit)
 			b2line = lm(b2_mod~x_mod,na.action=na.omit)
 			b3line = lm(b3_mod~x_mod,na.action=na.omit)
 		}
 	}
 	# Add 1:1 line to plot:
 	abline(a=0,b=1,col='black',lwd=1)
+	# Add benchmark regresion lines to plot:
+	if(data$bench$exist){
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=3,lty=3)
+		if(data$bench$howmany == 2){
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+		}else if(data$bench$howmany == 3){
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=3,lty=3)
+		}
+	}
 	# Add regresion line to plot
 	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=4)
 	# Add regression parameter text to plot:
-	intdetail = paste('Intercept:',signif(sline$coefficients[1],3))
-	graddetail = paste('Gradient:',signif(sline$coefficients[2],3))
+	if(data$bench$exist){
+		if(data$bench$howmany == 1){
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',signif(b1line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',signif(b1line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name)
+			linetypes = c(1,3)
+		}else if(data$bench$howmany == 2){
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
+				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
+				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
+				data$bench[[ data$bench$index[2] ]]$name)
+			linetypes = c(1,3,3)
+		}else if(data$bench$howmany == 3){	
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
+				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2),',',signif(b3line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
+				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2),',',signif(b3line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
+				data$bench[[ data$bench$index[2] ]]$name,data$bench[[ data$bench$index[3] ]]$name)
+			linetypes = c(1,3,3,3)
+		}
+	}else{
+		intdetail = paste('Intercept:',signif(sline$coefficients[1],2))
+		graddetail = paste('Gradient:',signif(sline$coefficients[2],2))
+		legendtext = c(data$model$name)
+		linetypes = c(1)
+	}
 	yrange = max(ymax,xmax) - min(ymin,xmin)
 	text(x=min(ymin,xmin),y=max(ymax,xmax),labels=intdetail,pos=4)
 	text(x=min(ymin,xmin),y=(min(ymin,xmin)+0.955*yrange),labels=graddetail,pos=4)
 	if((data$obs$qcexists) & (!ebal)){
-		text(x=(max(xmax,ymax)-yrange*0.5),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
+		text(x=(max(xmax,ymax)-yrange*0.45),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
 	}
+	# Add legend to plot:
+	legend(x=(max(xmax,ymax)-yrange*0.5),y=(max(ymax,xmax)-yrange*0.85),legendtext,
+		lty=linetypes,col=LineColours()[2:5],lwd=3,bty="n",yjust=0.8)
+	# Define per time step metrics:
 	if(data$bench$exist){
 		if(data$bench$howmany == 1){
 			metrics[[1]] = list(name='Grad',model_value=sline$coefficients[2],
@@ -134,19 +166,14 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	xday = c()
 	yday = c()
 	if(data$bench$exist){
-		if(data$bench$howmany == 1){
-			b1_days=matrix(data$bench[[ data$bench$index[1] ]]$data,ncol=tstepinday,byrow=TRUE)
-			b1day = c()
-		}else if(data$bench$howmany == 2){
-			b1_days=matrix(data$bench[[ data$bench$index[1] ]]$data,ncol=tstepinday,byrow=TRUE)
+		b1_days=matrix(data$bench[[ data$bench$index[1] ]]$data,ncol=tstepinday,byrow=TRUE)
+		b1day = c()
+		if(data$bench$howmany == 2){
 			b2_days=matrix(data$bench[[ data$bench$index[2] ]]$data,ncol=tstepinday,byrow=TRUE)
-			b1day = c()
 			b2day = c()
 		}else if(data$bench$howmany == 3){
-			b1_days=matrix(data$bench[[ data$bench$index[1] ]]$data,ncol=tstepinday,byrow=TRUE)
 			b2_days=matrix(data$bench[[ data$bench$index[2] ]]$data,ncol=tstepinday,byrow=TRUE)
 			b3_days=matrix(data$bench[[ data$bench$index[3] ]]$data,ncol=tstepinday,byrow=TRUE)
-			b1day = c()
 			b2day = c()
 			b3day = c()
 		}	
@@ -218,27 +245,64 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 	# Define daily regression coefficients:
 	sline = lm(yday~xday,na.action=na.omit)
 	if(data$bench$exist){
-		if(data$bench$howmany == 1){
-			b1line = lm(b1day~xday,na.action=na.omit)
-		}else if(data$bench$howmany == 2){
-			b1line = lm(b1day~xday,na.action=na.omit)
+		b1line = lm(b1day~xday,na.action=na.omit)
+		if(data$bench$howmany == 2){
 			b2line = lm(b2day~xday,na.action=na.omit)
 		}else if(data$bench$howmany == 3){
-			b1line = lm(b1day~xday,na.action=na.omit)
 			b2line = lm(b2day~xday,na.action=na.omit)
 			b3line = lm(b3day~xday,na.action=na.omit)
 		}
 	}
 	# Add 1:1 line:
 	abline(a=0,b=1,col='black',lwd=1)
+	# Add benchmark regresion lines to plot:
+	if(data$bench$exist){
+		abline(a=b1line$coefficients[1],b=b1line$coefficients[2],col=LineColours()[3],lwd=3,lty=3)
+		if(data$bench$howmany == 2){
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+		}else if(data$bench$howmany == 3){
+			abline(a=b2line$coefficients[1],b=b2line$coefficients[2],col=LineColours()[4],lwd=3,lty=3)
+			abline(a=b3line$coefficients[1],b=b3line$coefficients[2],col=LineColours()[5],lwd=3,lty=3)
+		}
+	}
 	# Add regresion line to plot
 	abline(a=sline$coefficients[1],b=sline$coefficients[2],col=LineColours()[2],lwd=4)
 	# Add regression parameter text to plot:
-	intdetail = paste('Intercept:',signif(sline$coefficients[1],3))
-	graddetail = paste('Gradient:',signif(sline$coefficients[2],3))
+	if(data$bench$exist){
+		if(data$bench$howmany == 1){
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',signif(b1line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',signif(b1line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name)
+			linetypes = c(1,3)
+		}else if(data$bench$howmany == 2){
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
+				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
+				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
+				data$bench[[ data$bench$index[2] ]]$name)
+			linetypes = c(1,3,3)
+		}else if(data$bench$howmany == 3){	
+			intdetail = paste('Intercept:',signif(sline$coefficients[1],2),',',
+				signif(b1line$coefficients[1],2),',',signif(b2line$coefficients[1],2),',',signif(b3line$coefficients[1],2))
+			graddetail = paste('Gradient:',signif(sline$coefficients[2],2),',',
+				signif(b1line$coefficients[2],2),',',signif(b2line$coefficients[2],2),',',signif(b3line$coefficients[2],2))
+			legendtext = c(data$model$name,data$bench[[ data$bench$index[1] ]]$name,
+				data$bench[[ data$bench$index[2] ]]$name,data$bench[[ data$bench$index[3] ]]$name)
+			linetypes = c(1,3,3,3)
+		}
+	}else{
+		intdetail = paste('Intercept:',signif(sline$coefficients[1],2))
+		graddetail = paste('Gradient:',signif(sline$coefficients[2],2))
+		legendtext = c(data$model$name)
+		linetypes = c(1)
+	}
 	yrange = max(ymax,xmax) - min(ymin,xmin)
 	text(x=min(ymin,xmin),y=max(ymax,xmax),labels=intdetail,pos=4)
 	text(x=min(ymin,xmin),y=(min(ymin,xmin)+0.955*yrange),labels=graddetail,pos=4)
+	# Add legend to plot:
+	legend(x=(max(xmax,ymax)-yrange*0.5),y=(max(ymax,xmax)-yrange*0.85),legendtext,
+		lty=linetypes,col=LineColours()[2:5],lwd=3,bty="n",yjust=0.8)
 	# If this an energy balance plot, add cumulative total:
 	if(ebal){
 		allebal = sum(ebalday)*timestepsize/3600/ndays # in Watt-hours
@@ -251,7 +315,7 @@ PALSScatter = function(data,varinfo,xytext,vtext,ebal=FALSE){
 		text(x=min(ymin,xmin),y=(min(ymin,xmin)+0.85*yrange),
 			labels=avtext,pos=4)
 	}else if(data$obs$qcexists){
-		text(x=(max(xmax,ymax)-yrange*0.5),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
+		text(x=(max(xmax,ymax)-yrange*0.45),y=max(ymax,xmax),labels='Gap-filled data removed',pos=4)
 	}
 	# Record metrics:
 	if(data$bench$exist){
