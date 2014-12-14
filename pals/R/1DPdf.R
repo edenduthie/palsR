@@ -5,7 +5,7 @@
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
 PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
-	nbins=500,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
+	nbins=500,plotcolours,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
 	errtext = 'ok'
 	metrics = list()
 	xcut = 1/100
@@ -13,7 +13,6 @@ PALSPdf = function(obslabel,pdfdata,varname,xtext,legendtext,timing,
 	ntsteps = length(pdfdata[,1]) # Number of timesteps in data:
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
-	plotcolours=LineColours() 
 	xmin = min(pdfdata)
 	xmax = max(pdfdata)
 	allden = list()

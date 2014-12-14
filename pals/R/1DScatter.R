@@ -158,7 +158,7 @@ PALSScatter = function(data,varinfo,ebal=FALSE){
 		text(x=min(ymin,xmin),y=(min(ymin,xmin)+0.85*yrange),
 			labels=avtext,pos=4)
 	}
-	# Then plot scatter of daily averages:
+	######### Then plot scatter of daily averages #####################
 	# Reshape data into clolumn time-steps-in-day, day rows:
 	x_days=matrix(data$obs$data,ncol=tstepinday,byrow=TRUE)
 	y_days=matrix(data$model$data,ncol=tstepinday,byrow=TRUE)

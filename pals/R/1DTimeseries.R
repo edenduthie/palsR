@@ -5,7 +5,7 @@
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
 Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
-	plotcex,timing,smoothed=FALSE,winsize=1,modlabel='no',
+	plotcex,timing,smoothed=FALSE,winsize=1,plotcolours,modlabel='no',
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
 	#
 	errtext = 'ok'
@@ -15,7 +15,6 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
 	nyears=as.integer(ndays/365) # find # years in data set
-		plotcolours=LineColours() 
 	# x-axis labels:
 	xxat=c()
 	xxlab=c()
@@ -148,6 +147,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 				labels=paste(qcpc,'% of observed ',varname[1],' is gap-filled:',sep=''))
 		}		
 	}else{
+		# this code not functioning but kept for future modification:
 		yvalmin = signif(min(tsdata),3)
 		yvalmax = signif(max(tsdata),3)
 		datamean = signif(mean(tsdata[,1]),3)

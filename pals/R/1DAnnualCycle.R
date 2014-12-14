@@ -8,7 +8,7 @@
 # Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
-	timestepsize,whole,modlabel='no'){
+	timestepsize,whole,plotcolours,modlabel='no'){
 	######
 	errtext = 'ok'
 	metrics = list()
@@ -48,7 +48,6 @@ AnnualCycle = function(obslabel,acdata,varname,ytext,legendtext,
 		}
 	}
 	xloc=c(1:12) # set location of x-coords
-	plotcolours=LineColours()
 	# Plot model output result:
 	yaxmin=min(data_monthly) # y axis minimum in plot
 	yaxmax=max(data_monthly)+0.18*(max(data_monthly)-yaxmin) # y axis maximum in plot

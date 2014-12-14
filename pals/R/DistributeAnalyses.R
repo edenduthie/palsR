@@ -135,7 +135,8 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 			}
 		}
 		
-		legendtext = c('Observed',moname,benchnames)
+		legendtext = LegendText(data[[Analysis$vindex]],plotobs=TRUE)
+		plotcolours = BenchmarkColours(data[[Analysis$vindex]]$bench,plotobs=TRUE)
 		
 		# Call analysis function:	
 		if(Analysis$type == 'Timeseries'){
@@ -144,25 +145,26 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 			winsize = 14
 			ytext=bquote('Smoothed'~.(tolower(longvarname)) ~ ' (' ~ .(unitstxt) ~ ')')
 			areturn = Timeseries(obsname,adata,varname,ytext,legendtext,plotcex,
-				data[[Analysis$vindex]]$obs$timing,smoothed=TRUE,winsize,moname,vqcdata=vqcdata)				
+				data[[Analysis$vindex]]$obs$timing,smoothed=TRUE,winsize,plotcolours,
+				moname,vqcdata=vqcdata)				
 		}else if(Analysis$type == 'AnnualCycle'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			ytext = bquote('Average'~.(tolower(longvarname)) ~ ' (' ~ .(unitstxt) ~ ')')
 			areturn = AnnualCycle(obsname,adata,varname,ytext,legendtext,
 				data[[Analysis$vindex]]$obs$timing$tstepsize,
-				data[[Analysis$vindex]]$obs$timing$whole,moname)
+				data[[Analysis$vindex]]$obs$timing$whole,plotcolours,moname)
 		}else if(Analysis$type == 'DiurnalCycle'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			ytext=bquote('Average'~.(varname) ~ ' (' ~.(unitstxt) ~ ')')
 			areturn = DiurnalCycle(obsname,adata,varname,ytext,legendtext,
 				data[[Analysis$vindex]]$obs$timing$tstepsize,
-				data[[Analysis$vindex]]$obs$timing$whole,moname,vqcdata=vqcdata)
+				data[[Analysis$vindex]]$obs$timing$whole,plotcolours,moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'PDF'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			nbins=500
 			xtext=bquote(.(longvarname) ~ ' (' ~ .(unitstxt) ~ ')')
 			areturn = PALSPdf(obsname,adata,varname,xtext,legendtext,
-				data[[Analysis$vindex]]$obs$timing,nbins,moname,vqcdata=vqcdata)
+				data[[Analysis$vindex]]$obs$timing,nbins,plotcolours,moname,vqcdata=vqcdata)
 		}else if(Analysis$type == 'Scatter'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
 			areturn = PALSScatter(data[[Analysis$vindex]],vars[[Analysis$vindex]],ebal=FALSE)
