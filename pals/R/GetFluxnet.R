@@ -48,8 +48,9 @@ GetFluxnetVariable = function(variable,filedetails,flagonly=FALSE){
 	if(! flagonly){ # if this function call is actually about fetching data:
 		timing = GetTimingNcfile(fid)
 		data=ncvar_get(fid,variable[['Name']][1])   # read observed variable data
+		latlon = GetLatLon(fid)
 		obs=list(data=data,timing=timing,qc=qc,qcexists=vexists$qc,name=filedetails$name,
-			err=FALSE,errtext=errtext)
+			grid=latlon,err=FALSE,errtext=errtext)
 	}else{
 		obs=list(qcexists=vexists$qc,qc=qc,name=filedetails$name,
 			err=FALSE,errtext=errtext)
