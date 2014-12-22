@@ -3,6 +3,31 @@
 # Functions that check netcdf compatibility, obs-model compatibility
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
+CanAnalysisProceed = function(obs,model){
+	# Checks obs, model variables were found, timing is appropriate, and spatial grids match
+		
+	# Check for obs or model aren't missing variable data:
+	readcheck = CheckDataRead(obs$err,obs$errtext,model$err,model$errtext)
+	# Don't proceed and report error if there's an issue:		
+	if(readcheck$err){
+		return(readcheck)
+	}	
+	# Check model, obs timing consistency
+	tcheck = CheckTiming(obs$timing,model$timing)	
+	# Don't proceed and report error if there's an issue:	
+	if(tcheck$err){
+		return(tcheck)
+	}
+	# Check model, obs grid consistency
+	gcheck = CheckGrids(obs$grid,model$grid)	
+	# Don't proceed and report error if there's an issue:	
+	if(gcheck$err){
+		return(gcheck)
+	}
+	proceed = list(err=FALSE)
+	return(proceed)
+}
+
 GetLatLon = function(mfid){
 	# Gets the latitude and longitide dimensions from a model output netcdf file
 	errtext='ok'
@@ -71,23 +96,16 @@ GetLatLon = function(mfid){
 	return(latlon)
 }
 
-CanAnalysisProceed = function(obs,model){
-	# Checks obs, model variables were found, timing is appropriate, and spatial grids match
-		
-	# Check for obs or model aren't missing variable data:
-	readcheck = CheckDataRead(obs$err,obs$errtext,model$err,model$errtext)
-	# Don't proceed and report error if there's an issue:		
-	if(readcheck$err){
-		return(readcheck)
-	}	
-	# Check model, obs timing consistency
-	tcheck = CheckTiming(obs$timing,model$timing)	
-	# Don't proceed and report error if there's an issue:	
-	if(tcheck$err){
-		return(tcheck)
-	}
-	proceed = list(err=FALSE)
-	return(proceed)
+CheckGrids = function(obs,mod){
+	# Checks compatibility of observed and model output spatial grids
+	errtext = 'ok'
+	err = FALSE
+#	if(any(obs$lat != mod$lat) | any(obs$lon != mod$lon)){
+#		err=TRUE
+#		errtext = 'Spatial grids incompatible between obs and modelled data.'	
+#	}
+	result = list(err = err,errtext = errtext)
+	return(result)
 }
 
 CheckDataRead = function(obserr,obserrtext,moderr,moderrtext){
