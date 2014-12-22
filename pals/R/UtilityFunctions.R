@@ -15,6 +15,16 @@ CheckError = function(errtext,errcode='U1:'){
 		cat(alltext,' ^ \n',file=stderr()); stop(alltext,call. = FALSE)
 	}
 }
+CheckIfAllFailed = function(outinfo){
+	# Checks if all requested analyses failed (e.g. in which case don't run summary table function)
+	allfail = TRUE
+	for(a in 1:length(outinfo)){
+		if(is.null(outinfo[[a]]$error)){
+			allfail = FALSE
+		}
+	}
+	return(allfail)
+}
 LegendText = function(data,plotobs=TRUE){
 	# Returns text vector of legend names for a plot.
 	# If no obs line in the plot (e.g. error plot), first index will be model, else obs

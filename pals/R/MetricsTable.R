@@ -8,6 +8,12 @@ MetricTableSingleSite = function(outinfo,BenchInfo){
 	# variable analysis table: metrics that are repeated for each analysis type
 	library(plotrix)
 	
+	# First check that all previous analyses didn't fail 
+	# (in which case don't bother with table):
+	if(CheckIfAllFailed(outinfo)){
+		return(outinfo)
+	}
+	
 	# Create analysis name for javascript:
 	thisanalysistype = 'Summary'
 	

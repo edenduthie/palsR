@@ -28,33 +28,33 @@ CanAnalysisProceed = function(obs,model){
 	return(proceed)
 }
 
-GetLatLon = function(mfid){
-	# Gets the latitude and longitide dimensions from a model output netcdf file
+GetGrid = function(fid){
+	# Gets spatial grid information from a netcdf file
 	errtext='ok'
 	# Fetch accepted names for latitude:
 	lat_det = GetVariableDetails('lat')
 	# Check an acceptable latitude variable exists:
-	exists_lat = AnyNcvarExists(mfid,lat_det[[1]][['Name']])
+	exists_lat = AnyNcvarExists(fid,lat_det[[1]][['Name']])
 	if(! exists_lat$var){
-		errtext = paste('Could not find latitude variable in',stripFilename(mfid$filename))
+		errtext = paste('Could not find latitude variable in',stripFilename(fid$filename))
 		latlon = list(err=TRUE,errtext=errtext)
 		return(latlon)
 	}
 	# Now fetch latitude information:
 	if(exists_lat$dimvar){
 		# either as a dimension variable, if that was the found acceptable name:
-		lat = mfid$dim[[exists_lat$dimnum]]$vals
-		latlen = mfid$dim[[exists_lat$dimnum]]$len
+		lat = fid$dim[[exists_lat$dimnum]]$vals
+		latlen = fid$dim[[exists_lat$dimnum]]$len
 	}else{
 		# or as a normal variable:
-		if(mfid$var[[exists_lat$varnum]]$ndims != 1){ # If not a 1D latitude variable
+		if(fid$var[[exists_lat$varnum]]$ndims != 1){ # If not a 1D latitude variable
 			# Check that it's still a lat-lon grid:
-			lat = ncvar_get(mfid,lat_det[[1]][['Name']][exists_lat$index]) # get lat data
+			lat = ncvar_get(fid,lat_det[[1]][['Name']][exists_lat$index]) # get lat data
 			latlen = length(unique(as.vector(lat))) # i.e. the number of unique latitude values
-			if(any(mfid$var[exists_lat$index]$size != latlen)){
+			if(any(fid$var[exists_lat$index]$size != latlen)){
 				# i.e. number of unique lat vals is not equal to the length of either of the dims
 				# on which latitude depends
-				errtext = 'PALS cannot yet cope with non lat-lon grids yet.'	
+				errtext = 'PALS cannot yet cope with non rectilinear grids yet.'	
 				latlon = list(err=TRUE,errtext=errtext)
 				return(latlon)
 			}
@@ -65,24 +65,24 @@ GetLatLon = function(mfid){
 	# Fetch accepted names for longitude:
 	lon_det = GetVariableDetails('lon')
 	# Check an acceptable longitude variable exists:
-	exists_lon = AnyNcvarExists(mfid,lon_det[[1]][['Name']])
+	exists_lon = AnyNcvarExists(fid,lon_det[[1]][['Name']])
 	if(! exists_lon$var){
-		errtext = paste('Could not find longitude variable in',stripFilename(mfid$filename))
+		errtext = paste('Could not find longitude variable in',stripFilename(fid$filename))
 		latlon = list(err=TRUE,errtext=errtext)
 		return(latlon)
 	}
 	# Now fetch longitude information:
 	if(exists_lon$dimvar){
 		# either as a dimension variable, if that was the found acceptable name:
-		lon = mfid$dim[[exists_lon$dimnum]]$vals
-		lonlen = mfid$dim[[exists_lon$dimnum]]$len
+		lon = fid$dim[[exists_lon$dimnum]]$vals
+		lonlen = fid$dim[[exists_lon$dimnum]]$len
 	}else{
 		# or as a normal variable:
-		if(mfid$var[[exists_lon$varnum]]$ndims != 1){ # If not a 1D latitude variable
+		if(fid$var[[exists_lon$varnum]]$ndims != 1){ # If not a 1D latitude variable
 			# Check that it's still a lat-lon grid:
-			lon = ncvar_get(mfid,lon_det[[1]][['Name']][exists_lon$index]) # get lon data
+			lon = ncvar_get(fid,lon_det[[1]][['Name']][exists_lon$index]) # get lon data
 			lonlen = length(unique(as.vector(lon))) # i.e. the number of unique latitude values
-			if(any(mfid$var[exists_lat$index]$size != latlen)){
+			if(any(fid$var[exists_lat$index]$size != latlen)){
 				# i.e. number of unique lat vals is not equal to the length of either of the dims
 				# on which latitude depends
 				errtext = 'PALS cannot yet cope with non lat-lon grids yet.'	

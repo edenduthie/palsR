@@ -82,13 +82,11 @@ outinfo = parLapply(cl=cl,AnalysisList,DistributeSingleSiteAnalyses,data=Analysi
 # stop cluster
 stopCluster(cl)
 
-# Draw summary metric table here:
-tableOut = MetricTableSingleSite(outinfo,BenchInfo)
+# Draw summary metric table here (adds to outinfo list):
+outinfo = MetricTableSingleSite(outinfo,BenchInfo)
 
 # Write outinfo to output list for javascript:
 output = list(files=outinfo);
-
-#check error propagation!
 
 for(i in 1: length(output[["files"]])){
 	cat('Output ',i,': \n')

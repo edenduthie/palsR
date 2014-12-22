@@ -3,7 +3,7 @@
 # Reads a variable from model output netcdf file
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 #
-GetModelOutput = function(variable,filelist){
+GetModelOutput = function(variable,filelist,forcegrid='no'){
 	library(ncdf4) # load netcdf library
 	errtext='ok'
 	
@@ -47,6 +47,13 @@ GetModelOutput = function(variable,filelist){
 			return(model)
 		}
 	}
+	# Then get spatial grid structure from first model output file:
+	grid = GetGrid(mfid[[1]])
+	if(grid$err){	
+		model = list(err=TRUE,errtext=grid$errtext)
+		mfid = lapply(mfid, nc_close)
+		return(model)
+	}
 	
 	# Now try to ascertain how the data in these files needs to be assembled:
 	allintervals = c()
@@ -57,17 +64,12 @@ GetModelOutput = function(variable,filelist){
 		alltsteps[f] = modeltiming[[f]]$tsteps
 		allyear[f] = modeltiming[[f]]$syear
 	}
+	########### Monthly data in one year files ####################
 	if((all(allintervals == 'monthly')) && (all(alltsteps == 12))){		
 		# i.e. all are monthly data in year length files
 		nyears = length(filelist)
 		ntsteps = 12 * nyears # total number of time steps
-		# Get lat / lon from file
-		latlon = GetLatLon(mfid[[1]])
-		if(latlon$err){	
-			model = list(err=TRUE,errtext=latlon$errtext)
-			mfid = lapply(mfid, nc_close)
-			return(model)
-		}
+		
 		# Check that MO files don't repeat years:
 		if(length(unique(allyear)) != length(allyear)){ # i.e. a repeated year has been removed
 			errtext='Model output has two files with the same starting year.'
@@ -77,7 +79,7 @@ GetModelOutput = function(variable,filelist){
 		}
 		
 		# Allocate space for data:
-		vdata = array(NA,dim=c(latlon$lonlen,latlon$latlen,ntsteps) )
+		vdata = array(NA,dim=c(grid$lonlen,grid$latlen,ntsteps) )
 		# Define the order to read files:
 		fileorder = order(allyear)
 		
@@ -101,19 +103,14 @@ GetModelOutput = function(variable,filelist){
 		modeltimingall = list(tstepsize=modeltiming[[1]]$tstepsize,tsteps=ntsteps,
 			syear=modeltiming[[1]]$syear,smonth=modeltiming[[1]]$smonth,sdoy=modeltiming[[1]]$sdoy,
 			interval=modeltiming[[1]]$interval)
+	########### Model time step data with same number of time steps in each file ####################
 	}else if((all(allintervals == 'timestep')) && (all(alltsteps == alltsteps[1]))){
 		# i.e. all are per time step data with the same number of time steps in each file
 		ntsteps = alltsteps[1] * length(filelist) # total number of time steps
 		tsteps1 = alltsteps[1]
-		# Get lat / lon from file
-		latlon = GetLatLon(mfid[[1]])
-		if(latlon$err){	
-			model = list(err=TRUE,errtext=latlon$errtext)
-			mfid = lapply(mfid, nc_close)
-			return(model)
-		}
+		
 		# Allocate space for data:
-		vdata = array(NA,dim=c(latlon$lonlen,latlon$latlen,ntsteps) )
+		vdata = array(NA,dim=c(grid$lonlen,grid$latlen,ntsteps) )
 		# Define the order to read files:
 		fileorder = order(allyear)
 		# Get data:
@@ -132,12 +129,12 @@ GetModelOutput = function(variable,filelist){
 			for(f in 1:length(filelist)){ # For each file sent by js
 				vdata_tmp = ncvar_get(mfid[[ fileorder[f] ]],variable[['Name']][exists$index],collapse_degen=FALSE)
 
-				if ((variable[['Name']][1]=='NEE') & (length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen))) {
+				if ((variable[['Name']][1]=='NEE') & (length(vdata_tmp) != (ntsteps*grid$lonlen*grid$latlen))) {
 					# likely an ORCHIDEE file where NEE has dim (x,y,t,vegtype), in which case sum over
 					# vegtype dim - NEE values are already weighted by vegtype fraction:
 					vdata_tmp = apply(vdata_tmp,c(1,2,4),sum)
 				}
-				if(length(vdata_tmp) != (ntsteps*latlon$lonlen*latlon$latlen)){
+				if(length(vdata_tmp) != (ntsteps*grid$lonlen*grid$latlen)){
 					errtext = paste('Requested variable',variable[['Name']][1],
 							'has more dimensions than expected in Model Ouput:', filelist[[f]][['name']])
 					model = list(err=TRUE,errtext=errtext)
@@ -164,8 +161,13 @@ GetModelOutput = function(variable,filelist){
 	
 	# Apply any units changes:
 	vdata = vdata*units$multiplier + units$addition
+	
+	# Assess nature of grid here
+	
+	# If not equal to requested grid structure (if forcegrid != 'no'), reshape data here
+	
 	# Create list to return from function:	
-	model=list(data=vdata,timing = modeltimingall,name=filelist[[1]]$name,grid=latlon,
+	model=list(data=vdata,timing = modeltimingall,name=filelist[[1]]$name,grid=grid,
 		err=FALSE,errtext=errtext)
 	return(model)
 }
