@@ -8,6 +8,11 @@ LineColours = function() {
 	# For line plots:
 	plotcolours=c('black','blue2','indianred3','gold2','yellowgreen')
 }
+LineColours2 = function() {
+	# For line plots:
+	plotcolours2=DesaturateColours(LineColours(),sat=0.5)
+}
+
 TableWinColour = function() {
 	'lightgreen'	
 }
@@ -122,3 +127,12 @@ ChooseColours = function(range,variablename,plottype,diffthreshold=NULL){
 	return(colours)
 }
 
+#library(RColorBrewer) ## For some example colors
+
+# Function for desaturating colors by specified proportion
+DesaturateColours = function(colours, sat) {
+	library(colorspace) 
+    desat_hsv = diag(c(1, sat, 1)) %*% rgb2hsv(col2rgb(colours))
+    result = hsv(desat_hsv[1,], desat_hsv[2,], desat_hsv[3,])
+    return(result)
+}

@@ -167,7 +167,7 @@ DistributeSingleSiteAnalyses = function(Analysis,data,vars){
 			areturn = PALSScatter(data[[Analysis$vindex]],vars[[Analysis$vindex]],ebal=FALSE)
 		}else if(Analysis$type == 'Taylor'){
 			bencherrtext = data[[Analysis$vindex]]$bench$errtext
-			areturn = TaylorDiagram(data[[Analysis$vindex]],vars[[Analysis$vindex]])
+			areturn = TaylorDiagram(data[[Analysis$vindex]],vars[[Analysis$vindex]],plotcolours)
 		}else if(Analysis$type == 'AvWindow'){
 			# Not a benhcmark plot for the moment:
 			bencherrtext = 'Benchmark analysis not available for this analysis type'
