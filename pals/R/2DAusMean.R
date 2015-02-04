@@ -109,31 +109,31 @@ SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plott
 	
 	# First plot: model	mean
 	title = paste(model$name,' ',longvarname,' ',plottype,sep='')
-	errtext = PlotAus(obs$lon,obs$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
 	# Second plot: obs mean
 	title = paste(obs$name,' ',longvarname,' ',plottype,sep='')
-	errtext = PlotAus(obs$lon,obs$lat,obst,mean(obst,na.rm=T),sd(obst,na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,obst,mean(obst,na.rm=T),sd(obst,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
 	# Third plot: difference of model, obs mean
 	title = paste('[',model$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-	errtext = PlotAus(obs$lon,obs$lat,(modelt-obst),mean((modelt-obst),na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,(modelt-obst),mean((modelt-obst),na.rm=T),
 		sd((modelt-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
 	# Plot benchmarks that exist:
 	if(bench$exist){
 		# Fourth plot: difference bench1, obs 
 		title = paste('[',bench[[ bench$index[1] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-		errtext = PlotAus(obs$lon,obs$lat,(bench1t - obst),mean((bench1t-obst),na.rm=T),
+		errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench1t - obst),mean((bench1t-obst),na.rm=T),
 			sd((bench1t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
 		if(bench$howmany >= 2){
 			# Fifth plot: difference bench2, obs 
 			title = paste('[',bench[[ bench$index[2] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-			errtext = PlotAus(obs$lon,obs$lat,(bench2t - obst),mean((bench2t-obst),na.rm=T),
+			errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench2t - obst),mean((bench2t-obst),na.rm=T),
 				sd((bench2t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
 			if(bench$howmany == 3){	
 				# Fifth plot: difference bench3, obs 
 				title = paste('[',bench[[ bench$index[3] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-				errtext = PlotAus(obs$lon,obs$lat,(bench3t - obst),mean((bench3t-obst),na.rm=T),
+				errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench3t - obst),mean((bench3t-obst),na.rm=T),
 					sd((bench3t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
 			}
 		}	
@@ -286,23 +286,23 @@ SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metri
 	
 	# First plot: model
 	title = paste(model$name,' ',longvarname,' ',plottype,sep='')
-	errtext = PlotAus(obs$lon,obs$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 	# Plot benchmarks that exist:
 	if(bench$exist){
 		# Second plot: bench1
 		title = paste(bench[[ bench$index[1] ]]$name,' ',longvarname,' ',plottype,sep='')
-		errtext = PlotAus(obs$lon,obs$lat,bench1t,mean(bench1t,na.rm=T),
+		errtext = PlotAus(obs$grid$lon,obs$grid$lat,bench1t,mean(bench1t,na.rm=T),
 			sd(bench1t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 		if(bench$howmany >= 2){
 			# Third plot: bench2
 			title = paste(bench[[ bench$index[2] ]]$name,' ',longvarname,' ',plottype,sep='')
-			errtext = PlotAus(obs$lon,obs$lat,bench2t,mean(bench2t,na.rm=T),
+			errtext = PlotAus(obs$grid$lon,obs$grid$lat,bench2t,mean(bench2t,na.rm=T),
 				sd(bench2t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 			if(bench$howmany == 3){	
 				# Fourth plot: bench3
 				title = paste(bench[[ bench$index[3] ]]$name,' ',longvarname,' ',plottype,sep='')
-				errtext = PlotAus(obs$lon,obs$lat,bench3t,mean(bench3t,na.rm=T),
+				errtext = PlotAus(obs$grid$lon,obs$grid$lat,bench3t,mean(bench3t,na.rm=T),
 					sd(bench3t,na.rm=T),varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits)
 			}
 		}	
@@ -376,13 +376,13 @@ PlotAus = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zrang
 	errtext = 'ok'
 	# Decide location of plot for text placement:
 	if(textloc=='bottomright'){
-		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.19) )
-		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.13) )
-		textloc3 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.9), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.07) )
+		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.19) )
+		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.13) )
+		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.07) )
 	}else if(textloc=='topleft'){
-		textloc1 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.94) )
-		textloc2 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.88) )
-		textloc3 = c((obs$lon[1] + (obs$lon[length(obs$lon)] - obs$lon[1])*0.15), (obs$lat[1] + (obs$lat[length(obs$lat)] - obs$lat[1])*0.82) )
+		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.94) )
+		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.88) )
+		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.82) )
 	}
 	# Plot:	
 	image.plot(lon,lat,data,xlab='Longitude',ylab='Latitude',col=zcols,zlim=zrange,legend.mar=5.5)

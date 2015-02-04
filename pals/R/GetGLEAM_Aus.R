@@ -66,10 +66,18 @@ GetGLEAM_Aus = function(variable,filelist,force_interval='no',dsetversion='defau
 	# Reopen first file to fetch lat and lon:
 	fid = nc_open(filelist[[ 1 ]][['path']],write=FALSE,readunlim=FALSE)
 	# Fetch lat and lon:
-	lat=ncvar_get(fid, 'lat' ) # read latitude 
-	lon=ncvar_get(fid, 'lon' ) # read latitude 
+#	lat=ncvar_get(fid, 'lat' ) # read latitude 
+#	lon=ncvar_get(fid, 'lon' ) # read latitude 
 	# Close netcdf file :
-	nc_close(fid)
+#	nc_close(fid)
+	# Then get spatial grid structure from first model output file:
+	grid = GetGrid(fid)
+	if(grid$err){	
+		obs = list(err=TRUE,errtext=grid$errtext)
+		nc_close(fid) # Close netcdf file
+		return(obs)
+	}
+	
 	
 	if(variable[['Name']][1] == 'Qle'){
 		ET = ET*28.4 # convert from mm/day to W/m^2
@@ -78,6 +86,6 @@ GetGLEAM_Aus = function(variable,filelist,force_interval='no',dsetversion='defau
 	timing = list(interval=interval,tsteps=tsteps)
 	
 	# Return result
-	obs = list(err=FALSE,errtext=errtext,data=ET,lat=lat,lon=lon,timing=timing,name='GLEAM')
+	obs = list(err=FALSE,errtext=errtext,data=ET,grid=grid,timing=timing,name='GLEAM')
 	return(obs)	
 }
