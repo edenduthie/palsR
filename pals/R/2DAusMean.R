@@ -3,6 +3,10 @@
 # Gab Abramowitz, UNSW, 2014, gabsun at gmail dot com
 #
 SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype){
+	# Used for plots that show obs panel, model panel, model-obs panel and 
+	# up to 3 benchmark-obs panels (i.e. max 6 panels).
+	# Density plots are always in the lower left, mean and SD values are either bottom
+	# right <= 4 panels, or top left for > 4 panels
 	errtext = 'ok'
 	metrics = list()
 	density_cut = 1/200
@@ -168,6 +172,9 @@ SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plott
 	return(result)
 }
 SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype){
+	# Used for plots that show metrics that use model and obs together, e.g. RMSE model panel 
+	# and RMSE panels for up to 3 benchmark-obs (i.e. max 4 panels).
+	# Density plots are always in the lower left, mean and SD values are on the bottom right
 	errtext = 'ok'
 	metrics = list()
 	density_cut = 1/200
