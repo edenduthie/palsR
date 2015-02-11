@@ -9,8 +9,6 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='globa
 	
 	# Create outfilename:
 	outfile = setOutput('default')
-		
-	# For now, assumes analysis will be for a single variable.
 	
 	# Analysis identifier for javascript:
 	outfiletype = paste(vars[[Analysis$vindex]][['Name']][1],tolower(Analysis$type))
@@ -28,20 +26,17 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='globa
 	
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
-		bencherrtext = bench$errtext
 		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
 		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
 	}else if(Analysis$type == 'TimeSD'){
-		bencherrtext = bench$errtext
 		metrics_data = TimeSDAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
-		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
-	#	areturn = SpatialAus(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
 	}else if(Analysis$type == 'TimeRMSE'){
-		bencherrtext = bench$errtext
-		areturn = SpatialAusRelative(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)		
+		metrics_data = TimeRMSEAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialAusRelative(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)		
 	}else if(Analysis$type == 'TimeCor'){
-		bencherrtext = bench$errtext
-		areturn = SpatialAusRelative(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
+		metrics_data = TimeCorAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialAusRelative(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
 	}else{
 		result = list(errtext = paste('Unknown analysis type \'',Analysis$type,
 			'\' requested in function DistributeGriddedAnalyses.',sep=''),err=TRUE)
@@ -51,12 +46,12 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='globa
 	if(areturn$errtext=='ok'){	
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 			metrics = areturn$metrics,analysistype=Analysis$type, 
-			variablename=vars[[Analysis$vindex]][['Name']][1],bencherror=bencherrtext)
+			variablename=vars[[Analysis$vindex]][['Name']][1],bencherror=bench$errtext)
 	}else{
 		cat('\n###',areturn$errtext,'###\n')
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 			metrics = areturn$metrics,analysistype=Analysis$type, 
-			variablename=vars[[Analysis$vindex]][['Name']][1],error=areturn$errtext,bencherror=bencherrtext)
+			variablename=vars[[Analysis$vindex]][['Name']][1],error=areturn$errtext,bencherror=bench$errtext)
 	}	
 	
 	return(result)
