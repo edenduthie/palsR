@@ -209,23 +209,6 @@ InsetDensity = function(location,densitydata,xrange){
 	plot(densitydata,lwd=3,main='',ylab='',xlab='',cex.axis=0.8,bty='n',mgp=c(2,0,0),yaxt='n',xlim=xrange,tcl=-0.2)
 }
 
-DensityXrange = function(density_list,density_cut){
-	# Finds the x-axis range that contains all y values above a threshold
-	# for a list of density functions.
-	ymax = 0 # initialise
-	xmin=NA # initialise
-	xmax=NA # initialise
-	for(d in 1:length(density_list)){
-		ymax = max(ymax,density_list[[d]][[2]])	
-	}
-	# Determine where to truncate x-axis according to density cut threshold:
-	for(d in 1:length(density_list)){
-		xmin = min(xmin, density_list[[d]][[1]][ (density_list[[d]][[2]]>(ymax*density_cut)) ], na.rm=TRUE)
-		xmax = max(xmax, density_list[[d]][[1]][ (density_list[[d]][[2]]>(ymax*density_cut)) ], na.rm=TRUE)
-	}
-	return(c(xmin,xmax))
-}
-
 
 
 
