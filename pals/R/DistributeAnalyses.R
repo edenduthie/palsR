@@ -2,30 +2,23 @@
 #
 # Functions to distribute analyses across multiple cores
 #
-# Gab Abramowitz, UNSW, 2014 (palshelp at gmail dot com)
+# Gab Abramowitz, UNSW, 2015 (palshelp at gmail dot com)
 
-DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
+DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='global'){
 	# Each call to this function will generate a single plot and its statistics
 	
 	# Create outfilename:
 	outfile = setOutput('default')
-	
+		
 	# For now, assumes analysis will be for a single variable.
-	# The name of this variable
-	varname = vars[[Analysis$vindex]][['Name']][1]
-	# Units expression:
-	unitstxt = vars[[Analysis$vindex]][['UnitsText']]
-	# Longer variable name for plots:
-	longvarname = vars[[Analysis$vindex]][['PlotName']]
-	# File name for graphics file:
-	filestring = paste(getwd(),outfile,sep = "/")
+	
 	# Analysis identifier for javascript:
-	outfiletype = paste(varname,tolower(Analysis$type))
+	outfiletype = paste(vars[[Analysis$vindex]][['Name']][1],tolower(Analysis$type))
 	
 	# Check obs or model aren't missing variable, their timing is compatible and grids match:
 	errcheck = CanAnalysisProceed(obs, model)
 	if(errcheck$err){
-		result = list(type=outfiletype,filename=filestring,mimetype="image/png",
+		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
 			error=errcheck$errtext,bencherror=bench$errtext,metrics=list(first=list(name='failed',model_value=NA)))
 		return(result)
 	}
@@ -36,26 +29,34 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench){
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)				
+		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
 	}else if(Analysis$type == 'TimeSD'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAus(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)
+		metrics_data = TimeSDAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
+	#	areturn = SpatialAus(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
 	}else if(Analysis$type == 'TimeRMSE'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)		
+		areturn = SpatialAusRelative(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)		
 	}else if(Analysis$type == 'TimeCor'){
 		bencherrtext = bench$errtext
-		areturn = SpatialAusRelative(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype=Analysis$type)	
+		areturn = SpatialAusRelative(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
+	}else{
+		result = list(errtext = paste('Unknown analysis type \'',Analysis$type,
+			'\' requested in function DistributeGriddedAnalyses.',sep=''),err=TRUE)
+		return(result)
 	}
 	
 	if(areturn$errtext=='ok'){	
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,bencherror=bencherrtext)
+			metrics = areturn$metrics,analysistype=Analysis$type, 
+			variablename=vars[[Analysis$vindex]][['Name']][1],bencherror=bencherrtext)
 	}else{
 		cat('\n###',areturn$errtext,'###\n')
 		result = list(type=outfiletype,filename=paste(getwd(),outfile,sep = "/"),mimetype="image/png",
-			metrics = areturn$metrics,analysistype=Analysis$type, variablename=varname,
-			error=areturn$errtext,bencherror=bencherrtext)
+			metrics = areturn$metrics,analysistype=Analysis$type, 
+			variablename=vars[[Analysis$vindex]][['Name']][1],error=areturn$errtext,bencherror=bencherrtext)
 	}	
 	
 	return(result)

@@ -1,13 +1,16 @@
-# 2DAusMean.R
+# 2DAus.R
 #
 # Gab Abramowitz, UNSW, 2014, gabsun at gmail dot com
 #
-SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype){
+SpatialAus = function(model,obs,bench,md,variable,plottype){
 	# Used for plots that show obs panel, model panel, model-obs panel and 
 	# up to 3 benchmark-obs panels (i.e. max 6 panels).
 	# Density plots are always in the lower left, mean and SD values are either bottom
 	# right <= 4 panels, or top left for > 4 panels
 	errtext = 'ok'
+	varname = variable[['Name']][1]
+	unitstxt = variable[['UnitsText']]
+	longvarname = variable[['PlotName']]
 	metrics = list()
 	density_cut = 1/200
 	# Calculate number of map panels:
@@ -19,163 +22,73 @@ SpatialAus = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plott
 		textloc='bottomright'
 	}else{
 		par(mfcol=c(2,3) ,mar=c(3,3,3,0.5),oma=c(1,0,0.5,1),mgp=c(1.8,0.5,0),ps=18,tcl=-0.2)
-		density_location = list()
 		density_location = DensityLocationAus(6)
 		textloc='topleft'
 	}
-	if(plottype=='TimeMean'){
-		# Calculate time means:
-		modelt = TimeMean(model$data)
-		obst = TimeMean(obs$data) + modelt - modelt # to make sure ocean areas not included
-		modelbias = mean(modelt-obst,na.rm=TRUE)
-	}else if(plottype=='TimeSD'){
-		modelt = TimeSD(model$data)
-		obst = TimeSD(obs$data) + modelt - modelt # to make sure ocean areas not included
-		modelSDbias = mean(modelt-obst,na.rm=TRUE)
-	}else{
-		result = list(errtext = paste('Unknown plot type \'',plottype,'\' requested in function SpatialAus.',sep=''),err=TRUE)
-		return(result)
-	}
-	zrange = c(min(modelt,obst,na.rm=TRUE),max(modelt,obst,na.rm=TRUE))
-	diffrange = c(min(modelt-obst,na.rm=TRUE),max(modelt-obst,na.rm=TRUE))
-	if(plottype=='TimeMean'){
-		if(bench$howmany == 1){
-			# Get benchmark data, noting there may have been other benchmarks that failed (so use bench$index)
-			bench1t = TimeMean(bench[[ bench$index[1] ]]$data)
-			bench1bias = mean(bench1t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='TimeSpaceBias',model_value=modelbias,bench_value=list(bench1=bench1bias))	
-		}else if(bench$howmany == 2){
-			# Get benchmark data, noting there may have been other benchmarks that failed (so use bench$index)
-			bench1t = TimeMean(bench[[ bench$index[1] ]]$data)
-			bench2t = TimeMean(bench[[ bench$index[2] ]]$data)
-			bench1bias = mean(bench1t-obst,na.rm=TRUE)
-			bench2bias = mean(bench2t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,bench2t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,bench2t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='TimeSpaceBias',model_value=modelbias,bench_value=list(bench1=bench1bias,bench2=bench2bias))
-		}else if(bench$howmany == 3){
-			bench1t = TimeMean(bench[[ bench$index[1] ]]$data)
-			bench2t = TimeMean(bench[[ bench$index[2] ]]$data)
-			bench3t = TimeMean(bench[[ bench$index[3] ]]$data)
-			bench1bias = mean(bench1t-obst,na.rm=TRUE)
-			bench2bias = mean(bench2t-obst,na.rm=TRUE)
-			bench3bias = mean(bench3t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,bench2t-obst,bench3t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,bench2t-obst,bench3t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='TimeSpaceBias',model_value=modelbias,
-				bench_value=list(bench1=bench1bias,bench2=bench2bias,bench3=bench3bias))
-		}else{
-			# Just save metric list for model:
-			metrics[[1]] = list(name='TimeSpaceBias',model_value=modelbias)	
-		}
-	}else if(plottype=='TimeSD'){
-		if(bench$howmany == 1){
-			# Get benchmark data, noting there may have been other benchmarks that failed (so use bench$index)
-			bench1t = TimeSD(bench[[ bench$index[1] ]]$data)
-			bench1SDbias = mean(bench1t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='AvTimeSDbias',model_value=modelSDbias,bench_value=list(bench1=bench1SDbias))	
-		}else if(bench$howmany == 2){
-			# Get benchmark data, noting there may have been other benchmarks that failed (so use bench$index)
-			bench1t = TimeSD(bench[[ bench$index[1] ]]$data)
-			bench2t = TimeSD(bench[[ bench$index[2] ]]$data)
-			bench1SDbias = mean(bench1t-obst,na.rm=TRUE)
-			bench2SDbias = mean(bench2t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,bench2t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,bench2t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='AvTimeSDbias',model_value=modelSDbias,bench_value=list(bench1=bench1SDbias,bench2=bench2SDbias))
-		}else if(bench$howmany == 3){
-			bench1t = TimeSD(bench[[ bench$index[1] ]]$data)
-			bench2t = TimeSD(bench[[ bench$index[2] ]]$data)
-			bench3t = TimeSD(bench[[ bench$index[3] ]]$data)
-			bench1SDbias = mean(bench1t-obst,na.rm=TRUE)
-			bench2SDbias = mean(bench2t-obst,na.rm=TRUE)
-			bench3SDbias = mean(bench3t-obst,na.rm=TRUE)
-			diffrange = c(min(modelt-obst,bench1t-obst,bench2t-obst,bench3t-obst,na.rm=TRUE),
-				max(modelt-obst,bench1t-obst,bench2t-obst,bench3t-obst,na.rm=TRUE))
-			metrics[[1]] = list(name='AvTimeSDbias',model_value=modelSDbias,
-				bench_value=list(bench1=bench1SDbias,bench2=bench2SDbias,bench3=bench3SDbias))
-		}else{
-			# Just save metric list for model:
-			metrics[[1]] = list(name='AvTimeSDbias',model_value=modelSDbias)	
-		}
-	}
+	# Max / min ranges:
+	zrange = c(min(md$modelm,md$obsm,na.rm=TRUE),max(md$modelm,md$obsm,na.rm=TRUE))
+	# Metrics from metrics function call:
+	metrics[[1]] = md$metrics
 	# Fetch colour scheme:
 	zcols = ChooseColours(zrange,varname,'positive')
-	diffcols = ChooseColours(diffrange,varname,'difference')
+	diffcols = ChooseColours(md$diffrange,varname,'difference')
 	
-	# First plot: model	mean
+	# First plot: model	
 	title = paste(model$name,' ',longvarname,' ',plottype,sep='')
-	errtext = PlotAus(obs$grid$lon,obs$grid$lat,modelt,mean(modelt,na.rm=T),sd(modelt,na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,md$modelm,mean(md$modelm,na.rm=T),sd(md$modelm,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
-	# Second plot: obs mean
+	# Second plot: obs 
 	title = paste(obs$name,' ',longvarname,' ',plottype,sep='')
-	errtext = PlotAus(obs$grid$lon,obs$grid$lat,obst,mean(obst,na.rm=T),sd(obst,na.rm=T),
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,md$obsm,mean(md$obsm,na.rm=T),sd(md$obsm,na.rm=T),
 		varname,unitstxt,longvarname,zrange,zcols,title,textloc)
-	# Third plot: difference of model, obs mean
+	# Third plot: difference of model, obs
 	title = paste('[',model$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-	errtext = PlotAus(obs$grid$lon,obs$grid$lat,(modelt-obst),mean((modelt-obst),na.rm=T),
-		sd((modelt-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
-	# Plot benchmarks that exist:
+	errtext = PlotAus(obs$grid$lon,obs$grid$lat,(md$modelm-md$obsm),mean((md$modelm-md$obsm),na.rm=T),
+		sd((md$modelm-md$obsm),na.rm=T),varname,unitstxt,longvarname,md$diffrange,diffcols,title,textloc)
+	# Plot benchmark obs differences that exist:
 	if(bench$exist){
-		# Fourth plot: difference bench1, obs 
-		title = paste('[',bench[[ bench$index[1] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-		errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench1t - obst),mean((bench1t-obst),na.rm=T),
-			sd((bench1t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
-		if(bench$howmany >= 2){
-			# Fifth plot: difference bench2, obs 
-			title = paste('[',bench[[ bench$index[2] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-			errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench2t - obst),mean((bench2t-obst),na.rm=T),
-				sd((bench2t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
-			if(bench$howmany == 3){	
-				# Fifth plot: difference bench3, obs 
-				title = paste('[',bench[[ bench$index[3] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
-				errtext = PlotAus(obs$grid$lon,obs$grid$lat,(bench3t - obst),mean((bench3t-obst),na.rm=T),
-					sd((bench3t-obst),na.rm=T),varname,unitstxt,longvarname,diffrange,diffcols,title,textloc)
-			}
-		}	
-	}
+		for(b in 1:bench$howmany){
+			title = paste('[',bench[[ bench$index[b] ]]$name,'-',obs$name,'] ',varname,' ',plottype,sep='')
+			errtext = PlotAus(obs$grid$lon,obs$grid$lat,(md$benchm[[b]] - md$obsm),mean((md$benchm[[b]]-md$obsm),na.rm=T),
+				sd((md$benchm[[b]]-md$obsm),na.rm=T),varname,unitstxt,longvarname,md$diffrange,diffcols,title,textloc)
+		}
+	}	
+		
 	### Add density insets ###
-	mod_den = density(modelt,na.rm=TRUE) # calculate model density estimate 
-	obs_den = density(obst,na.rm=TRUE) # calculate obs density estimate
+	mod_den = density(md$modelm,na.rm=TRUE) # calculate model density estimate 
+	obs_den = density(md$obsm,na.rm=TRUE) # calculate obs density estimate
 	xrange = DensityXrange(list(mod_den,obs_den),density_cut)
 	# Plot pdfs for model and obs
 	in1 = InsetDensity(density_location[[1]],mod_den,xrange)
 	in2 = InsetDensity(density_location[[2]],obs_den,xrange)
-	moderr_den = density((modelt-obst),na.rm=TRUE) # calculate model error density estimate 
+	moderr_den = density((md$modelm-md$obsm),na.rm=TRUE) # calculate model error density estimate 
 	xrange = DensityXrange(list(moderr_den),density_cut)
-	if(bench$howmany == 1){
-		bench1err_den = density((bench1t-obst),na.rm=TRUE)
+	if(bench$exist){
+		bencherr_den = list()
+		density_range_list = list(moderr_den)
+		for(b in 1:bench$howmany){
+			bencherr_den[[b]] = density((md$benchm[[b]]-md$obsm),na.rm=TRUE)
+			density_range_list[[b+1]] = bencherr_den[[b]]
+		}
 		# If there's a benchmark, overwrite xrange to include benchmark info:
-		xrange = DensityXrange(list(moderr_den,bench1err_den),density_cut)
-		in4 = InsetDensity(density_location[[4]],bench1err_den,xrange)
-	}else if(bench$howmany == 2){
-		bench1err_den = density((bench1t-obst),na.rm=TRUE)
-		bench2err_den = density((bench2t-obst),na.rm=TRUE)
-		xrange = DensityXrange(list(moderr_den,bench1err_den,bench2err_den),density_cut)
-		in4 = InsetDensity(density_location[[4]],bench1err_den,xrange)	
-		in5 = InsetDensity(density_location[[5]],bench2err_den,xrange)	
-	}else if(bench$howmany == 3){
-		bench1err_den = density((bench1t-obst),na.rm=TRUE)
-		bench2err_den = density((bench2t-obst),na.rm=TRUE)
-		bench3err_den = density((bench3t-obst),na.rm=TRUE)
-		xrange = DensityXrange(list(moderr_den,bench1err_den,bench2err_den,bench3err_den),density_cut)
-		in4 = InsetDensity(density_location[[4]],bench1err_den,xrange)	
-		in5 = InsetDensity(density_location[[5]],bench2err_den,xrange)
-		in6 = InsetDensity(density_location[[6]],bench3err_den,xrange)		
+		xrange = DensityXrange(density_range_list,density_cut)
+		for(b in 1:bench$howmany){
+			inb = InsetDensity(density_location[[(b+3)]],bencherr_den[[b]],xrange)
+		}
 	}
 	in3 = InsetDensity(density_location[[3]],moderr_den,xrange)
+	
 	result = list(errtext=errtext,err=FALSE,metrics=metrics)
 	return(result)
 }
-SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metrics,plottype){
+SpatialAusRelative = function(model,obs,bench,variable,plottype){
 	# Used for plots that show metrics that use model and obs together, e.g. RMSE model panel 
 	# and RMSE panels for up to 3 benchmark-obs (i.e. max 4 panels).
 	# Density plots are always in the lower left, mean and SD values are on the bottom right
 	errtext = 'ok'
+	varname = variable[['Name']][1]
+	unitstxt = variable[['UnitsText']]
+	longvarname = variable[['PlotName']]
 	metrics = list()
 	density_cut = 1/200
 	# Calculate number of map panels:
@@ -334,38 +247,6 @@ SpatialAusRelative = function(model,obs,bench,varname,unitstxt,longvarname,metri
 	in1 = InsetDensity(density_location[[1]],mod_den,xrange)
 	result = list(errtext=errtext,err=FALSE,metrics=metrics)
 	return(result)
-}
-
-TimeMean = function(threedvar){
-	# Take the time mean of 3D variable
-	twodvar = apply(threedvar,c(1,2),mean)	
-	return(twodvar)
-}
-TimeSD = function(threedvar){
-	# Take the time sd of 3D variable
-	twodvar = apply(threedvar,c(1,2),sd)	
-	return(twodvar)
-}
-TimeRMSE = function(obs3d,model3d){
-	 twodvar = apply((model3d - obs3d),c(1,2),rootmeansquare)
-	 return(twodvar)
-}
-rootmeansquare = function(diffvector){
-	result = sqrt(mean(diffvector^2))
-	return(result)
-}
-TimeCor = function(obs3d,model3d){
-#		omean = TimeMean(obs3d)
-#		mmean = TimeMean(model3d)
-#		scov = apply(((obs3d - omean)*(model3d-mmean)),c(1,2),sum)
-#		twodcor = scov / (TimeSD(obs3d) * TimeSD(model3d))
-		twodcor = matrix(NA,length(obs3d[,1,1]),length(obs3d[1,,1]))
-		for(i in 1:length(obs3d[,1,1])){
-			for(j in 1:length(obs3d[1,,1])){
-				twodcor[i,j] = cor(obs3d[i,j,],model3d[i,j,])
-			}
-		}				
-	 return(twodcor)
 }
 
 PlotAus = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zrange,zcols,title,textloc,supressunits=FALSE){

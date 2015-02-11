@@ -1,0 +1,29 @@
+{
+   "_id" : "mVJDHsjHSJWHK",
+   "files" : [
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_2005.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestGlobal"
+       },
+       {
+           "type" : "ModelOutput",
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_2006.nc",
+           "mimetype" : "application/x-netcdf",
+	   "name" : "CABLEtestGlobal"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/global/GLEAM/GSWP0.5/GLEAM_ET_GSWP3_2005.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_GSWP3"
+       },
+       {   
+           "type" : "DataSet", 
+           "path" : "/Users/gab/data/global/GLEAM/GSWP0.5/GLEAM_ET_GSWP3_2006.nc",
+           "mimetype" : "application/x-netcdf",
+	       "name" : "GLEAM_GSWP3"
+       }
+   ]
+}

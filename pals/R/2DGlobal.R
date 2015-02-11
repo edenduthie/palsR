@@ -1,4 +1,4 @@
-# 2DGlobalMean.R
+# 2DGlobal.R
 #
 # Gab Abramowitz, UNSW, 2014, gabsun at gmail dot com
 #
