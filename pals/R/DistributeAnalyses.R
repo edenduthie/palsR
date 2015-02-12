@@ -4,7 +4,7 @@
 #
 # Gab Abramowitz, UNSW, 2015 (palshelp at gmail dot com)
 
-DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='global'){
+DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region){
 	# Each call to this function will generate a single plot and its statistics
 	
 	# Create outfilename:
@@ -27,16 +27,20 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region='globa
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
 		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
-		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialPlotAbsolute(model,obs,bench,metrics_data,
+			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)
 	}else if(Analysis$type == 'TimeSD'){
 		metrics_data = TimeSDAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
-		areturn = SpatialAus(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		areturn = SpatialPlotAbsolute(model,obs,bench,metrics_data,
+			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)
 	}else if(Analysis$type == 'TimeRMSE'){
 		metrics_data = TimeRMSEAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
-		areturn = SpatialAusRelative(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)		
+		areturn = SpatialPlotRelative(model,obs,bench,metrics_data,
+			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)		
 	}else if(Analysis$type == 'TimeCor'){
 		metrics_data = TimeCorAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
-		areturn = SpatialAusRelative(model,obs,bench,metrics_data,variable=vars[[Analysis$vindex]],plottype=Analysis$type)	
+		areturn = SpatialPlotRelative(model,obs,bench,metrics_data,
+			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)	
 	}else{
 		result = list(errtext = paste('Unknown analysis type \'',Analysis$type,
 			'\' requested in function DistributeGriddedAnalyses.',sep=''),err=TRUE)

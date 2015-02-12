@@ -34,6 +34,8 @@ for (i in 1:(length(files))  ) {
     }
 }
 
+region = 'Australia'
+
 # Nominate variables to analyse here (use ALMA standard names) - fetches
 # alternate names, units, units transformations etc:
 vars = GetVariableDetails(c('Qle'))
@@ -65,9 +67,9 @@ for(v in 1:length(vars)){
 #cl = makeCluster(getOption('cl.cores', 2))
 
 	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
-		obs=obs,model=model,bench=bench)
+		obs=obs,model=model,bench=bench,region=region)
 #	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
-#		obs=obs,model=model,bench=bench)
+#		obs=obs,model=model,bench=bench,region=region)
 
 # stop cluster
 #stopCluster(cl)
