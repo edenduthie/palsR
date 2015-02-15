@@ -4,7 +4,7 @@
 #
 # Gab Abramowitz, UNSW, 2015 (palshelp at gmail dot com)
 
-DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region){
+DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region,cl){
 	# Each call to this function will generate a single plot and a list of metrics associate with it
 	
 	# Create outfilename:
@@ -24,21 +24,23 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region){
 	# Test benchmark timing compatibility, and remove any benchmarks if necessary:
 	bench = PruneBenchmarks(obs,bench)
 	
+	cat('TTT',Analysis$type, proc.time()[3],'\n')
+	
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
-		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type,cl)
 		areturn = SpatialPlotAbsolute(model,obs,bench,metrics_data,
 			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)
 	}else if(Analysis$type == 'TimeSD'){
-		metrics_data = TimeSDAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		metrics_data = TimeSDAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type,cl)
 		areturn = SpatialPlotAbsolute(model,obs,bench,metrics_data,
 			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)
 	}else if(Analysis$type == 'TimeRMSE'){
-		metrics_data = TimeRMSEAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		metrics_data = TimeRMSEAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type,cl)
 		areturn = SpatialPlotRelative(model,obs,bench,metrics_data,
 			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)		
 	}else if(Analysis$type == 'TimeCor'){
-		metrics_data = TimeCorAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type)
+		metrics_data = TimeCorAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type,cl)
 		areturn = SpatialPlotRelative(model,obs,bench,metrics_data,
 			variable=vars[[Analysis$vindex]],plottype=Analysis$type,region)	
 	}else{

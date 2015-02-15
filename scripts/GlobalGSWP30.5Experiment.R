@@ -71,18 +71,18 @@ for(v in 1:length(vars)){
 }
 
 # Create cluster:
-#cl = makeCluster(getOption('cl.cores', detectCores()))
+cl = makeCluster(getOption('cl.cores', detectCores()))
 #cl = makeCluster(getOption('cl.cores', 2))
 
 cat('TTT about to run analyses:',proc.time()[3],'\n')
 
 	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
-		obs=obs,model=model,bench=bench,region=region)
+		obs=obs,model=model,bench=bench,region=region,cl)
 #	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
 #		obs=obs,model=model,bench=bench,region=region)
 
 # stop cluster
-#stopCluster(cl)
+stopCluster(cl)
 
 # Write outinfo to output list for javascript:
 output = list(files=OutInfo);
