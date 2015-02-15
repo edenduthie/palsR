@@ -5,7 +5,7 @@
 # Gab Abramowitz, UNSW, 2015 (palshelp at gmail dot com)
 
 DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region){
-	# Each call to this function will generate a single plot and its statistics
+	# Each call to this function will generate a single plot and a list of metrics associate with it
 	
 	# Create outfilename:
 	outfile = setOutput('default')

@@ -65,12 +65,6 @@ TextLocationAus = function(npanels){
 		text_location = 'topleft'
 	}
 }
-	
-InsetDensity = function(location,densitydata,xrange){
-	# Adds an inset density plot
-	par(fig=location,new=T)
-	plot(densitydata,lwd=3,main='',ylab='',xlab='',cex.axis=0.8,bty='n',mgp=c(2,0,0),yaxt='n',xlim=xrange,tcl=-0.2)
-}
 
 
 

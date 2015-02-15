@@ -89,6 +89,7 @@ BenchmarkInfo = function(BenchmarkFiles,Bctr){
 	if(Bctr == 0){ # no benchmark files sent by javascript
 		nBench = 0
 		nBenchfiles = NA
+		benchnames = NA
 	}else{
 		nBench = 1
 		# Determine number of user nominated benchmarks, and the name of each:

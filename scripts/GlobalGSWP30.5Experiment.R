@@ -34,6 +34,8 @@ for (i in 1:(length(files))  ) {
     }
 }
 
+region = 'Global'
+
 # Nominate variables to analyse here (use ALMA standard names) - fetches
 # alternate names, units, units transformations etc:
 vars = GetVariableDetails(c('Qle'))
@@ -47,10 +49,18 @@ nBench = BenchmarkInfo(BenchmarkFiles,Bctr)
 # Set up analysis data and analysis list so we can use lapply or parlapply:
 AnalysisList = list()
 
+cat('TTT about to read GLEAM:',proc.time()[3],'\n')
+
 # Load all variables from obs and model output
 for(v in 1:length(vars)){
 	obs = GetGLEAM_Global(vars[[v]],EvalDataSetFiles,force_interval='monthly')
+	
+	cat('TTT about to read MO:',proc.time()[3],'\n')
+	
     model = GetModelOutput(vars[[v]],ModelOutputFiles)  
+    
+    cat('TTT about to get Benchmarks:',proc.time()[3],'\n')
+    
     bench = GetBenchmarks(vars[[v]],BenchmarkFiles,nBench)
     
 	# Add those analyses that are equally applicable to any variable to analysis list:
@@ -64,10 +74,12 @@ for(v in 1:length(vars)){
 #cl = makeCluster(getOption('cl.cores', detectCores()))
 #cl = makeCluster(getOption('cl.cores', 2))
 
+cat('TTT about to run analyses:',proc.time()[3],'\n')
+
 	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
-		obs=obs,model=model,bench=bench)
+		obs=obs,model=model,bench=bench,region=region)
 #	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
-#		obs=obs,model=model,bench=bench)
+#		obs=obs,model=model,bench=bench,region=region)
 
 # stop cluster
 #stopCluster(cl)
@@ -78,8 +90,12 @@ output = list(files=OutInfo);
 for(i in 1: length(output[["files"]])){
 	cat('Output ',i,': \n')
 	cat('  type:',output[["files"]][[i]]$type,'\n')
-	cat('  filename:',output[["files"]][[i]]$filename,'\n')
-	cat('  bench error:',output[["files"]][[i]]$bencherror,'\n')
-	cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
-		output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
+	if(!is.null(output[["files"]][[i]]$error)){
+		cat('  ERROR: ',output[["files"]][[i]]$error,'\n')
+	}else{
+		cat('  filename:',output[["files"]][[i]]$filename,'\n')
+		cat('  bench error:',output[["files"]][[i]]$bencherror,'\n')
+		cat('  first metric for model - ',output[["files"]][[i]]$metrics[[1]]$name,':',
+			output[["files"]][[i]]$metrics[[1]]$model_value,'\n')
+	}
 }

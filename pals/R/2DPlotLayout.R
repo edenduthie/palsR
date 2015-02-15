@@ -162,6 +162,12 @@ DensityXrange = function(density_list,density_cut){
 	return(c(xmin,xmax))
 }
 
+InsetDensity = function(location,densitydata,xrange){
+	# Adds an inset density plot
+	par(fig=location,new=T)
+	plot(densitydata,lwd=3,main='',ylab='',xlab='',cex.axis=0.8,bty='n',mgp=c(2,0,0),yaxt='n',xlim=xrange,tcl=-0.2)
+}
+
 DensityLocation = function(region,maxpanels){
 	# Returns location within plot tiles of density functions
 	if(region=='Australia'){

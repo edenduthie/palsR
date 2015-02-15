@@ -11,23 +11,42 @@ PlotGlobal = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zr
 	errtext = 'ok'
 	# Decide location of plot for text placement:
 	if(textloc=='bottomright'){
-		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.19) )
-		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.13) )
-		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.9), (lat[1] + (lat[length(lat)] - lat[1])*0.07) )
+		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.30) )
+		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.24) )
+		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.18) )
 	}else if(textloc=='topleft'){
 		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.94) )
 		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.88) )
 		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.82) )
 	}
-	# Plot:	
-	image.plot(lon,lat,data,xlab='Longitude',ylab='Latitude',col=zcols,zlim=zrange,legend.mar=5.5)
-	map('worldHires',add=TRUE,wrap=TRUE,xlim=c(min(lon),max(lon)),ylim=c(min(lat),max(lat))) # Add map
+	
+	cat('TTT pre plot:',proc.time()[3],'\n')
+	
+	# Set x, y limits to use up more of the plot region:
+	fact = 0.02
+	xmin = min(lon)
+	xmax = max(lon)
+	ymin = min(lat)
+	ymax = max(lat)
+	xrange = c(xmin+fact*(xmax-xmin),xmax-fact*(xmax-xmin))
+	yrange = c(ymin+fact*(ymax-ymin),ymax-fact*(ymax-ymin))
+	
+	# Draw image:	
+	image.plot(lon,lat,data,xlab='Longitude',ylab='Latitude',col=zcols,xlim=xrange,
+		ylim=yrange,zlim=zrange,legend.mar=5.5)
+	
+	cat('TTT pre map:',proc.time()[3],'\n')
+	
+	map('world2Hires',add=TRUE,wrap=TRUE,xlim=c(min(lon),max(lon)),ylim=c(min(lat),max(lat))) # Add map
 	title(title) 
 	if(!suppressunits){
 		text(x=textloc1[1],y=textloc1[2],labels=unitstxt)
 	}
 	text(x=textloc2[1],y=textloc2[2],labels=paste('Mean:',signif(meanval,3)))
 	text(x=textloc3[1],y=textloc3[2],labels=paste('SD:',signif(sdval,2)))
+	
+	cat('TTT post all plotting:',proc.time()[3],'\n')
+	
 	return(errtext)
 }
 
@@ -44,17 +63,17 @@ DensityLocationGlobal = function(npanels){
 	density_location = list()
 	if(npanels == 1){
 		density_location = list()
-		density_location[[1]] = c(0.1,0.5,0.16,0.35)
+		density_location[[1]] = c(0.45,0.7,0.25,0.4)
 	}else if(npanels == 2){
 		density_location = list()
 		density_location[[1]] = c(0.07,0.3,0.17,0.37)
 		density_location[[2]] = c(0.57,0.8,0.17,0.37)
 	}else if(npanels == 4){
 		density_location = list()
-		density_location[[1]] = c(0.06,0.3,0.59,0.68)
-		density_location[[2]] = c(0.56,0.8,0.59,0.68)
-		density_location[[3]] = c(0.06,0.3,0.09,0.18)
-		density_location[[4]] = c(0.56,0.8,0.09,0.18)
+		density_location[[1]] = c(0.24,0.36,0.63,0.7)
+		density_location[[2]] = c(0.74,0.86,0.63,0.7)
+		density_location[[3]] = c(0.24,0.36,0.13,0.2)
+		density_location[[4]] = c(0.74,0.86,0.13,0.2)
 	}else if(npanels==6){
 		density_location = list()
 		density_location[[1]] = c(0.04,0.2,0.58,0.67)
@@ -65,12 +84,6 @@ DensityLocationGlobal = function(npanels){
 		density_location[[6]] = c(0.72,0.87,0.08,0.17)
 	}
 	return(density_location)
-}
-
-InsetDensity = function(location,densitydata,xrange){
-	# Adds an inset density plot
-	par(fig=location,new=T)
-	plot(densitydata,lwd=3,main='',ylab='',xlab='',cex.axis=0.8,bty='n',mgp=c(2,0,0),yaxt='n',xlim=xrange,tcl=-0.2)
 }
 
 
