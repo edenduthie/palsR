@@ -24,6 +24,34 @@
            "path" : "/Users/gab/data/global/GLEAM/GSWP0.5/GLEAM_ET_GSWP3_2006.nc",
            "mimetype" : "application/x-netcdf",
 	       "name" : "GLEAM_GSWP3"
+       },
+       {   
+           "type" : "Benchmark", 
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_2000.nc",
+           "mimetype" : "application/x-netcdf",
+		   "number" : "1",
+	       "name" : "Cab0-1bench"
+       },
+       {   
+           "type" : "Benchmark", 
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_2001.nc",
+           "mimetype" : "application/x-netcdf",
+		   "number" : "1",
+	       "name" : "Cab0-1bench"
+       },
+       {   
+           "type" : "Benchmark", 
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_1993.nc",
+           "mimetype" : "application/x-netcdf",
+		   "number" : "2",
+	       "name" : "Cab93-4bench"
+       },
+       {   
+           "type" : "Benchmark", 
+           "path" : "/Users/gab/data/global/CABLE_output/GSWP3/cable_output_1994.nc",
+           "mimetype" : "application/x-netcdf",
+		   "number" : "2",
+	       "name" : "Cab93-4bench"
        }
    ]
 }
