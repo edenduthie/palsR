@@ -49,20 +49,11 @@ nBench = BenchmarkInfo(BenchmarkFiles,Bctr)
 # Set up analysis data and analysis list so we can use lapply or parlapply:
 AnalysisList = list()
 
-cat('TTT about to read GLEAM:',proc.time()[3],'\n')
-
 # Load all variables from obs and model output
 for(v in 1:length(vars)){
 	obs = GetGLEAM_Global(vars[[v]],EvalDataSetFiles,force_interval='monthly')
-	
-	cat('TTT about to read MO:',proc.time()[3],'\n')
-	
     model = GetModelOutput(vars[[v]],ModelOutputFiles)  
-    
-    cat('TTT about to get Benchmarks:',proc.time()[3],'\n')
-    
     bench = GetBenchmarks(vars[[v]],BenchmarkFiles,nBench)
-    
 	# Add those analyses that are equally applicable to any variable to analysis list:
 	for(a in 1:length(genAnalysis)){
 		analysis_number = (v-1)*length(genAnalysis) + a
@@ -72,17 +63,13 @@ for(v in 1:length(vars)){
 
 # Create cluster:
 cl = makeCluster(getOption('cl.cores', detectCores()))
-#cl = makeCluster(getOption('cl.cores', 2))
-
-cat('TTT about to run analyses:',proc.time()[3],'\n')
 
 	OutInfo = lapply(AnalysisList,DistributeGriddedAnalyses,vars=vars,
 		obs=obs,model=model,bench=bench,region=region,cl)
 #	OutInfo = parLapply(cl=cl,AnalysisList,DistributeGriddedAnalyses,vars=vars,
-#		obs=obs,model=model,bench=bench,region=region)
+#		obs=obs,model=model,bench=bench,region=region,NULL)
 
-# stop cluster
-stopCluster(cl)
+stopCluster(cl) # stop cluster
 
 # Write outinfo to output list for javascript:
 output = list(files=OutInfo);

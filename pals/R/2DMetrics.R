@@ -164,7 +164,11 @@ TimeCor = function(obs3d,model3d,cl){
 	indx = array(NA,dim=c(spacedim,2))
 	indx[,,1] = matrix(1:spacedim[1],nrow=spacedim[1],ncol=spacedim[2])
 	indx[,,2] = matrix(1:spacedim[2],nrow=spacedim[1],ncol=spacedim[2],byrow=TRUE)
-	twodcor = parApply(cl,indx,c(1,2),ApplyCor,obs3d,model3d)	
+	if(is.null(cl)){
+		twodcor = apply(indx,c(1,2),ApplyCor,obs3d,model3d)
+	}else{
+		twodcor = parApply(cl,indx,c(1,2),ApplyCor,obs3d,model3d)
+	}
 	return(twodcor)
 }
 

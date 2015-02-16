@@ -24,8 +24,6 @@ DistributeGriddedAnalyses = function(Analysis,vars,obs,model,bench,region,cl){
 	# Test benchmark timing compatibility, and remove any benchmarks if necessary:
 	bench = PruneBenchmarks(obs,bench)
 	
-	cat('TTT',Analysis$type, proc.time()[3],'\n')
-	
 	# Call analysis function:	
 	if(Analysis$type == 'TimeMean'){
 		metrics_data = TimeMeanAll(model,obs,bench,variable=vars[[Analysis$vindex]],plottype=Analysis$type,cl)

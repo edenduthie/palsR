@@ -11,13 +11,13 @@ PlotGlobal = function(lon,lat,data,meanval,sdval,varname,unitstxt,longvarname,zr
 	errtext = 'ok'
 	# Decide location of plot for text placement:
 	if(textloc=='bottomright'){
-		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.30) )
-		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.24) )
-		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.93), (lat[1] + (lat[length(lat)] - lat[1])*0.18) )
-	}else if(textloc=='topleft'){
-		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.94) )
-		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.88) )
-		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.15), (lat[1] + (lat[length(lat)] - lat[1])*0.82) )
+		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.92), (lat[1] + (lat[length(lat)] - lat[1])*0.30) )
+		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.92), (lat[1] + (lat[length(lat)] - lat[1])*0.24) )
+		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.92), (lat[1] + (lat[length(lat)] - lat[1])*0.18) )
+	}else if(textloc=='middle'){
+		textloc1 = c((lon[1] + (lon[length(lon)] - lon[1])*0.53), (lat[1] + (lat[length(lat)] - lat[1])*0.70) )
+		textloc2 = c((lon[1] + (lon[length(lon)] - lon[1])*0.53), (lat[1] + (lat[length(lat)] - lat[1])*0.64) )
+		textloc3 = c((lon[1] + (lon[length(lon)] - lon[1])*0.53), (lat[1] + (lat[length(lat)] - lat[1])*0.58) )
 	}
 	
 	cat('TTT pre plot:',proc.time()[3],'\n')
@@ -54,7 +54,7 @@ TextLocationGlobal = function(npanels){
 	if(npanels<5){
 		text_location = 'bottomright'
 	}else{
-		text_location = 'topleft'
+		text_location = 'middle'
 	}
 }
 
@@ -66,22 +66,22 @@ DensityLocationGlobal = function(npanels){
 		density_location[[1]] = c(0.45,0.7,0.25,0.4)
 	}else if(npanels == 2){
 		density_location = list()
-		density_location[[1]] = c(0.07,0.3,0.17,0.37)
-		density_location[[2]] = c(0.57,0.8,0.17,0.37)
+		density_location[[1]] = c(0.24,0.37,0.27,0.37)
+		density_location[[2]] = c(0.74,0.86,0.27,0.37)
 	}else if(npanels == 4){
 		density_location = list()
-		density_location[[1]] = c(0.24,0.36,0.63,0.7)
-		density_location[[2]] = c(0.74,0.86,0.63,0.7)
-		density_location[[3]] = c(0.24,0.36,0.13,0.2)
-		density_location[[4]] = c(0.74,0.86,0.13,0.2)
+		density_location[[1]] = c(0.24,0.37,0.63,0.71)
+		density_location[[2]] = c(0.74,0.86,0.63,0.71)
+		density_location[[3]] = c(0.24,0.37,0.13,0.21)
+		density_location[[4]] = c(0.74,0.86,0.13,0.21)
 	}else if(npanels==6){
 		density_location = list()
-		density_location[[1]] = c(0.04,0.2,0.58,0.67)
-		density_location[[2]] = c(0.38,0.54,0.58,0.67)
-		density_location[[3]] = c(0.72,0.87,0.58,0.67)
-		density_location[[4]] = c(0.04,0.2,0.08,0.17)
-		density_location[[5]] = c(0.38,0.54,0.08,0.17)
-		density_location[[6]] = c(0.72,0.87,0.08,0.17)
+		density_location[[1]] = c(0.155,0.245,0.62,0.7)
+		density_location[[2]] = c(0.49,0.58,0.62,0.7)
+		density_location[[3]] = c(0.825,0.915,0.62,0.7)
+		density_location[[4]] = c(0.155,0.245,0.12,0.2)
+		density_location[[5]] = c(0.49,0.58,0.12,0.2)
+		density_location[[6]] = c(0.825,0.915,0.12,0.2)
 	}
 	return(density_location)
 }
