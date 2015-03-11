@@ -32,6 +32,13 @@
            "mimetype" : "application/x-netcdf",
            "number" : "2",
 	       "name" : "PenmanMontElSaler2"
+       },
+       {
+	   "type" : "Benchmark", 
+           "path" : "TestBench3_SingleSite.nc",
+           "mimetype" : "application/x-netcdf",
+           "number" : "3",
+	       "name" : "CABLE_SLI_ElSaler2"
 	}
    ]
 }

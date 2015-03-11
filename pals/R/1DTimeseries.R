@@ -5,7 +5,7 @@
 # Gab Abramowitz UNSW 2014 (palshelp at gmail dot com)
 
 Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
-	plotcex,timing,smoothed=FALSE,winsize=1,modlabel='no',
+	plotcex,timing,smoothed=FALSE,winsize=1,plotcolours,modlabel='no',
 	vqcdata=matrix(-1,nrow=1,ncol=1)){
 	#
 	errtext = 'ok'
@@ -15,7 +15,6 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 	tstepinday=86400/timing$tstepsize # number of time steps in a day
 	ndays = ntsteps/tstepinday # number of days in data set
 	nyears=as.integer(ndays/365) # find # years in data set
-		plotcolours=LineColours() 
 	# x-axis labels:
 	xxat=c()
 	xxlab=c()
@@ -66,26 +65,35 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 					sum(abs(mean(tsdata[,1]) - tsdata[,1]))
 			}
 			# Report NME metric:
-			metricname = paste('NME',winsize,'-dayAvs',sep='')
+			metricname = paste('NME',winsize,'day',sep='')
 			if(ncurves==2){ # model only
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1])	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE))	
 				metrics[[2]] = list(name='NME',model_value=allscore[1])	
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1])	
 			}else if(ncurves==3){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],bench_value=list(bench1=allscore[2]))	
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2]))	
 			}else if(ncurves==4){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE),
+					bench2=mean(tsdata[,4]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],
 					bench_value=list(bench1=allscore[2],bench2=allscore[3]))
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3]))	
 			}else if(ncurves==5){
-				metrics[[1]] = list(name=metricname,model_value=smoothscore[1],
-					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3],bench3=smoothscore[4]))	
+				metrics[[1]] = list(name='Bias',model_value=mean(tsdata[,2]-tsdata[,1],na.rm=TRUE),
+					bench_value=list(bench1=mean(tsdata[,3]-tsdata[,1],na.rm=TRUE),
+					bench2=mean(tsdata[,4]-tsdata[,1],na.rm=TRUE),
+					bench3=mean(tsdata[,5]-tsdata[,1],na.rm=TRUE) ))
 				metrics[[2]] = list(name='NME',model_value=allscore[1],
 					bench_value=list(bench1=allscore[2],bench2=allscore[3],bench3=allscore[4]))
+				metrics[[3]] = list(name=metricname,model_value=smoothscore[1],
+					bench_value=list(bench1=smoothscore[2],bench2=smoothscore[3],bench3=smoothscore[4]))	
 			}
-			
 		}
 		for(l in 1:nyears){
 			xxat[(2*l-1)] = (l-1)*365 + 1
@@ -139,6 +147,7 @@ Timeseries = function(obslabel,tsdata,varname,ytext,legendtext,
 				labels=paste(qcpc,'% of observed ',varname[1],' is gap-filled:',sep=''))
 		}		
 	}else{
+		# this code not functioning but kept for future modification:
 		yvalmin = signif(min(tsdata),3)
 		yvalmax = signif(max(tsdata),3)
 		datamean = signif(mean(tsdata[,1]),3)

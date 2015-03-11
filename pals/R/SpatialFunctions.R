@@ -10,13 +10,13 @@ GridAreaVector = function(obs,mcount){
 	cat('Creating gridcell surface area vector')
 	if(sum(obs$missingmask) == length(obs$missingmask)){ # no missing data in 20C obs
 		cat(' without concat')
-		surf_areas=c(aperm(array(area$cell,dim=c(length(obs$lon),length(obs$lat),mcount)),c(3,2,1)))
+		surf_areas=c(aperm(array(area$cell,dim=c(length(obs$grid$lon),length(obs$grid$lat),mcount)),c(3,2,1)))
 	}else{
 		gdctr=0 # initialise grid cell counter
 		surf_areas = c()
 		#gdctr_ref = matrix(NA,obs$gdctr,2)
-		for(i in 1:length(obs$lon)){
-			for(j in 1:length(obs$lat)){
+		for(i in 1:length(obs$grid$lon)){
+			for(j in 1:length(obs$grid$lat)){
 				# First check if there is enough obs data for result:
 				if(obs$missingmask[i,j]){ # where there IS enough data
 					gdctr = gdctr + 1 # increment grid cell counter
@@ -37,14 +37,14 @@ GridAreaVector = function(obs,mcount){
 #
 # Calculates surface area of Earth and grid cells:
 EarthArea = function(obs){
-	cellwidth =  obs$lat[2] - obs$lat[1] # assume n degree by n degree
+	cellwidth =  obs$grid$lat[2] - obs$grid$lat[1] # assume n degree by n degree
 	earthradius=6371
 	earth = 4*pi*earthradius^2
-	cell = matrix(NA,length(obs$lon),length(obs$lat))
-	for(i in 1:length(obs$lon)){
-		for(j in 1:length(obs$lat)){
+	cell = matrix(NA,length(obs$grid$lon),length(obs$grid$lat))
+	for(i in 1:length(obs$grid$lon)){
+		for(j in 1:length(obs$grid$lat)){
 			cell[i,j] = earthradius^2 * cellwidth/360*2*pi * 
-				(sin((obs$lat[j]+cellwidth/2)/90*pi/2) - sin((obs$lat[j]-cellwidth/2)/90*pi/2))
+				(sin((obs$grid$lat[j]+cellwidth/2)/90*pi/2) - sin((obs$grid$lat[j]-cellwidth/2)/90*pi/2))
 		}
 	}
 	

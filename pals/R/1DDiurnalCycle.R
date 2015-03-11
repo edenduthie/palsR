@@ -7,7 +7,7 @@
 # Gab Abramowitz CCRC, UNSW 2014 (palshelp at gmail dot com)
 #
 DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
-	timestepsize,whole,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
+	timestepsize,whole,plotcolours,modlabel='no',vqcdata=matrix(-1,nrow=1,ncol=1)){
 	errtext = 'ok'
 	metrics = list()
 	if(!whole){ # we need a whole number of years for this to run
@@ -144,7 +144,6 @@ DiurnalCycle = function(obslabel,dcdata,varname,ytext,legendtext,
 	xloc=c(0:(tstepinday-1)) # set location of x-coords in plot
 	yaxmin=min(avday) # y axis minimum in plot
 	yaxmax=max(avday)+(max(avday)-yaxmin)*0.15 # y axis maximum in plot
-	plotcolours=LineColours() 
 	# Now plot each panel:
 	for(k in 1:4){# for each season (DJF, MAM etc)
 		# Plot obs data result:
